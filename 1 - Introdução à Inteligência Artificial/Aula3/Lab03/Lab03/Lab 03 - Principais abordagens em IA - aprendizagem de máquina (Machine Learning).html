@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Lab 03 - Principais abordagens em IA - aprendizagem de máquina (Machine Learning)</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        background-color: #232629;
+        color: #7a7c7d;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #7a7c7d;  padding-left: 4px; }
+    div.sourceCode
+      { color: #cfcfc2; background-color: #232629; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #cfcfc2; } /* Normal */
+    code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } /* Alert */
+    code span.an { color: #3f8058; } /* Annotation */
+    code span.at { color: #2980b9; } /* Attribute */
+    code span.bn { color: #f67400; } /* BaseN */
+    code span.bu { color: #7f8c8d; } /* BuiltIn */
+    code span.cf { color: #fdbc4b; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #3daee9; } /* Char */
+    code span.cn { color: #27aeae; font-weight: bold; } /* Constant */
+    code span.co { color: #7a7c7d; } /* Comment */
+    code span.cv { color: #7f8c8d; } /* CommentVar */
+    code span.do { color: #a43340; } /* Documentation */
+    code span.dt { color: #2980b9; } /* DataType */
+    code span.dv { color: #f67400; } /* DecVal */
+    code span.er { color: #da4453; text-decoration: underline; } /* Error */
+    code span.ex { color: #0099ff; font-weight: bold; } /* Extension */
+    code span.fl { color: #f67400; } /* Float */
+    code span.fu { color: #8e44ad; } /* Function */
+    code span.im { color: #27ae60; } /* Import */
+    code span.in { color: #c45b00; } /* Information */
+    code span.kw { color: #cfcfc2; font-weight: bold; } /* Keyword */
+    code span.op { color: #cfcfc2; } /* Operator */
+    code span.ot { color: #27ae60; } /* Other */
+    code span.pp { color: #27ae60; } /* Preprocessor */
+    code span.re { color: #2980b9; background-color: #153042; } /* RegionMarker */
+    code span.sc { color: #3daee9; } /* SpecialChar */
+    code span.ss { color: #da4453; } /* SpecialString */
+    code span.st { color: #f44f4f; } /* String */
+    code span.va { color: #27aeae; } /* Variable */
+    code span.vs { color: #da4453; } /* VerbatimString */
+    code span.wa { color: #da4453; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="style_dark.css" />
+</head>
+<body>
+<h1
+id="lab-03---principais-abordagens-em-ia---aprendizagem-de-máquina-machine-learning">Lab
+03 - Principais abordagens em IA - aprendizagem de máquina (Machine
+Learning)</h1>
+<p><a href="#enunciados">Enunciados</a><br />
+<a href="#ex-1-criar-um-modelo-de-regressão-linear-via-llm">Ex 1: Criar
+um modelo de regressão linear via LLM</a><br />
+<a
+href="#ex-2-automação-da-análise-de-dados-de-voo-da-coruja-com-pandas--ml">Ex
+2: Automação da Análise de Dados de Voo da <strong>Coruja</strong> com
+Pandas + ML</a></p>
+<h2 id="enunciados">Enunciados</h2>
+<h3 id="ex-1-criar-um-modelo-de-regressão-linear-via-llm"><strong>Ex 1:
+Criar um modelo de regressão linear via LLM</strong></h3>
+<ol type="1">
+<li>Escolhe um CSV da pasta <code>lab03_ex1/</code> e arrasta para o LM
+Studio ou ChatGPT (ou semelhante).</li>
+<li>Usa <strong>exatamente</strong> este prompt (sem mais texto):</li>
+</ol>
+<blockquote>
+<p><strong>Faz um modelo com de regressão linear sobre estes
+dados</strong></p>
+</blockquote>
+<blockquote>
+<p>Nota: o LLM se for limitadopode não devolver todos os passos.</p>
+</blockquote>
+<h3
+id="ex-2-automação-da-análise-de-dados-de-voo-da-coruja-com-pandas-ml"><strong>Ex
+2: Automação da Análise de Dados de Voo da </strong>Coruja** com Pandas
++ ML**</h3>
+<h3 id="pré-requisitos-e-instalação">1) Pré-requisitos e instalação</h3>
+<ul>
+<li><p><strong>Python</strong> 3.10+.</p></li>
+<li><p>Bibliotecas: <code>pandas</code> (tabelas), <code>numpy</code>
+(números), <code>matplotlib</code> (gráficos), <code>geopy</code>
+(distâncias geográficas), <code>scikit-learn</code> (ML),
+<code>joblib</code> (guardar modelo).</p></li>
+<li><p>CSV com estas colunas por registo (linha):</p>
+<pre><code>timestamp, latitude, longitude, altitude, vel_x, vel_y, vel_z, battery_voltage</code></pre>
+<ul>
+<li><code>timestamp</code> no formato ISO (ex.:
+<code>2025-04-21T14:25:36Z</code>)</li>
+<li><code>latitude</code>/<code>longitude</code> em graus decimais
+(WGS84)</li>
+<li><code>altitude</code> em metros</li>
+<li><code>vel_x</code>, <code>vel_y</code>, <code>vel_z</code> em
+m/s</li>
+<li><code>battery_voltage</code> em volts</li>
+</ul></li>
+</ul>
+<p>Instala:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install pandas numpy matplotlib geopy scikit-learn joblib</span></code></pre></div>
+<hr />
+<h3 id="conceitos-essenciais">2) Conceitos essenciais</h3>
+<ul>
+<li><strong>DataFrame (pandas):</strong> tabela com linhas e colunas.
+Pensa numa folha de cálculo, mas programável.</li>
+<li><strong>Índice temporal:</strong> se a tua coluna de tempo
+(<code>timestamp</code>) for o <strong>índice</strong> da tabela, pandas
+desbloqueia operações por <strong>janelas de tempo</strong> (ex.: “a
+cada 5s”).</li>
+<li><strong>Resampling:</strong> agrupar por períodos (ex.: médias a
+cada 5s) para reduzir ruído e alinhar ritmos de amostragem.</li>
+<li><strong>Feature:</strong> número que representa um aspeto do voo
+(ex.: velocidade média na janela).</li>
+<li><strong>Flag:</strong> regra binária simples (0/1) que sinaliza
+risco (ex.: “velocidade &gt; 15 m/s”).</li>
+<li><strong>Rótulo (label):</strong> variável que queremos prever. Aqui,
+<strong>voo_arriscado</strong> = 1 se alguma flag disparar.</li>
+<li><strong>Pipeline (scikit-learn):</strong> receita encadeada (ex.:
+<em>StandardScaler</em> → <em>LogisticRegression</em>) que garante o
+<strong>mesmo processamento</strong> em treino e teste.</li>
+<li><strong>Data leakage:</strong> usar no treino informação que só
+existiria no futuro ou fora do treino. Evita sempre!</li>
+</ul>
+<hr />
+<h3 id="estrutura-de-pastas-recomendada">3) Estrutura de pastas
+recomendada</h3>
+<pre><code>coruja-lab/
+ ├─ data/
+ │   ├─ coruja_flight_log.csv        # um voo (exemplo)
+ │   └─ logs/                        # (opcional) vários voos
+ ├─ outputs/
+ └─ 01_coruja_analise_voo.ipynb      # ou .py</code></pre>
+<hr />
+<h3 id="fluxo-geral-mapa-mental-antes-do-código">4) Fluxo geral (mapa
+mental antes do código)</h3>
+<ol type="1">
+<li><p><strong>Ler e limpar</strong>: importar o CSV, converter
+<code>timestamp</code> para data/hora, ordenar por tempo, remover linhas
+impossíveis (NaN).</p></li>
+<li><p><strong>Criar métricas</strong>:</p>
+<ul>
+<li><strong>Velocidade escalar</strong>: a partir de <code>vel_x</code>,
+<code>vel_y</code>, <code>vel_z</code>.</li>
+<li><strong>Distância</strong> entre pontos GPS consecutivos (em
+metros).</li>
+<li><strong>Variação de altitude</strong> entre amostras.</li>
+</ul></li>
+<li><p><strong>Agregação por janelas</strong> (ex.: 5 segundos): média
+de velocidade/altitude/bateria, soma de distâncias e somatório de
+variações.</p></li>
+<li><p><strong>Flags</strong> de risco (limiares de arranque; ajusta
+mais tarde):</p>
+<ul>
+<li><code>altitude_alert</code>: altitude média &gt; <strong>120
+m</strong></li>
+<li><code>overspeed</code>: velocidade média &gt; <strong>15
+m/s</strong></li>
+<li><code>battery_drop</code>: queda de tensão entre janelas ≥
+<strong>0.30 V</strong></li>
+</ul></li>
+<li><p><strong>Rótulo</strong>: <code>voo_arriscado = 1</code> se
+<strong>alguma</strong> flag for 1.</p></li>
+<li><p><strong>Treino/Teste</strong>: dividir os dados (ex.: 75%/25%),
+criar <strong>Pipeline</strong> com <em>scaler</em> + <strong>Regressão
+Logística</strong>, treinar.</p></li>
+<li><p><strong>Avaliar</strong>: métricas (F1, precisão, revocação,
+matriz de confusão) e <strong>validação cruzada</strong>.</p></li>
+<li><p><strong>Diagnosticar</strong>: <strong>curva de
+aprendizagem</strong> para ver se faltam dados ou há
+sobreajuste.</p></li>
+<li><p><strong>Interpretar</strong>: coeficientes do modelo (importância
+aproximada).</p></li>
+<li><p><strong>Guardar</strong>: CSV processado, gráfico, coeficientes e
+modelo <code>.joblib</code>.</p></li>
+</ol>
+<hr />
+<h3 id="implementação-texto-primeiro-código-depois">5) Implementação
+(texto primeiro, código depois)</h3>
+<h4 id="a-ingestão-e-sanidade">A) Ingestão e sanidade</h4>
+<p><strong>Porque é importante:</strong> garantir que trabalhamos com
+tempos válidos, sequência correta e sem células vazias nas colunas
+essenciais.<br />
+<strong>Como validar:</strong> após corrida, <code>df.shape</code> deve
+mostrar linhas; <code>df.head()</code> deve ter <code>timestamp</code>
+crescente e sem <code>NaN</code> nas colunas chave.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>DATA <span class="op">=</span> Path(<span class="st">&quot;data/coruja_flight_log.csv&quot;</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(DATA)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&quot;timestamp&quot;</span>] <span class="op">=</span> pd.to_datetime(df[<span class="st">&quot;timestamp&quot;</span>], utc<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.sort_values(<span class="st">&quot;timestamp&quot;</span>).drop_duplicates(subset<span class="op">=</span>[<span class="st">&quot;timestamp&quot;</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.dropna(subset<span class="op">=</span>[<span class="st">&quot;latitude&quot;</span>,<span class="st">&quot;longitude&quot;</span>,<span class="st">&quot;altitude&quot;</span>,<span class="st">&quot;vel_x&quot;</span>,<span class="st">&quot;vel_y&quot;</span>,<span class="st">&quot;vel_z&quot;</span>,<span class="st">&quot;battery_voltage&quot;</span>])</span></code></pre></div>
+<hr />
+<h4 id="b-métricas-básicas-features">B) Métricas básicas (features)</h4>
+<p><strong>Porque é importante:</strong> modelos aprendem com números
+informativos.</p>
+<ul>
+<li><strong>Velocidade escalar</strong>: “quão depressa” a Coruja se
+move considerando X/Y/Z.</li>
+<li><strong>Distância geodésica</strong>: metros entre dois pontos GPS;
+reflete deslocação real.</li>
+<li><strong>Variação de altitude</strong>: subida/descida entre
+amostras; útil para detetar perfis arriscados.</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> geopy.distance <span class="im">import</span> geodesic</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&quot;speed&quot;</span>] <span class="op">=</span> np.sqrt(df[<span class="st">&quot;vel_x&quot;</span>]<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> df[<span class="st">&quot;vel_y&quot;</span>]<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> df[<span class="st">&quot;vel_z&quot;</span>]<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>dist <span class="op">=</span> [<span class="fl">0.0</span>]</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(df)):</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    p1 <span class="op">=</span> (df.loc[i<span class="op">-</span><span class="dv">1</span>,<span class="st">&quot;latitude&quot;</span>], df.loc[i<span class="op">-</span><span class="dv">1</span>,<span class="st">&quot;longitude&quot;</span>])</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    p2 <span class="op">=</span> (df.loc[i  ,<span class="st">&quot;latitude&quot;</span>], df.loc[i  ,<span class="st">&quot;longitude&quot;</span>])</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    dist.append(geodesic(p1, p2).meters)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&quot;distance_m&quot;</span>] <span class="op">=</span> dist</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&quot;altitude_delta&quot;</span>] <span class="op">=</span> df[<span class="st">&quot;altitude&quot;</span>].diff().fillna(<span class="fl">0.0</span>)</span></code></pre></div>
+<p><strong>Como validar:</strong>
+<code>df[["speed","distance_m","altitude_delta"]].describe()</code> deve
+mostrar valores plausíveis (sem infinitos).</p>
+<hr />
+<h4 id="c-agregar-por-janelas-de-tempo-5-s">C) Agregar por janelas de
+tempo (5 s)</h4>
+<p><strong>Porque é importante:</strong> sensores podem amostrar a
+ritmos diferentes; agregar por janelas:</p>
+<ul>
+<li><strong>reduz ruído</strong>,</li>
+<li><strong>normaliza</strong> o número de linhas,</li>
+<li>cria uma <strong>observação</strong> por janela (base para ML).</li>
+</ul>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.set_index(<span class="st">&quot;timestamp&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>Xy_5s <span class="op">=</span> df.resample(<span class="st">&quot;5S&quot;</span>).agg({</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;speed&quot;</span>: <span class="st">&quot;mean&quot;</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;altitude&quot;</span>: <span class="st">&quot;mean&quot;</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;battery_voltage&quot;</span>: <span class="st">&quot;mean&quot;</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;distance_m&quot;</span>: <span class="st">&quot;sum&quot;</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;altitude_delta&quot;</span>: <span class="st">&quot;sum&quot;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>}).dropna()</span></code></pre></div>
+<p><strong>Como validar:</strong> o índice de <code>Xy_5s</code> deve
+ter passos de 5s; <code>Xy_5s.head()</code> deve mostrar uma linha por
+janela.</p>
+<hr />
+<h4 id="d-flags-heurísticas-regras-simples">D) Flags heurísticas (regras
+simples)</h4>
+<p><strong>Porque é importante:</strong> antes de ML, convém ter regras
+“transparentes” para definir o que é <strong>risco</strong>. São pontos
+de partida, não verdades absolutas.</p>
+<ul>
+<li><strong>Altitude elevada</strong> (&gt;120 m) pode ser indesejável
+por segurança/regulamento.</li>
+<li><strong>Overspeed</strong> (&gt;15 m/s) pode reduzir margem de
+manobra.</li>
+<li><strong>Queda de bateria</strong> (≥0.30 V entre janelas) pode
+antecipar falha.</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ALT_THR, SPD_THR, DV_THR <span class="op">=</span> <span class="fl">120.0</span>, <span class="fl">15.0</span>, <span class="fl">0.30</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>Xy_5s <span class="op">=</span> Xy_5s.sort_index()</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>Xy_5s[<span class="st">&quot;altitude_alert&quot;</span>] <span class="op">=</span> (Xy_5s[<span class="st">&quot;altitude&quot;</span>] <span class="op">&gt;</span> ALT_THR).astype(<span class="bu">int</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>Xy_5s[<span class="st">&quot;overspeed&quot;</span>]      <span class="op">=</span> (Xy_5s[<span class="st">&quot;speed&quot;</span>]    <span class="op">&gt;</span> SPD_THR).astype(<span class="bu">int</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>drop_val <span class="op">=</span> Xy_5s[<span class="st">&quot;battery_voltage&quot;</span>].diff(<span class="op">-</span><span class="dv">1</span>).<span class="bu">abs</span>().fillna(<span class="fl">0.0</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>Xy_5s[<span class="st">&quot;battery_drop&quot;</span>] <span class="op">=</span> (drop_val <span class="op">&gt;=</span> DV_THR).astype(<span class="bu">int</span>)</span></code></pre></div>
+<p><strong>Como validar:</strong>
+<code>Xy_5s[["altitude_alert","overspeed","battery_drop"]].sum()</code>
+devolve quantas janelas acionaram cada flag.</p>
+<hr />
+<h4 id="e-construir-o-rótulo-voo-arriscado">E) Construir o rótulo “voo
+arriscado”</h4>
+<p><strong>Porque é importante:</strong> o classificador precisa de um
+<strong>alvo</strong>. Aqui, 1 se <strong>alguma</strong> flag acionou
+nessa janela; caso contrário 0.</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Xy_5s[<span class="st">&quot;voo_arriscado&quot;</span>] <span class="op">=</span> (</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    (Xy_5s[<span class="st">&quot;altitude_alert&quot;</span>]<span class="op">==</span><span class="dv">1</span>) <span class="op">|</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    (Xy_5s[<span class="st">&quot;overspeed&quot;</span>]<span class="op">==</span><span class="dv">1</span>) <span class="op">|</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    (Xy_5s[<span class="st">&quot;battery_drop&quot;</span>]<span class="op">==</span><span class="dv">1</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>).astype(<span class="bu">int</span>)</span></code></pre></div>
+<p><strong>Como validar:</strong>
+<code>Xy_5s["voo_arriscado"].value_counts()</code> mostra o equilíbrio
+de classes. Se 1 for muito raro, ver <strong>Secção “Classe
+desequilibrada”</strong>.</p>
+<hr />
+<h4 id="f-preparar-features-e-treinar-um-pipeline">F) Preparar
+<em>features</em> e treinar um Pipeline</h4>
+<p><strong>Porque é importante:</strong> o <strong>Pipeline</strong>
+garante que:</p>
+<ul>
+<li>as mesmas <strong>transformações</strong> (ex.: <em>scaling</em>)
+são aplicadas em treino e em teste (evita erros e
+<em>leakage</em>);</li>
+<li>o processo é <strong>reproduzível</strong> e fácil de reusar.</li>
+</ul>
+<p>Usamos <strong>StandardScaler</strong> (média 0, desvio 1) +
+<strong>Regressão Logística</strong> (modelo linear, rápido,
+interpretável).</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> [<span class="st">&quot;speed&quot;</span>, <span class="st">&quot;altitude&quot;</span>, <span class="st">&quot;battery_voltage&quot;</span>, <span class="st">&quot;distance_m&quot;</span>, <span class="st">&quot;altitude_delta&quot;</span>]</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> Xy_5s[features].copy()</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> Xy_5s[<span class="st">&quot;voo_arriscado&quot;</span>].copy()</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    X, y, test_size<span class="op">=</span><span class="fl">0.25</span>, random_state<span class="op">=</span><span class="dv">42</span>, stratify<span class="op">=</span>y <span class="cf">if</span> y.nunique()<span class="op">==</span><span class="dv">2</span> <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>pipe <span class="op">=</span> Pipeline([</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;scaler&quot;</span>, StandardScaler()),</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;clf&quot;</span>, LogisticRegression(max_iter<span class="op">=</span><span class="dv">1000</span>))</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>pipe.fit(X_train, y_train)</span></code></pre></div>
+<p><strong>Como validar:</strong>
+<code>pipe.score(X_test, y_test)</code> dá a <strong>acurácia</strong>
+(só como referência); vamos já usar métricas mais informativas.</p>
+<hr />
+<h4 id="g-avaliar-o-modelo-hold-out-validação-cruzada">G) Avaliar o
+modelo (hold-out + validação cruzada)</h4>
+<p><strong>Porque é importante:</strong> medir
+<strong>generalização</strong>, não apenas ajustar ao treino.</p>
+<ul>
+<li><strong>F1</strong> equilibra precisão e revocação (bom quando a
+classe positiva é menos frequente).</li>
+<li><strong>Matriz de confusão</strong> mostra acertos/erros por
+classe.</li>
+<li><strong>Relatório</strong> inclui precisão (puridade dos 1),
+revocação (capacidade de apanhar 1), F1 e suporte (número de
+casos).</li>
+<li><strong>Validação cruzada (CV)</strong> repete o treino/teste em
+várias divisões para reduzir sorte/azar do <em>split</em>.</li>
+</ul>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> classification_report, confusion_matrix, f1_score</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> cross_val_score</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> pipe.predict(X_test)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;F1 (voo arriscado=1):&quot;</span>, f1_score(y_test, y_pred))</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(confusion_matrix(y_test, y_pred))</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classification_report(y_test, y_pred, digits<span class="op">=</span><span class="dv">3</span>))</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>cv_scores <span class="op">=</span> cross_val_score(pipe, X, y, cv<span class="op">=</span><span class="dv">5</span>, scoring<span class="op">=</span><span class="st">&quot;f1&quot;</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;F1 CV (média ± dp):&quot;</span>, np.mean(cv_scores), <span class="st">&quot;±&quot;</span>, np.std(cv_scores))</span></code></pre></div>
+<p><strong>Como interpretar rapidamente:</strong></p>
+<ul>
+<li><strong>F1</strong> perto de 1 é ótimo; perto de 0 é mau.</li>
+<li>Se a <strong>revocação</strong> for baixa na classe 1, o modelo
+falha muitos “arriscados” (arriscado para operações).</li>
+<li>Se a <strong>precisão</strong> for baixa na classe 1, o modelo
+rotula “arriscado” demasiadas janelas normais (falsos alarmes).</li>
+</ul>
+<hr />
+<h4 id="h-curva-de-aprendizagem-diagnóstico">H) Curva de aprendizagem
+(diagnóstico)</h4>
+<p><strong>Porque é importante:</strong> ajuda a decidir <strong>se
+precisas de mais dados</strong> (ou de outras <em>features</em>).</p>
+<ul>
+<li>Se as curvas de treino e validação convergem num <strong>valor
+baixo</strong>, o modelo está a <strong>subajustar</strong> (talvez
+features fracas).</li>
+<li>Se a curva de treino estiver muito acima da de validação, há
+<strong>sobreajuste</strong> (talvez precisas de mais dados).</li>
+</ul>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> learning_curve</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>train_sizes, train_scores, test_scores <span class="op">=</span> learning_curve(</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    pipe, X, y, cv<span class="op">=</span><span class="dv">5</span>, scoring<span class="op">=</span><span class="st">&quot;f1&quot;</span>, train_sizes<span class="op">=</span>[<span class="fl">0.1</span>, <span class="fl">0.33</span>, <span class="fl">0.55</span>, <span class="fl">0.78</span>, <span class="fl">1.0</span>]</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">5</span>))</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>plt.plot(train_sizes, train_scores.mean(axis<span class="op">=</span><span class="dv">1</span>), marker<span class="op">=</span><span class="st">&quot;o&quot;</span>, label<span class="op">=</span><span class="st">&quot;Treino&quot;</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>plt.plot(train_sizes, test_scores.mean(axis<span class="op">=</span><span class="dv">1</span>), marker<span class="op">=</span><span class="st">&quot;o&quot;</span>, label<span class="op">=</span><span class="st">&quot;Validação&quot;</span>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">&quot;Coruja — Curva de Aprendizagem (F1)&quot;</span>)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">&quot;Tamanho do treino&quot;</span>)<span class="op">;</span> plt.ylabel(<span class="st">&quot;F1&quot;</span>)<span class="op">;</span> plt.legend()<span class="op">;</span> plt.tight_layout()</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">&quot;outputs/coruja_learning_curve.png&quot;</span>)<span class="op">;</span> plt.close()</span></code></pre></div>
+<hr />
+<h4 id="i-importância-das-features-coeficientes">I) Importância das
+<em>features</em> (coeficientes)</h4>
+<p><strong>Porque é importante:</strong> na Regressão Logística, o
+<strong>sinal</strong> e o <strong>módulo</strong> do coeficiente
+mostram a direção e a força do impacto (após <em>scaling</em>).</p>
+<ul>
+<li><strong>Positivo</strong>: aumenta a probabilidade de “voo
+arriscado”.</li>
+<li><strong>Negativo</strong>: diminui a probabilidade.</li>
+</ul>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>coef <span class="op">=</span> pd.Series(pipe.named_steps[<span class="st">&quot;clf&quot;</span>].coef_.ravel(), index<span class="op">=</span>features).sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>coef.to_csv(<span class="st">&quot;outputs/coruja_lr_coef.csv&quot;</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(coef)</span></code></pre></div>
+<hr />
+<h4 id="j-guardar-dados-processados-e-modelo">J) Guardar dados
+processados e modelo</h4>
+<p><strong>Porque é importante:</strong> reutilizar sem refazer todo o
+treino; colocar em produção; partilhar com a equipa.</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> joblib</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>Xy_5s.reset_index().to_csv(<span class="st">&quot;outputs/coruja_flight_log_processed.csv&quot;</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>joblib.dump(pipe, <span class="st">&quot;outputs/coruja_modelo_voo_arriscado.joblib&quot;</span>)</span></code></pre></div>
+<p><strong>Como reutilizar noutro script:</strong></p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pipe = joblib.load(&quot;outputs/coruja_modelo_voo_arriscado.joblib&quot;)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># y_prob = pipe.predict_proba(novos_dados[features])[:, 1]</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># y_pred = (y_prob &gt;= 0.5).astype(int)</span></span></code></pre></div>
+<hr />
+<h3 id="interpretação-das-métricas-guia-rápido">6) Interpretação das
+métricas (guia rápido)</h3>
+<ul>
+<li><p><strong>Precisão (classe 1)</strong>: dos que marquei como
+arriscado, <strong>quantos</strong> eram mesmo arriscados?</p></li>
+<li><p><strong>Revocação (classe 1)</strong>: dos arriscados reais,
+<strong>quantos</strong> eu identifiquei?</p></li>
+<li><p><strong>F1</strong>: compromisso entre precisão e revocação (bom
+quando a classe 1 é rara).</p></li>
+<li><p><strong>Matriz de confusão</strong>:</p>
+<ul>
+<li><strong>TN</strong> (canto superior esquerdo): acertos em
+normal</li>
+<li><strong>FP</strong> (sup. direito): falsos alarmes</li>
+<li><strong>FN</strong> (inf. esquerdo): arriscados que falharam
+(atenção operacional)</li>
+<li><strong>TP</strong> (inf. direito): acertos em arriscado</li>
+</ul></li>
+</ul>
+<p><strong>Regra prática:</strong> se <strong>FN</strong> for caro
+(perigo real ignorado), otimiza <strong>revocação</strong> (podes
+ajustar o <em>threshold</em> com <code>predict_proba</code>).</p>
+<hr />
+<h3 id="problemas-frequentes-e-soluções">7) Problemas frequentes e
+soluções</h3>
+<ul>
+<li><strong>Classe 1 muito rara:</strong> usar
+<code>LogisticRegression(class_weight="balanced")</code>; ou
+<em>oversampling</em> (ex.: SMOTE); ou otimizar <em>threshold</em> por
+F1/Recall.</li>
+<li><strong>Dados com escalas diferentes:</strong> manter o
+<strong>StandardScaler</strong> no Pipeline.</li>
+<li><strong>Dados fora da ordem temporal:</strong> garante
+<code>df.sort_values("timestamp")</code> antes de tudo.</li>
+<li><strong>Valores extremos (outliers):</strong> experimentar percentis
+(ex.: truncar a 1%/99%) e comparar métricas.</li>
+<li><strong>Vários voos misturados:</strong> adicionar
+<code>flight_id</code> e usar <strong>GroupKFold</strong> para validação
+sem <em>leakage</em> entre voos.</li>
+<li><strong>Métricas “boas demais” no treino mas fracas no
+teste:</strong> provável <strong>sobreajuste</strong>; recolhe mais
+dados, simplifica o modelo, adiciona <em>regularização</em> (C mais
+baixo na LR).</li>
+</ul>
+<hr />
+<h3 id="extensões-úteis-quando-te-sentires-confortável">8) Extensões
+úteis (quando te sentires confortável)</h3>
+<ul>
+<li><strong>Limiarização por percentis:</strong> definir
+<code>ALT_THR</code>, <code>SPD_THR</code>, <code>DV_THR</code> por
+quantis do teu conjunto (mais adaptativo).</li>
+<li><strong>Features adicionais:</strong> aceleração (diferenças de
+velocidade), <em>jitter</em> no GPS, variações percentuais de
+bateria.</li>
+<li><strong>Modelos alternativos:</strong> Árvores, Random Forest,
+XGBoost (cuidado com <em>leakage</em> e <em>tuning</em>).</li>
+<li><strong>Calibração de probabilidades:</strong>
+<code>CalibratedClassifierCV</code> para probabilidades mais
+fiáveis.</li>
+<li><strong>Monitorização em produção:</strong> guardar métricas por
+dia/voo e comparar com referências.</li>
+</ul>
+<hr />
+<h3 id="checklist-final">9) Checklist final</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />CSV lido, <code>timestamp</code>
+convertido e ordenado</label></li>
+<li><label><input type="checkbox" /><code>speed</code>,
+<code>distance_m</code>, <code>altitude_delta</code>
+calculados</label></li>
+<li><label><input type="checkbox" />Agregação por janelas (5 s)
+concluída</label></li>
+<li><label><input type="checkbox" />Flags (<code>altitude_alert</code>,
+<code>overspeed</code>, <code>battery_drop</code>) geradas</label></li>
+<li><label><input type="checkbox" /><code>voo_arriscado</code> criado
+(0/1)</label></li>
+<li><label><input type="checkbox" />Pipeline treinado (Scaler +
+LogisticRegression)</label></li>
+<li><label><input type="checkbox" />F1/relatório/matriz de confusão
+revistos</label></li>
+<li><label><input type="checkbox" />Curva de aprendizagem gerada
+(<code>outputs/coruja_learning_curve.png</code>)</label></li>
+<li><label><input type="checkbox" />Coeficientes exportados
+(<code>outputs/coruja_lr_coef.csv</code>)</label></li>
+<li><label><input type="checkbox" />Modelo guardado
+(<code>outputs/coruja_modelo_voo_arriscado.joblib</code>)</label></li>
+<li><label><input type="checkbox" />CSV processado guardado
+(<code>outputs/coruja_flight_log_processed.csv</code>)</label></li>
+</ul>
+</body>
+</html>

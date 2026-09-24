@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Lab 01 - Introdução à inteligência artificial e conceitos básicos</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        background-color: #232629;
+        color: #7a7c7d;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #7a7c7d;  padding-left: 4px; }
+    div.sourceCode
+      { color: #cfcfc2; background-color: #232629; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #cfcfc2; } /* Normal */
+    code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } /* Alert */
+    code span.an { color: #3f8058; } /* Annotation */
+    code span.at { color: #2980b9; } /* Attribute */
+    code span.bn { color: #f67400; } /* BaseN */
+    code span.bu { color: #7f8c8d; } /* BuiltIn */
+    code span.cf { color: #fdbc4b; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #3daee9; } /* Char */
+    code span.cn { color: #27aeae; font-weight: bold; } /* Constant */
+    code span.co { color: #7a7c7d; } /* Comment */
+    code span.cv { color: #7f8c8d; } /* CommentVar */
+    code span.do { color: #a43340; } /* Documentation */
+    code span.dt { color: #2980b9; } /* DataType */
+    code span.dv { color: #f67400; } /* DecVal */
+    code span.er { color: #da4453; text-decoration: underline; } /* Error */
+    code span.ex { color: #0099ff; font-weight: bold; } /* Extension */
+    code span.fl { color: #f67400; } /* Float */
+    code span.fu { color: #8e44ad; } /* Function */
+    code span.im { color: #27ae60; } /* Import */
+    code span.in { color: #c45b00; } /* Information */
+    code span.kw { color: #cfcfc2; font-weight: bold; } /* Keyword */
+    code span.op { color: #cfcfc2; } /* Operator */
+    code span.ot { color: #27ae60; } /* Other */
+    code span.pp { color: #27ae60; } /* Preprocessor */
+    code span.re { color: #2980b9; background-color: #153042; } /* RegionMarker */
+    code span.sc { color: #3daee9; } /* SpecialChar */
+    code span.ss { color: #da4453; } /* SpecialString */
+    code span.st { color: #f44f4f; } /* String */
+    code span.va { color: #27aeae; } /* Variable */
+    code span.vs { color: #da4453; } /* VerbatimString */
+    code span.wa { color: #da4453; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="style_dark.css" />
+</head>
+<body>
+<h1
+id="lab-01---introdução-à-inteligência-artificial-e-conceitos-básicos">Lab
+01 - Introdução à inteligência artificial e conceitos básicos</h1>
+<p><a href="#enunciados">Enunciados</a><br />
+<a href="#ex-1-decisões-com-if-else">Ex 1: Decisões com <code>if</code>,
+<code>else</code></a><br />
+<a href="#ex-2-fórmula-simples-de-machine-learning">Ex 2: Fórmula
+Simples de “Machine Learning”</a><br />
+<a href="#ex-3-neurónio-artificial-simples">Ex 3: Neurónio Artificial
+Simples</a><br />
+<a href="#solução">Solução</a><br />
+<a href="#sol-1-decisões-com-if-else">Sol 1: Decisões com
+<code>if</code>, <code>else</code></a><br />
+<a href="#sol-2-fórmula-simples-de-machine-learning">Sol 2: Fórmula
+Simples de “Machine Learning”</a><br />
+<a href="#sol-3-neurónio-artificial-simples">Sol 3: Neurónio Artificial
+Simples</a></p>
+<h2 id="enunciados">Enunciados</h2>
+<h3 id="ex-1-decisões-com-if-else"><strong>Ex 1: Decisões com
+<code>if</code>, <code>else</code></strong></h3>
+<p><strong>Enunciado:</strong></p>
+<p>Escreva um programa em Python que peça ao utilizador a sua idade e o
+seu rendimento mensal. O programa deve então determinar se o utilizador
+é elegível para um empréstimo, considerando que os critérios de
+elegibilidade são:</p>
+<ul>
+<li>Ter pelo menos 18 anos de idade.</li>
+<li>Ter um rendimento mensal de pelo menos 1000 euros.</li>
+</ul>
+<p>O programa deve imprimir uma mensagem informando se o utilizador é ou
+não elegível para o empréstimo.</p>
+<h3 id="ex-2-fórmula-simples-de-machine-learning"><strong>Ex 2: Fórmula
+Simples de Machine Learning</strong></h3>
+<p><strong>Enunciado:</strong></p>
+<p>Crie um programa em Python que utilize uma fórmula matemática simples
+para estimar a probabilidade de um cliente pagar um empréstimo, com base
+na sua idade e rendimento mensal. A fórmula deve ser a seguinte:</p>
+<ul>
+<li><code>probabilidade_pagamento = 0.01 * idade + 0.0005 * rendimento - 0.5</code></li>
+</ul>
+<p>O programa deve pedir ao utilizador a sua idade e o seu rendimento
+mensal, calcular a probabilidade de pagamento usando a fórmula e
+imprimir o resultado em percentagem.</p>
+<h3 id="ex-3-neurónio-artificial-simples"><strong>Ex 3: Neurónio
+Artificial Simples</strong></h3>
+<p><strong>Enunciado:</strong></p>
+<p>Implemente um programa em Python que simule um neurónio artificial
+simples para avaliar se um cliente é um bom candidato para um
+empréstimo, com base na sua idade e rendimento mensal. O neurónio deve
+utilizar os seguintes pesos e bias:</p>
+<ul>
+<li><code>peso_idade = 0.01</code></li>
+<li><code>peso_rendimento = 0.0005</code></li>
+<li><code>bias = -0.5</code></li>
+</ul>
+<p>O programa deve pedir ao utilizador a sua idade e o seu rendimento
+mensal, calcular a ativação do neurónio e, com base no resultado,
+imprimir se o cliente é ou não um bom candidato para o empréstimo.
+Lembre-se que a função de ativação deve retornar 1 se a ativação for
+maior que 0, e 0 caso contrário.</p>
+<p><strong>Observação:</strong> Em todas as partes, lembre-se que a
+idade mínima para elegibilidade ao empréstimo é de 18 anos e o
+rendimento mínimo é de 1000 euros.</p>
+<div style="page-break-after: always;">
+
+</div>
+<h2 id="solução">Solução</h2>
+<h3 id="sol-1-decisões-com-if-else"><strong>Sol 1: Decisões com
+<code>if</code>, <code>else</code></strong></h3>
+<ol type="1">
+<li><strong>Cenário:</strong> Um sistema simples que decide se um
+cliente é elegível para um empréstimo com base na sua idade e
+rendimento.</li>
+<li><strong>Código:</strong></li>
+</ol>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>idade <span class="op">=</span> <span class="bu">int</span>(<span class="bu">input</span>(<span class="st">&quot;Qual a sua idade? &quot;</span>))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>rendimento <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Qual o seu rendimento mensal? &quot;</span>))</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> idade <span class="op">&gt;=</span> <span class="dv">18</span> <span class="kw">and</span> rendimento <span class="op">&gt;=</span> <span class="dv">1000</span>:</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Parabéns! Você é elegível para o empréstimo.&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Infelizmente, você não atende aos critérios para o empréstimo.&quot;</span>)</span></code></pre></div>
+<ol start="3" type="1">
+<li><strong>Explicação:</strong> Este código demonstra como a IA pode
+tomar decisões básicas usando lógica condicional, mas é limitado a
+regras fixas.</li>
+</ol>
+<h2 id="sol-2-fórmula-simples-de-machine-learning"><strong>Sol 2:
+Fórmula Simples de Machine Learning</strong></h2>
+<ol type="1">
+<li><strong>Cenário:</strong> Prever a probabilidade de um cliente pagar
+um empréstimo com base na sua idade e rendimento, usando uma fórmula
+linear simples.</li>
+<li><strong>Código:</strong></li>
+</ol>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>idade <span class="op">=</span> <span class="bu">int</span>(<span class="bu">input</span>(<span class="st">&quot;Qual a sua idade? &quot;</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>rendimento <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Qual o seu rendimento mensal? &quot;</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Fórmula simplificada (na realidade, o ML usaria dados reais para aprender esta relação)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>probabilidade_pagamento <span class="op">=</span> <span class="fl">0.01</span> <span class="op">*</span> idade <span class="op">+</span> <span class="fl">0.0005</span> <span class="op">*</span> rendimento <span class="op">-</span> <span class="fl">0.5</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;A probabilidade de pagamento do empréstimo é de:&quot;</span>, probabilidade_pagamento <span class="op">*</span> <span class="dv">100</span>, <span class="st">&quot;%&quot;</span>)</span></code></pre></div>
+<ol start="3" type="1">
+<li><strong>Explicação:</strong> Este exemplo ilustra como um modelo de
+ML pode usar uma fórmula (aprendida a partir de dados anteriores) para
+estimar a probabilidade de um evento, permitindo uma avaliação mais
+nuanced do risco.</li>
+</ol>
+<h2 id="sol-3-neurónio-artificial-simples"><strong>Sol 3: Neurónio
+Artificial Simples</strong></h2>
+<ol type="1">
+<li><strong>Cenário:</strong> Decidir se um cliente é um bom candidato
+para um empréstimo com base na sua idade e rendimento, usando um
+neurónio artificial.</li>
+<li><strong>Código:</strong></li>
+</ol>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> neuronio(entradas, pesos, bias):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    ativacao <span class="op">=</span> <span class="bu">sum</span>([entrada <span class="op">*</span> peso <span class="cf">for</span> entrada, peso <span class="kw">in</span> <span class="bu">zip</span>(entradas, pesos)]) <span class="op">+</span> bias</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span> <span class="cf">if</span> ativacao <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="dv">0</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>idade <span class="op">=</span> <span class="bu">int</span>(<span class="bu">input</span>(<span class="st">&quot;Qual a sua idade? &quot;</span>))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>rendimento <span class="op">=</span> <span class="bu">float</span>(<span class="bu">input</span>(<span class="st">&quot;Qual o seu rendimento mensal? &quot;</span>))</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>entradas <span class="op">=</span> [idade, rendimento]</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>pesos <span class="op">=</span> [<span class="fl">0.01</span>, <span class="fl">0.0005</span>]  <span class="co"># Pesos ajustados manualmente (o aprendizado ajustaria estes pesos)</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>bias <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>resultado <span class="op">=</span> neuronio(entradas, pesos, bias)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Você é um bom candidato para o empréstimo&quot;</span> <span class="cf">if</span> resultado <span class="op">==</span> <span class="dv">1</span> <span class="cf">else</span> <span class="st">&quot;Você não é um bom candidato para o empréstimo&quot;</span>)</span></code></pre></div>
+<ol start="3" type="1">
+<li><strong>Explicação:</strong> Este código demonstra como um neurónio
+artificial pode ser usado para tomar decisões binárias, mas a rede
+precisaria de mais neurónios e camadas para considerar fatores
+adicionais e fazer previsões mais precisas.</li>
+</ol>
+</body>
+</html>

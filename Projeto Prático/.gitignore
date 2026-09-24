@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Ambientes virtuais
+.venv/
+venv/
+
+# Artefactos gerados (modelos treinados ~1.2 GB)
+RitmoAI/artefactos/modelos/
+
+# Dados (ficheiros FIT brutos e CSVs processados)
+RitmoAI/Dados/
+
+# Dados detalhados da experiência de potência
+RitmoAI/artefactos/experiencia_potencia/cobertura_potencia.csv
+RitmoAI/artefactos/experiencia_potencia/metricas_por_atividade.csv
+RitmoAI/artefactos/experiencia_potencia/previsoes_fora_do_treino.csv
+RitmoAI/artefactos/experiencia_potencia/trocos_pareados.csv
+
+# PosturaAI: dados brutos, anotações geradas e artefactos de treino
+PosturaAI/Dataset-Synthetic-Runner-Keypoint-Dataset-2026-06-07/
+PosturaAI/Synthetic-Runner-Keypoint-Dataset-2026-06-07/
+PosturaAI/data/srkd/derived/
+PosturaAI/outputs/
+*:Zone.Identifier
+
+# Sistema de ficheiros / editor
+.DS_Store
+Thumbs.db

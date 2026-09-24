@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Lab 08.1 - Aprendizagem por Reforço — Otimizar uma Política de Voo</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="style_dark.css" />
+</head>
+<body>
+<h1
+id="lab-08.1---aprendizagem-por-reforço-otimizar-uma-política-de-voo">Lab
+08.1 - Aprendizagem por Reforço — Otimizar uma Política de Voo</h1>
+<p><strong>Tema:</strong> Aprendizagem por Reforço (Reinforcement
+Learning)</p>
+<h2 id="objetivo">1. Objetivo</h2>
+<p>Neste laboratório, vais mergulhar no mundo da <strong>Aprendizagem
+por Reforço (RL)</strong>. O objetivo é treinar um “agente” (um piloto
+automático) para tomar decisões sequenciais ótimas num <strong>ambiente
+simulado</strong>. O agente aprenderá através de tentativa e erro, sendo
+recompensado por boas ações e penalizado por más, sem dados históricos
+prévios.</p>
+<p>Vamos explorar dois cenários clássicos: 1. <strong>Multi-Armed
+Bandit:</strong> Escolher a “melhor” rota de voo de um conjunto de
+opções com resultados incertos. 2. <strong>Navegação em Grelha (Grid
+World):</strong> Encontrar o caminho mais eficiente de um ponto A para
+um ponto B, evitando obstáculos.</p>
+<h2 id="o-ambiente-simulado">2. O Ambiente Simulado</h2>
+<p>Não haverá um <code>csv</code> estático. Em vez disso, irás interagir
+com um <strong>ambiente</strong>, que pode ser uma classe Python que tu
+mesmo vais criar ou uma biblioteca como <code>Gymnasium</code> (a
+evolução do <code>OpenAI Gym</code>).</p>
+<p><strong>Cenário 1: Multi-Armed Bandit (Rotas de Voo)</strong> -
+<strong>Ações:</strong> Escolher uma de N rotas de voo (e.g., Rota 1,
+Rota 2, Rota 3). - <strong>Estado:</strong> Simples (o mesmo em cada
+passo). - <strong>Recompensa:</strong> Cada rota tem uma probabilidade
+diferente de gerar uma recompensa (e.g., tempo de voo economizado, que
+só é revelado <em>depois</em> de a escolher). O objetivo é encontrar a
+rota que maximiza a recompensa ao longo do tempo.</p>
+<p><strong>Cenário 2: Grid World (Navegação)</strong> -
+<strong>Estado:</strong> A posição (x, y) do drone numa grelha 10x10. -
+<strong>Ações:</strong> Mover para Cima, Baixo, Esquerda, Direita. -
+<strong>Recompensa:</strong> - +10 ao chegar ao destino. - -10 ao
+colidir com um obstáculo. - -0.1 por cada passo (para incentivar a
+eficiência). - <strong>Episódio:</strong> Termina quando o agente chega
+ao destino ou a um obstáculo.</p>
+<h2 id="tarefas">3. Tarefas</h2>
+<h3
+id="parte-a-o-dilema-exploração-vs.-explotação-multi-armed-bandit">Parte
+A: O Dilema Exploração vs. Explotação (Multi-Armed Bandit)</h3>
+<ol type="1">
+<li><strong>Modelagem:</strong>
+<ul>
+<li>Implementa um algoritmo <strong>Epsilon-Greedy</strong>. O agente
+explora (tenta uma rota aleatória) com uma probabilidade
+<code>epsilon</code> e explota (escolhe a melhor rota conhecida) com
+probabilidade <code>1-epsilon</code>.</li>
+<li>Implementa algoritmos mais sofisticados como
+<strong>Upper-Confidence-Bound (UCB)</strong> ou <strong>Thompson
+Sampling</strong>.</li>
+</ul></li>
+<li><strong>Avaliação:</strong>
+<ul>
+<li>Plota a <strong>recompensa média acumulada</strong> ao longo do
+tempo para cada algoritmo.</li>
+<li>Plota o <strong>regret total</strong> (a diferença entre a
+recompensa obtida e a recompensa máxima possível). Qual algoritmo
+converge mais rápido para a melhor ação?</li>
+</ul></li>
+</ol>
+<h3
+id="parte-b-aprendizagem-de-uma-política-grid-world-com-q-learning">Parte
+B: Aprendizagem de uma Política (Grid World com Q-Learning)</h3>
+<ol type="1">
+<li><strong>Modelagem:</strong>
+<ul>
+<li>Implementa o algoritmo <strong>Q-Learning</strong>. Vais construir
+uma “Q-table” (uma matriz <code>[estado, ação] -&gt; valor Q</code>) que
+estima a qualidade de tomar uma ação num determinado estado.</li>
+<li>Define a tua política de exploração (e.g., epsilon-greedy
+decrescente).</li>
+</ul></li>
+<li><strong>Avaliação:</strong>
+<ul>
+<li>Plota a <strong>recompensa total por episódio</strong> à medida que
+o agente treina. A recompensa deve tender a aumentar.</li>
+<li>Após o treino, extrai a <strong>política ótima</strong> da Q-table
+(para cada estado, qual é a melhor ação?). Visualiza esta política na
+grelha (e.g., com setas). O caminho encontrado faz sentido?</li>
+</ul></li>
+<li><strong>(Opcional Avançado) Deep Q-Network (DQN):</strong>
+<ul>
+<li>Para ambientes com espaços de estados muito grandes, a Q-table
+torna-se inviável. Substitui a Q-table por uma rede neuronal (a DQN) que
+aproxima os valores Q.</li>
+</ul></li>
+</ol>
+<h2 id="desafios-e-lições">4. Desafios e Lições</h2>
+<ul>
+<li><strong>Exploração vs. Explotação:</strong> Este é o dilema central
+em RL. Discute como os diferentes algoritmos (Epsilon-Greedy, UCB)
+equilibram a necessidade de experimentar novas ações versus explorar as
+que já se provaram boas.</li>
+<li><strong><em>Reward Shaping</em>:</strong> A definição da função de
+recompensa é crítica. Uma recompensa mal desenhada pode levar a
+comportamentos inesperados. Reflete sobre o impacto de alterar as
+recompensas no teu Grid World.</li>
+<li><strong>Estabilidade e Convergência:</strong> O treino em RL pode
+ser instável. Discute a importância de hiperparâmetros como a taxa de
+aprendizagem (<code>alpha</code>) e o fator de desconto
+(<code>gamma</code>).</li>
+</ul>
+<h2 id="produto-final">Produto Final</h2>
+<p>Um relatório que documente:<br />
+- A implementação do ambiente simulado (ou o uso de uma
+biblioteca).<br />
+- Para o Bandit: Gráficos de recompensa e regret comparando os
+algoritmos.<br />
+- Para o Q-Learning: Um gráfico da evolução da recompensa por episódio e
+uma visualização da política final aprendida pelo agente.<br />
+- Uma conclusão sobre os desafios e o potencial da RL para problemas de
+decisão sequencial.</p>
+</body>
+</html>

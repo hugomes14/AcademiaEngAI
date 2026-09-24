@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Lab 03 - Técnicas de deteção de objetos baseadas em Deep Learning</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        background-color: #232629;
+        color: #7a7c7d;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #7a7c7d;  padding-left: 4px; }
+    div.sourceCode
+      { color: #cfcfc2; background-color: #232629; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #cfcfc2; } /* Normal */
+    code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } /* Alert */
+    code span.an { color: #3f8058; } /* Annotation */
+    code span.at { color: #2980b9; } /* Attribute */
+    code span.bn { color: #f67400; } /* BaseN */
+    code span.bu { color: #7f8c8d; } /* BuiltIn */
+    code span.cf { color: #fdbc4b; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #3daee9; } /* Char */
+    code span.cn { color: #27aeae; font-weight: bold; } /* Constant */
+    code span.co { color: #7a7c7d; } /* Comment */
+    code span.cv { color: #7f8c8d; } /* CommentVar */
+    code span.do { color: #a43340; } /* Documentation */
+    code span.dt { color: #2980b9; } /* DataType */
+    code span.dv { color: #f67400; } /* DecVal */
+    code span.er { color: #da4453; text-decoration: underline; } /* Error */
+    code span.ex { color: #0099ff; font-weight: bold; } /* Extension */
+    code span.fl { color: #f67400; } /* Float */
+    code span.fu { color: #8e44ad; } /* Function */
+    code span.im { color: #27ae60; } /* Import */
+    code span.in { color: #c45b00; } /* Information */
+    code span.kw { color: #cfcfc2; font-weight: bold; } /* Keyword */
+    code span.op { color: #cfcfc2; } /* Operator */
+    code span.ot { color: #27ae60; } /* Other */
+    code span.pp { color: #27ae60; } /* Preprocessor */
+    code span.re { color: #2980b9; background-color: #153042; } /* RegionMarker */
+    code span.sc { color: #3daee9; } /* SpecialChar */
+    code span.ss { color: #da4453; } /* SpecialString */
+    code span.st { color: #f44f4f; } /* String */
+    code span.va { color: #27aeae; } /* Variable */
+    code span.vs { color: #da4453; } /* VerbatimString */
+    code span.wa { color: #da4453; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="style_dark.css" />
+</head>
+<body>
+<h1
+id="lab-03---técnicas-de-deteção-de-objetos-baseadas-em-deep-learning">Lab
+03 - Técnicas de deteção de objetos baseadas em Deep Learning</h1>
+<p><a
+href="#ex-01-deteção-de-objetos-3d-ex-chávena-em-tempo-real-com-mediapipe-objectron">Ex
+01: Deteção de Objetos 3D (Ex: Chávena) em Tempo Real com MediaPipe
+Objectron</a><br />
+<a
+href="#ex-02-deteção-e-acompanhamento-de-mãos-em-tempo-real-com-mediapipe-hands">Ex
+02: Deteção e Acompanhamento de Mãos em Tempo Real com MediaPipe
+Hands</a><br />
+<a
+href="#ex-03-deteção-e-acompanhamento-de-objetos-em-vídeo-com-yolov11">Ex
+03: Deteção e Acompanhamento de Objetos em Vídeo com YOLOv11</a><br />
+<a
+href="#ex-04-segmentação-por-instâncias-e-acompanhamento-de-objetos-em-vídeo-com-yolov11">Ex
+04: Segmentação por Instâncias e Acompanhamento de Objetos em Vídeo com
+YOLOv11</a> —</p>
+<h2
+id="ex-01-deteção-de-objetos-3d-ex-chávena-em-tempo-real-com-mediapipe-objectron">Ex
+01: Deteção de Objetos 3D (Ex: Chávena) em Tempo Real com MediaPipe
+Objectron</h2>
+<hr />
+<h3 id="descrição">Descrição</h3>
+<p>Neste exercício, vamos utilizar a biblioteca MediaPipe Objectron para
+detetar e acompanhar objetos 3D específicos (neste caso, uma chávena) em
+tempo real a partir da webcam. O Objectron é capaz de fornecer a pose do
+objeto (rotação e translação) e as suas landmarks 2D, permitindo a
+visualização de um modelo 3D projetado na imagem.</p>
+<p>Etapas principais:</p>
+<ol type="1">
+<li>Capturar vídeo em tempo real a partir da webcam.</li>
+<li>Utilizar o MediaPipe Objectron para detetar objetos do tipo chávena
+(cup).</li>
+<li>Desenhar as landmarks 2D do objeto e o respetivo eixo 3D na
+imagem.</li>
+<li>Exibir o resultado numa janela, com a imagem espelhada
+horizontalmente, para um estilo “selfie”.</li>
+<li>Permitir ao utilizador encerrar a execução premindo a tecla
+ESC.</li>
+</ol>
+<hr />
+<h3 id="pré-requisitos">Pré-Requisitos</h3>
+<ul>
+<li>Python 3.12.x</li>
+<li>OpenCV: <code>pip install opencv-python</code></li>
+<li>MediaPipe: <code>pip install mediapipe</code></li>
+</ul>
+<p>Certifique-se de ter estes pacotes instalados antes de executar o
+código.</p>
+<hr />
+<h3 id="passo-1-criar-o-ficheiro-python">Passo 1: Criar o Ficheiro
+Python</h3>
+<p>Crie o ficheiro <code>ex01_mediapipe.py</code> e insira o código
+abaixo.</p>
+<hr />
+<h3 id="passo-2-importar-bibliotecas">Passo 2: Importar Bibliotecas</h3>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> mediapipe <span class="im">as</span> mp</span></code></pre></div>
+<hr />
+<h3 id="passo-3-inicializar-o-objectron-e-a-captura-de-vídeo">Passo 3:
+Inicializar o Objectron e a Captura de Vídeo</h3>
+<ul>
+<li>Definir a webcam padrão (índice 0).</li>
+<li>Configurar o contexto do Objectron, especificando o tipo de objeto a
+detetar (chávena), as confianças mínimas de deteção e
+acompanhamento.</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mp_drawing <span class="op">=</span> mp.solutions.drawing_utils</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>mp_objectron <span class="op">=</span> mp.solutions.objectron</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>cap <span class="op">=</span> cv2.VideoCapture(<span class="dv">0</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> mp_objectron.Objectron(</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    static_image_mode<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    max_num_objects<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    min_detection_confidence<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    min_tracking_confidence<span class="op">=</span><span class="fl">0.99</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    model_name<span class="op">=</span><span class="st">&#39;Cup&#39;</span>) <span class="im">as</span> objectron:</span></code></pre></div>
+<hr />
+<h3 id="passo-4-ciclo-de-captura-e-processamento">Passo 4: Ciclo de
+Captura e Processamento</h3>
+<p>Dentro de um ciclo infinito, iremos:</p>
+<ul>
+<li>Ler cada fotograma da webcam.</li>
+<li>Converter o espaço de cor de BGR para RGB (necessário para o
+MediaPipe).</li>
+<li>Processar o fotograma com o Objectron.</li>
+<li>Se forem detetados objetos, desenhar as landmarks 2D e o eixo 3D
+sobre a imagem.</li>
+<li>Exibir a imagem processada (espelhada horizontalmente).</li>
+<li>Permitir encerrar a execução premindo a tecla ESC.</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> cap.isOpened():</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>        success, image <span class="op">=</span> cap.read()</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> success:</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Caso não seja possível ler um fotograma, continuar</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">&quot;A ignorar fotograma vazio da câmara.&quot;</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Converter para RGB</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        image.flags.writeable <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        image <span class="op">=</span> cv2.cvtColor(image, cv2.COLOR_BGR2RGB)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Processar a imagem com o Objectron</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        results <span class="op">=</span> objectron.process(image)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Preparar a imagem para desenho</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        image.flags.writeable <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        image <span class="op">=</span> cv2.cvtColor(image, cv2.COLOR_RGB2BGR)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Desenhar landmarks e eixos 3D, se houver objetos detetados</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> results.detected_objects:</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> detected_object <span class="kw">in</span> results.detected_objects:</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>                mp_drawing.draw_landmarks(</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>                    image, </span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>                    detected_object.landmarks_2d, </span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>                    mp_objectron.BOX_CONNECTIONS</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>                )</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>                mp_drawing.draw_axis(</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>                    image, </span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>                    detected_object.rotation, </span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>                    detected_object.translation</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>                )</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Exibir a imagem, espelhando-a horizontalmente</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>        cv2.imshow(<span class="st">&#39;MediaPipe Objectron - Chávena&#39;</span>, cv2.flip(image, <span class="dv">1</span>))</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Premir ESC para sair</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> cv2.waitKey(<span class="dv">5</span>) <span class="op">&amp;</span> <span class="bn">0xFF</span> <span class="op">==</span> <span class="dv">27</span>:</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span></code></pre></div>
+<hr />
+<h3 id="passo-5-libertar-a-captura-e-fechar-as-janelas">Passo 5:
+Libertar a Captura e Fechar as Janelas</h3>
+<p>Após sair do ciclo, liberte a captura e feche todas as janelas:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cap.release()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div>
+<hr />
+<h3 id="passo-6-executar-o-programa">Passo 6: Executar o Programa</h3>
+<p>No terminal, execute:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex01_mediapipe.py</span></code></pre></div>
+<hr />
+<h3 id="resultado-esperado">Resultado Esperado</h3>
+<ul>
+<li>Ao iniciar o programa, a webcam será ativada.</li>
+<li>Uma janela será apresentada, exibindo a imagem da webcam.</li>
+<li>Se houver uma chávena no campo de visão, o MediaPipe Objectron deve
+detetá-la e desenhar as suas landmarks, assim como o eixo 3D que indica
+a orientação do objeto no espaço.</li>
+<li>Prima a tecla ESC a qualquer momento para fechar a janela e encerrar
+o programa.</li>
+</ul>
+<hr />
+<h2
+id="ex-02-deteção-e-acompanhamento-de-mãos-em-tempo-real-com-mediapipe-hands">Ex
+02: Deteção e Acompanhamento de Mãos em Tempo Real com MediaPipe
+Hands</h2>
+<hr />
+<h3 id="descrição-1">Descrição</h3>
+<p>Neste exercício, vamos utilizar o MediaPipe Hands para detetar e
+acompanhar mãos em tempo real, utilizando a webcam. O MediaPipe Hands
+identifica um conjunto de pontos (landmarks) na mão, permitindo análise
+de gestos, posições e movimentos dos dedos.</p>
+<p>Etapas principais:</p>
+<ol type="1">
+<li>Capturar vídeo em tempo real a partir da webcam.</li>
+<li>Utilizar o MediaPipe Hands para detetar as mãos no quadro de
+vídeo.</li>
+<li>Desenhar as landmarks e as conexões dos dedos e da palma da mão
+sobre a imagem.</li>
+<li>Exibir o resultado numa janela, com a imagem espelhada
+horizontalmente.</li>
+<li>Permitir ao utilizador encerrar a execução premindo a tecla
+ESC.</li>
+</ol>
+<hr />
+<h3 id="pré-requisitos-1">Pré-Requisitos</h3>
+<ul>
+<li>Python 3.12.x</li>
+<li>OpenCV: <code>pip install opencv-python</code></li>
+<li>MediaPipe: <code>pip install mediapipe</code></li>
+</ul>
+<p>Certifique-se de ter estes pacotes instalados antes de executar o
+código.</p>
+<hr />
+<h3 id="passo-1-criar-o-ficheiro-python-1">Passo 1: Criar o Ficheiro
+Python</h3>
+<p>Crie o ficheiro <code>ex02_mediapipe_hands.py</code> e insira o
+código abaixo.</p>
+<hr />
+<h3 id="passo-2-importar-bibliotecas-1">Passo 2: Importar
+Bibliotecas</h3>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> mediapipe <span class="im">as</span> mp</span></code></pre></div>
+<hr />
+<h3
+id="passo-3-inicializar-o-contexto-do-mediapipe-hands-e-a-captura-de-vídeo">Passo
+3: Inicializar o Contexto do MediaPipe Hands e a Captura de Vídeo</h3>
+<ul>
+<li>Definir a webcam padrão (índice 0).</li>
+<li>Configurar o contexto do Hands, especificando a complexidade do
+modelo e as confianças mínimas de deteção e acompanhamento.</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>mp_drawing <span class="op">=</span> mp.solutions.drawing_utils</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>mp_drawing_styles <span class="op">=</span> mp.solutions.drawing_styles</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>mp_hands <span class="op">=</span> mp.solutions.hands</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>cap <span class="op">=</span> cv2.VideoCapture(<span class="dv">0</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> mp_hands.Hands(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    model_complexity<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    min_detection_confidence<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    min_tracking_confidence<span class="op">=</span><span class="fl">0.5</span>) <span class="im">as</span> hands:</span></code></pre></div>
+<hr />
+<h3 id="passo-4-ciclo-de-captura-e-processamento-1">Passo 4: Ciclo de
+Captura e Processamento</h3>
+<p>No ciclo infinito, iremos:</p>
+<ul>
+<li>Ler cada fotograma da webcam.</li>
+<li>Converter a imagem de BGR para RGB.</li>
+<li>Processar a imagem com o modelo do MediaPipe Hands.</li>
+<li>Desenhar as landmarks da mão e as suas conexões, se forem
+detetadas.</li>
+<li>Exibir a imagem resultante, espelhada horizontalmente.</li>
+<li>Permitir terminar a execução premindo a tecla ESC.</li>
+</ul>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> cap.isOpened():</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>        success, image <span class="op">=</span> cap.read()</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> success:</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Caso não seja possível ler um fotograma, ignorar e continuar</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">&quot;A ignorar fotograma vazio da câmara.&quot;</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Marcar a imagem como não modificável para optimizar o desempenho</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        image.flags.writeable <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Converter para RGB (necessário para o MediaPipe)</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        image <span class="op">=</span> cv2.cvtColor(image, cv2.COLOR_BGR2RGB)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Processar a imagem com o Hands</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        results <span class="op">=</span> hands.process(image)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Preparar a imagem para desenho</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        image.flags.writeable <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>        image <span class="op">=</span> cv2.cvtColor(image, cv2.COLOR_RGB2BGR)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Desenhar landmarks e conexões, caso sejam detetadas mãos</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> results.multi_hand_landmarks:</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> hand_landmarks <span class="kw">in</span> results.multi_hand_landmarks:</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>                mp_drawing.draw_landmarks(</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>                    image,</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>                    hand_landmarks,</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>                    mp_hands.HAND_CONNECTIONS,</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>                    mp_drawing_styles.get_default_hand_landmarks_style(),</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>                    mp_drawing_styles.get_default_hand_connections_style())</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Exibir a imagem, espelhando-a horizontalmente</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>        cv2.imshow(<span class="st">&#39;MediaPipe Hands&#39;</span>, cv2.flip(image, <span class="dv">1</span>))</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Premir ESC para sair</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> cv2.waitKey(<span class="dv">5</span>) <span class="op">&amp;</span> <span class="bn">0xFF</span> <span class="op">==</span> <span class="dv">27</span>:</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span></code></pre></div>
+<hr />
+<h3 id="passo-5-libertar-a-captura-e-fechar-as-janelas-1">Passo 5:
+Libertar a Captura e Fechar as Janelas</h3>
+<p>Após sair do ciclo, libertar a captura e fechar todas as janelas:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cap.release()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div>
+<hr />
+<h3 id="passo-6-executar-o-programa-1">Passo 6: Executar o Programa</h3>
+<p>No terminal, execute:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex02_mediapipe_hands.py</span></code></pre></div>
+<hr />
+<h3 id="resultado-esperado-1">Resultado Esperado</h3>
+<ul>
+<li>Ao iniciar o programa, a webcam será ativada.</li>
+<li>Uma janela irá mostrar a imagem da webcam.</li>
+<li>Se forem detetadas mãos na imagem, o MediaPipe Hands desenhará as
+landmarks e as conexões entre elas.</li>
+<li>Prima a tecla ESC a qualquer momento para fechar a janela e encerrar
+o programa.</li>
+</ul>
+<hr />
+<h2
+id="ex-03-deteção-e-acompanhamento-de-objetos-em-vídeo-com-yolov11">Ex
+03: Deteção e Acompanhamento de Objetos em Vídeo com YOLOv11</h2>
+<hr />
+<h3 id="descrição-2">Descrição</h3>
+<p>Neste exercício, vamos utilizar a biblioteca <code>ultralytics</code>
+e o modelo YOLOv11 para realizar a deteção e o acompanhamento (tracking)
+de objetos em tempo real. O acompanhamento permite atribuir um ID único
+a cada objeto, mantendo a sua identidade ao longo do vídeo.</p>
+<p>Etapas principais:</p>
+<ol type="1">
+<li>Carregar o modelo YOLOv11 nano.</li>
+<li>Configurar a captura de vídeo da webcam e o gravador de vídeo.</li>
+<li>Processar cada fotograma para detetar e acompanhar objetos
+(<code>persist=True</code>).</li>
+<li>Desenhar as caixas delimitadoras e os IDs dos objetos.</li>
+<li>Gravar e exibir o resultado.</li>
+</ol>
+<hr />
+<h3 id="pré-requisitos-2">Pré-Requisitos</h3>
+<ul>
+<li>Python 3.13.x</li>
+<li>OpenCV: <code>pip install opencv-python</code></li>
+<li>Ultralytics: <code>pip install ultralytics</code></li>
+</ul>
+<hr />
+<h3 id="passo-1-criar-o-ficheiro-python-2">Passo 1: Criar o Ficheiro
+Python</h3>
+<p>Crie o ficheiro <code>ex03_yolo_tracking.py</code> e insira o código
+abaixo.</p>
+<hr />
+<h3 id="passo-2-importar-bibliotecas-2">Passo 2: Importar
+Bibliotecas</h3>
+<p>Importamos o OpenCV para manipulação de vídeo e a classe
+<code>YOLO</code> da biblioteca <code>ultralytics</code>, bem como
+utilitários para anotação gráfica.</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Necessário instalar a biblioteca ultralytics, por exemplo: pip install ultralytics</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics.utils.plotting <span class="im">import</span> Annotator, colors</span></code></pre></div>
+<hr />
+<h3 id="passo-3-inicializar-o-modelo-e-a-captura-de-vídeo">Passo 3:
+Inicializar o Modelo e a Captura de Vídeo</h3>
+<ul>
+<li>Carregamos o modelo <code>yolo11n.pt</code> (versão nano, mais
+rápida).</li>
+<li>Configuramos a webcam e definimos a resolução desejada.</li>
+<li>Obtemos as dimensões e FPS para configurar o
+<code>VideoWriter</code>, que guardará o resultado num ficheiro
+<code>.avi</code>.</li>
+</ul>
+<!-- end list -->
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Carregar o modelo de deteção YOLO (sem segmentação)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">&quot;yolo11n.pt&quot;</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># model = YOLO(&quot;best.pt&quot;)</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Captura de vídeo a partir da webcam</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>cap <span class="op">=</span> cv2.VideoCapture(<span class="dv">0</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>cap.<span class="bu">set</span>(<span class="dv">3</span>, <span class="dv">1280</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>cap.<span class="bu">set</span>(<span class="dv">2</span>, <span class="dv">720</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Obter as dimensões e fps (frames por segundo) do vídeo de entrada</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>w, h, fps <span class="op">=</span> (<span class="bu">int</span>(cap.get(x)) <span class="cf">for</span> x <span class="kw">in</span> (cv2.CAP_PROP_FRAME_WIDTH,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>                                       cv2.CAP_PROP_FRAME_HEIGHT,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>                                       cv2.CAP_PROP_FPS))</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Criar um escritor de vídeo para guardar o resultado do processamento</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.VideoWriter(<span class="st">&quot;object-detection-tracking.avi&quot;</span>,</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>                      cv2.VideoWriter_fourcc(<span class="op">*</span><span class="st">&quot;MJPG&quot;</span>), fps, (w, h))</span></code></pre></div>
+<hr />
+<h3 id="passo-4-ciclo-de-captura-e-processamento-tracking">Passo 4:
+Ciclo de Captura e Processamento (Tracking)</h3>
+<p>Dentro do ciclo principal:</p>
+<ul>
+<li>Lemos o fotograma (<code>im0</code>).</li>
+<li>Executamos <code>model.track(persist=True)</code>, onde
+<code>persist=True</code> garante que os IDs dos objetos são mantidos
+entre fotogramas.</li>
+<li>Se houver deteções com IDs, iteramos sobre elas para desenhar a
+caixa e a etiqueta (Classe + ID).</li>
+</ul>
+<!-- end list -->
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ciclo principal para ler e processar cada fotograma do vídeo</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    ret, im0 <span class="op">=</span> cap.read()</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> ret:</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Se não for possível ler mais fotogramas, sair do ciclo</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Inicializar o objeto &#39;annotator&#39; para desenhar caixas e anotações no fotograma</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    annotator <span class="op">=</span> Annotator(im0, line_width<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Executar o tracking (acompanhamento) de objetos no fotograma atual</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    results <span class="op">=</span> model.track(im0, persist<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Se existirem deteções com IDs, desenhar as caixas delimitadoras no fotograma</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> results[<span class="dv">0</span>].boxes.<span class="bu">id</span> <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>        boxes <span class="op">=</span> results[<span class="dv">0</span>].boxes.xyxy.cpu()</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>        track_ids <span class="op">=</span> results[<span class="dv">0</span>].boxes.<span class="bu">id</span>.<span class="bu">int</span>().cpu().tolist()</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        classes <span class="op">=</span> results[<span class="dv">0</span>].boxes.cls.<span class="bu">int</span>().cpu().tolist()</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Para cada objeto detetado, desenhar a caixa, cor e etiqueta (classe + ID)</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> box, track_id, cls <span class="kw">in</span> <span class="bu">zip</span>(boxes, track_ids, classes):</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>            color <span class="op">=</span> colors(track_id, <span class="va">True</span>)</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>            label <span class="op">=</span> <span class="ss">f&quot;</span><span class="sc">{</span>model<span class="sc">.</span>names[cls]<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>track_id<span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>            annotator.box_label(box, label, color<span class="op">=</span>color)</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Escrever o fotograma anotado no vídeo de saída</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    out.write(im0)</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Mostrar o fotograma anotado numa janela</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>    cv2.imshow(<span class="st">&quot;object-detection-tracking&quot;</span>, im0)</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Se o utilizador carregar na tecla &#39;q&#39;, sair do ciclo</span></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> cv2.waitKey(<span class="dv">1</span>) <span class="op">&amp;</span> <span class="bn">0xFF</span> <span class="op">==</span> <span class="bu">ord</span>(<span class="st">&quot;q&quot;</span>):</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span></code></pre></div>
+<hr />
+<h3 id="passo-5-libertar-recursos">Passo 5: Libertar Recursos</h3>
+<p>Ao sair do ciclo, libertamos a câmara, o ficheiro de vídeo e fechamos
+as janelas.</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Libertar o escritor de vídeo e o objeto de captura de vídeo</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>out.release()</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>cap.release()</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Fechar todas as janelas abertas</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div>
+<hr />
+<h3 id="passo-6-executar-o-programa-2">Passo 6: Executar o Programa</h3>
+<p>No terminal, execute:</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex03_yolo_tracking.py</span></code></pre></div>
+<hr />
+<h3 id="resultado-esperado-2">Resultado Esperado</h3>
+<ul>
+<li>Uma janela abrirá mostrando a imagem da webcam.</li>
+<li>Objetos detetados (pessoas, cadeiras, etc.) terão uma caixa colorida
+e um ID numérico.</li>
+<li>Se o objeto se mover, o ID deve acompanhar o objeto.</li>
+<li>Um vídeo <code>object-detection-tracking.avi</code> será
+criado.</li>
+</ul>
+<hr />
+<h2
+id="ex-04-segmentação-por-instâncias-e-acompanhamento-de-objetos-em-vídeo-com-yolov11">Ex
+04: Segmentação por Instâncias e Acompanhamento de Objetos em Vídeo com
+YOLOv11</h2>
+<hr />
+<h3 id="descrição-3">Descrição</h3>
+<p>Neste exercício, avançamos para a <strong>Segmentação por
+Instâncias</strong>. Ao contrário da deteção simples (que usa caixas
+retangulares), a segmentação identifica o contorno exato (polígono) do
+objeto. Continuaremos a usar o <em>tracking</em> para manter a
+identidade dos objetos.</p>
+<p>Etapas principais:</p>
+<ol type="1">
+<li>Carregar o modelo de segmentação YOLOv11
+(<code>yolo11n-seg.pt</code>).</li>
+<li>Capturar vídeo da webcam.</li>
+<li>Obter as máscaras (contornos) dos objetos detetados.</li>
+<li>Desenhar o polígono preenchido sobre o objeto e a respetiva
+etiqueta.</li>
+<li>Gravar e exibir o resultado.</li>
+</ol>
+<hr />
+<h3 id="pré-requisitos-3">Pré-Requisitos</h3>
+<ul>
+<li>Mesmos requisitos do Ex 03.</li>
+<li>Necessário o modelo de segmentação (será descarregado
+automaticamente).</li>
+</ul>
+<hr />
+<h3 id="passo-1-criar-o-ficheiro-python-3">Passo 1: Criar o Ficheiro
+Python</h3>
+<p>Crie o ficheiro <code>ex04_yolo_segmentation.py</code> e insira o
+código abaixo.</p>
+<hr />
+<h3 id="passo-2-importar-bibliotecas-3">Passo 2: Importar
+Bibliotecas</h3>
+<p>Adicionamos a importação do <code>numpy</code> para auxiliar no
+desenho dos polígonos.</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Necessário instalar a biblioteca ultralytics, por exemplo: pip install ultralytics</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics <span class="im">import</span> YOLO</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ultralytics.utils.plotting <span class="im">import</span> Annotator, colors</span></code></pre></div>
+<hr />
+<h3 id="passo-3-inicializar-modelo-e-vídeo">Passo 3: Inicializar Modelo
+e Vídeo</h3>
+<p>Carregamos o modelo específico para segmentação
+(<code>yolo11n-seg.pt</code>) e configuramos a captura e gravação de
+vídeo.</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Carregar o modelo de segmentação YOLO</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> YOLO(<span class="st">&quot;yolo11n-seg.pt&quot;</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># model = YOLO(&quot;best.pt&quot;)</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Captura de vídeo a partir de um ficheiro (ou webcam id 0)</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>cap <span class="op">=</span> cv2.VideoCapture(<span class="dv">0</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>cap.<span class="bu">set</span>(<span class="dv">3</span>, <span class="dv">1280</span>)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>cap.<span class="bu">set</span>(<span class="dv">2</span>, <span class="dv">720</span>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Obter as dimensões e fps</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>w, h, fps <span class="op">=</span> (<span class="bu">int</span>(cap.get(x)) <span class="cf">for</span> x <span class="kw">in</span> (cv2.CAP_PROP_FRAME_WIDTH,</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>                                       cv2.CAP_PROP_FRAME_HEIGHT,</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>                                       cv2.CAP_PROP_FPS))</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Criar um escritor de vídeo</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> cv2.VideoWriter(<span class="st">&quot;instance-segmentation-object-tracking.avi&quot;</span>,</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>                      cv2.VideoWriter_fourcc(<span class="op">*</span><span class="st">&quot;MJPG&quot;</span>), fps, (w, h))</span></code></pre></div>
+<hr />
+<h3 id="passo-4-ciclo-de-processamento-e-desenho-das-máscaras">Passo 4:
+Ciclo de Processamento e Desenho das Máscaras</h3>
+<p>Neste ciclo, verificamos se existem <code>masks</code> (máscaras)
+além dos IDs.</p>
+<ul>
+<li>Extraímos as coordenadas dos polígonos
+(<code>results[0].masks.xy</code>).</li>
+<li>Utilizamos <code>cv2.fillPoly</code> para pintar a máscara sobre o
+objeto.</li>
+<li>Utilizamos <code>annotator.box_label</code> para colocar o ID.</li>
+</ul>
+<!-- end list -->
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    ret, im0 <span class="op">=</span> cap.read()</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> ret:</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Inicializar o annotator</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    annotator <span class="op">=</span> Annotator(im0, line_width<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Executar o tracking</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    results <span class="op">=</span> model.track(im0, persist<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Verificar se existem deteções, IDs e máscaras</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> results[<span class="dv">0</span>].boxes.<span class="bu">id</span> <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> results[<span class="dv">0</span>].masks <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Obter máscaras, IDs e também as Caixas (Boxes)</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>        masks <span class="op">=</span> results[<span class="dv">0</span>].masks.xy</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>        track_ids <span class="op">=</span> results[<span class="dv">0</span>].boxes.<span class="bu">id</span>.<span class="bu">int</span>().cpu().tolist()</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>        boxes <span class="op">=</span> results[<span class="dv">0</span>].boxes.xyxy.cpu() <span class="co"># &lt;--- Necessário para desenhar a etiqueta</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Ciclo atualizado para incluir &#39;box&#39;</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> box, mask, track_id <span class="kw">in</span> <span class="bu">zip</span>(boxes, masks, track_ids):</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>            color <span class="op">=</span> colors(<span class="bu">int</span>(track_id), <span class="va">True</span>)</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>            txt_color <span class="op">=</span> annotator.get_txt_color(color)</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 1. Desenhar a Máscara (Polígono)</span></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Convertemos a máscara para int32 para o OpenCV desenhar</span></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>            cv2.fillPoly(im0, [np.array(mask, dtype<span class="op">=</span>np.int32)], color)</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 2. Desenhar a Caixa e o ID (Usando o método oficial)</span></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>            annotator.box_label(box, label<span class="op">=</span><span class="bu">str</span>(track_id), color<span class="op">=</span>color, txt_color<span class="op">=</span>txt_color)</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Escrever o fotograma anotado no vídeo de saída</span></span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>    out.write(im0)</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Mostrar o fotograma anotado numa janela</span></span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>    cv2.imshow(<span class="st">&quot;instance-segmentation-object-tracking&quot;</span>, im0)</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Se o utilizador carregar na tecla &#39;q&#39;, sair do ciclo</span></span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> cv2.waitKey(<span class="dv">1</span>) <span class="op">&amp;</span> <span class="bn">0xFF</span> <span class="op">==</span> <span class="bu">ord</span>(<span class="st">&quot;q&quot;</span>):</span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span></code></pre></div>
+<hr />
+<h3 id="passo-5-libertar-recursos-1">Passo 5: Libertar Recursos</h3>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Libertar o escritor de vídeo e o objeto de captura de vídeo</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>out.release()</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>cap.release()</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Fechar todas as janelas abertas</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div>
+<hr />
+<h3 id="passo-6-executar-o-programa-3">Passo 6: Executar o Programa</h3>
+<p>No terminal, execute:</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex04_yolo_segmentation.py</span></code></pre></div>
+<hr />
+<h3 id="resultado-esperado-3">Resultado Esperado</h3>
+<ul>
+<li>A janela mostrará a webcam com os objetos cobertos por uma cor
+translúcida que segue a forma do objeto (segmentação).</li>
+<li>Os objetos terão o seu ID visível.</li>
+<li>Um vídeo <code>instance-segmentation-object-tracking.avi</code> será
+gerado.</li>
+</ul>
+</body>
+</html>

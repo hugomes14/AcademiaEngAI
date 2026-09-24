@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Lab 07.2 - Redução de Dimensionalidade — Visualizar e Simplificar Dados Complexos</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="style_dark.css" />
+</head>
+<body>
+<h1
+id="lab-07.2---redução-de-dimensionalidade-visualizar-e-simplificar-dados-complexos">Lab
+07.2 - Redução de Dimensionalidade — Visualizar e Simplificar Dados
+Complexos</h1>
+<p><strong>Tema:</strong> Redução de Dimensionalidade (PCA, Kernel PCA,
+LDA)</p>
+<h2 id="objetivo">1. Objetivo</h2>
+<p>O objetivo deste laboratório é explorar técnicas de <strong>redução
+de dimensionalidade</strong> para dois fins principais: 1.
+<strong>Visualização:</strong> Projetar dados de alta dimensão num
+espaço 2D ou 3D para que possamos “ver” a sua estrutura, identificar
+clusters ou anomalias visualmente. 2. <strong>Redução de
+Ruído/Features:</strong> Simplificar o dataset, mantendo a maior parte
+da informação relevante, o que pode ajudar a acelerar o treino de outros
+modelos e a mitigar a “maldição da dimensionalidade”.</p>
+<h2 id="dados">2. Dados</h2>
+<p>Vais utilizar um dataset (<code>sensores_voo_alta_dim.csv</code>) que
+contém dezenas de leituras de sensores de um voo, resultando num espaço
+de características de alta dimensão. - <code>sensor_01</code>,
+<code>sensor_02</code>, …, <code>sensor_50</code> -
+<code>tipo_manobra</code> (rótulo opcional, e.g., ‘Cruzeiro’, ‘Subida’,
+‘Descida’) — Este rótulo <strong>não</strong> será usado para PCA/Kernel
+PCA, mas <strong>será</strong> usado para LDA.</p>
+<h2 id="tarefas">3. Tarefas</h2>
+<ol type="1">
+<li><strong>Pré-processamento:</strong>
+<ul>
+<li>Como sempre, começa por <strong>escalonar os dados</strong>
+(<code>StandardScaler</code>). Isto é especialmente crítico para o PCA,
+que é sensível à variância das características.</li>
+</ul></li>
+<li><strong>Análise de Componentes Principais (PCA -
+Unsupervised):</strong>
+<ul>
+<li>Aplica o PCA ao teu dataset escalonado.</li>
+<li>Plota o gráfico da <strong>variância explicada acumulada</strong> em
+função do número de componentes.</li>
+<li>Quantos componentes são necessários para reter 95% da variância
+total dos dados?</li>
+<li>Cria um gráfico de dispersão 2D usando os dois primeiros componentes
+principais (PC1 e PC2). Consegues ver alguma estrutura ou agrupamento
+nos dados?</li>
+<li>(Opcional) Se tiveres os rótulos <code>tipo_manobra</code>, colore
+os pontos no gráfico 2D. O PCA conseguiu separar as classes, mesmo sem
+as ter visto?</li>
+</ul></li>
+<li><strong>Kernel PCA (para Não-Linearidade - Unsupervised):</strong>
+<ul>
+<li>Aplica o Kernel PCA, utilizando um kernel como o <code>rbf</code>
+(Radial Basis Function).</li>
+<li>Cria novamente um gráfico de dispersão 2D com os dois primeiros
+componentes.</li>
+<li>Compara esta visualização com a do PCA linear. O Kernel PCA revelou
+alguma estrutura que o PCA linear não conseguiu capturar?</li>
+</ul></li>
+<li><strong>Análise Discriminante Linear (LDA - Supervised):</strong>
+<ul>
+<li><strong>Nota:</strong> LDA é uma técnica <em>supervisionada</em>.
+Ela usa os rótulos (<code>tipo_manobra</code>) para encontrar os eixos
+que <strong>maximizam a separação</strong> entre as classes.</li>
+<li>Aplica o LDA ao teu dataset, usando a variável
+<code>tipo_manobra</code> como alvo.</li>
+<li>Cria um gráfico de dispersão 2D usando os dois primeiros
+discriminantes lineares.</li>
+<li>Compara a separação das classes neste gráfico com a que obtiveste no
+gráfico do PCA.</li>
+</ul></li>
+</ol>
+<h2 id="desafios-e-lições">4. Desafios e Lições</h2>
+<ul>
+<li><strong>Perda de Informação:</strong> A redução de dimensionalidade
+é sempre um compromisso. Discute a perda de informação ao projetar os
+dados e como o gráfico de variância explicada ajuda a quantificar essa
+perda.</li>
+<li><strong>Linear vs. Não-Linear:</strong> Compara as projeções do PCA
+e do Kernel PCA. Em que cenários um seria mais útil que o outro?</li>
+<li><strong>PCA (Unsupervised) vs. LDA (Supervised):</strong> Reflete
+sobre a diferença fundamental entre os dois. O PCA procura os eixos de
+máxima variância nos dados, ignorando os rótulos. O LDA procura os eixos
+de máxima separabilidade entre classes conhecidas. São ferramentas para
+objetivos diferentes.</li>
+</ul>
+<h2 id="produto-final">Produto Final</h2>
+<p>Um relatório que apresente:<br />
+- A justificação para o escalonamento dos dados.<br />
+- O gráfico de variância explicada do PCA e a escolha do número de
+componentes.<br />
+- Três gráficos de dispersão 2D/3D lado a lado:<br />
+1. A projeção do PCA.<br />
+2. A projeção do Kernel PCA.<br />
+3. A projeção do LDA.<br />
+- Uma análise comparativa das três visualizações, destacando os pontos
+fortes e fracos de cada técnica no contexto deste dataset.</p>
+</body>
+</html>

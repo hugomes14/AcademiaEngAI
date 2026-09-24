@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Lab 07.1 - Clustering — Descoberta de Perfis Operacionais de Voo</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="style_dark.css" />
+</head>
+<body>
+<h1
+id="lab-07.1---clustering-descoberta-de-perfis-operacionais-de-voo">Lab
+07.1 - Clustering — Descoberta de Perfis Operacionais de Voo</h1>
+<p><strong>Tema:</strong> Aprendizagem Não Supervisionada -
+Clustering</p>
+<h2 id="objetivo">1. Objetivo</h2>
+<p>Neste laboratório, o objetivo é usar algoritmos de
+<strong>clustering</strong> para identificar e analisar diferentes
+<strong>perfis operacionais de voo</strong> a partir de dados de
+telemetria. Em vez de prever um valor conhecido, vamos deixar que o
+algoritmo agrupe os voos com características semelhantes, descobrindo
+padrões que não são óbvios à primeira vista.</p>
+<h2 id="dados">2. Dados</h2>
+<p>Vais trabalhar com um dataset
+(<code>voos_telemetria_completa.csv</code>) que contém métricas
+agregadas por voo: - <code>duracao_voo_min</code> -
+<code>distancia_percorrida_km</code> - <code>altitude_maxima_m</code> -
+<code>velocidade_media_kmh</code> -
+<code>consumo_combustivel_litros</code> -
+<code>variacao_vertical_total_m</code></p>
+<p>Nota que <strong>não há uma variável alvo</strong>. A nossa tarefa é
+criar os próprios grupos.</p>
+<h2 id="tarefas">3. Tarefas</h2>
+<ol type="1">
+<li><strong>Pré-processamento e Análise:</strong>
+<ul>
+<li>Analisa a distribuição e a escala de cada variável.</li>
+<li><strong>Fundamental:</strong> Normaliza/Escalona os dados (e.g.,
+usando <code>StandardScaler</code> ou <code>MinMaxScaler</code>). Por
+que isto é crucial para algoritmos baseados em distância como o
+K-means?</li>
+<li>Visualiza as relações entre pares de variáveis (e.g., com um
+<code>pairplot</code>) para ter uma intuição inicial sobre possíveis
+agrupamentos.</li>
+</ul></li>
+<li><strong>Modelagem com K-means:</strong>
+<ul>
+<li><strong>Encontrar o ‘k’ ideal:</strong> Usa o <strong>Método do
+Cotovelo (Elbow Method)</strong> para visualizar a inércia (WCSS) em
+função do número de clusters (k).</li>
+<li>Usa o <strong>Coeficiente de Silhueta (Silhouette Score)</strong>
+para avaliar a qualidade dos clusters para diferentes valores de
+‘k’.</li>
+<li>Escolhe o melhor ‘k’ com base nestas duas técnicas.</li>
+<li>Treina o modelo K-means final com o ‘k’ escolhido e atribui um
+rótulo de cluster a cada voo no dataset.</li>
+</ul></li>
+<li><strong>Modelagem com Outros Algoritmos (Comparação):</strong>
+<ul>
+<li><strong>Clustering Hierárquico Aglomerativo:</strong>
+<ul>
+<li>Cria um <strong>dendrograma</strong> para visualizar a estrutura
+hierárquica dos agrupamentos. Isto pode ajudar a confirmar a escolha de
+‘k’.</li>
+<li>Treina o modelo e compara os clusters resultantes com os do
+K-means.</li>
+</ul></li>
+<li><strong>(Opcional) Gaussian Mixture Models (GMM):</strong>
+<ul>
+<li>Treina um modelo GMM. Ao contrário do K-means, que assume clusters
+esféricos, o GMM pode capturar grupos com formas mais elípticas. Compara
+os resultados.</li>
+</ul></li>
+</ul></li>
+<li><strong>Análise e Interpretação dos Clusters:</strong>
+<ul>
+<li>Esta é a parte mais importante. Depois de formar os clusters,
+analisa as características de cada um.</li>
+<li>Calcula a média de cada variável para cada cluster (e.g., usando
+<code>groupby().mean()</code>).</li>
+<li>Cria “personas” ou perfis para cada cluster. Por exemplo:
+<ul>
+<li><em>Cluster 0: “Voos Curtos e de Baixa Altitude”</em></li>
+<li><em>Cluster 1: “Missões Longas e de Alta Velocidade”</em></li>
+<li><em>Cluster 2: “Voos com Muita Manobra Vertical”</em></li>
+</ul></li>
+</ul></li>
+</ol>
+<h2 id="desafios-e-lições">4. Desafios e Lições</h2>
+<ul>
+<li><strong>A Importância da Normalização:</strong> Compara os
+resultados do K-means com e sem normalização para ver o impacto
+dramático que a escala das variáveis pode ter.</li>
+<li><strong>A Subjetividade do ‘k’:</strong> Discute como a escolha do
+número de clusters (k) nem sempre tem uma resposta única e pode depender
+do objetivo do negócio.</li>
+<li><strong>Lidar com Outliers:</strong> Como os outliers podem afetar o
+centróide de um cluster no K-means? Reflete sobre estratégias para lidar
+com eles (e.g., remoção ou uso de algoritmos mais robustos como o
+DBSCAN).</li>
+</ul>
+<h2 id="produto-final">Produto Final</h2>
+<p>Um relatório que apresente:<br />
+- O processo de pré-processamento, com ênfase na justificação da
+normalização.<br />
+- Os gráficos do Método do Cotovelo e da Pontuação de Silhueta.<br />
+- Uma comparação (pode ser visual, com gráficos de dispersão coloridos
+pelos clusters) dos resultados do K-means e do Clustering
+Hierárquico.<br />
+- Uma tabela e uma descrição detalhada que definam os <strong>perfis de
+voo</strong> para cada cluster descoberto.</p>
+</body>
+</html>

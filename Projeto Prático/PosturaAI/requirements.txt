@@ -1,0 +1,8 @@
+# Dependências do marco M0. Usar um ambiente dedicado ao PosturaAI.
+Pillow>=10,<13
+numpy>=1.26,<3
+scipy>=1.13,<2
+pytest>=8,<9
+
+# As dependências de treino (PyTorch, MMCV, MMEngine, MMDetection e MMPose)
+# serão fixadas após verificar a GPU/CUDA local, conforme o plano.

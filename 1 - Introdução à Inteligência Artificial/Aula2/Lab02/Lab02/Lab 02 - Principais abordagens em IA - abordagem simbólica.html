@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Lab 02 - Principais abordagens em IA - abordagem simbólica</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        background-color: #232629;
+        color: #7a7c7d;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #7a7c7d;  padding-left: 4px; }
+    div.sourceCode
+      { color: #cfcfc2; background-color: #232629; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #cfcfc2; } /* Normal */
+    code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } /* Alert */
+    code span.an { color: #3f8058; } /* Annotation */
+    code span.at { color: #2980b9; } /* Attribute */
+    code span.bn { color: #f67400; } /* BaseN */
+    code span.bu { color: #7f8c8d; } /* BuiltIn */
+    code span.cf { color: #fdbc4b; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #3daee9; } /* Char */
+    code span.cn { color: #27aeae; font-weight: bold; } /* Constant */
+    code span.co { color: #7a7c7d; } /* Comment */
+    code span.cv { color: #7f8c8d; } /* CommentVar */
+    code span.do { color: #a43340; } /* Documentation */
+    code span.dt { color: #2980b9; } /* DataType */
+    code span.dv { color: #f67400; } /* DecVal */
+    code span.er { color: #da4453; text-decoration: underline; } /* Error */
+    code span.ex { color: #0099ff; font-weight: bold; } /* Extension */
+    code span.fl { color: #f67400; } /* Float */
+    code span.fu { color: #8e44ad; } /* Function */
+    code span.im { color: #27ae60; } /* Import */
+    code span.in { color: #c45b00; } /* Information */
+    code span.kw { color: #cfcfc2; font-weight: bold; } /* Keyword */
+    code span.op { color: #cfcfc2; } /* Operator */
+    code span.ot { color: #27ae60; } /* Other */
+    code span.pp { color: #27ae60; } /* Preprocessor */
+    code span.re { color: #2980b9; background-color: #153042; } /* RegionMarker */
+    code span.sc { color: #3daee9; } /* SpecialChar */
+    code span.ss { color: #da4453; } /* SpecialString */
+    code span.st { color: #f44f4f; } /* String */
+    code span.va { color: #27aeae; } /* Variable */
+    code span.vs { color: #da4453; } /* VerbatimString */
+    code span.wa { color: #da4453; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="style_dark.css" />
+</head>
+<body>
+<h1 id="lab-02---principais-abordagens-em-ia---abordagem-simbólica">Lab
+02 - Principais abordagens em IA - abordagem simbólica</h1>
+<p><a href="#enunciados">Enunciados</a><br />
+<a href="#ex-1-converta-projeto-com-ifelse">Ex 1: Converta projeto com
+if…else</a><br />
+<a href="#ex-2-navegação-ia-simbólica-do-drone-entre-posições">Ex 2:
+Navegação IA Simbólica do Drone Entre Posições</a></p>
+<h2 id="enunciados">Enunciados</h2>
+<h3 id="ex-1-converta-projeto-com-ifelse"><strong>Ex 1: Converta projeto
+com if…else</strong></h3>
+<p>Junto com o formador, converta o <strong>código</strong> do ficheiro
+<strong><code>ex02_1.py</code></strong> em IA simbólica.</p>
+<h3 id="tarefas-na-conversão-do-ficheiro">Tarefas (na conversão do
+ficheiro)</h3>
+<ol type="1">
+<li><p><strong>Normalizar símbolos</strong></p>
+<ul>
+<li>Cria constantes canónicas para todos os valores (ex.:
+<code>TD1cidade="cidade"</code>, <code>PC1sol="sol"</code>,
+<code>IP1historia="historia"</code>,
+<code>DE2moderada="moderada"</code>, …).</li>
+<li>Cria também símbolos para atividades (<code>A*</code>), p.ex.
+<code>A3museu_passeio_bairros = "Visitar museus..."</code>.</li>
+</ul></li>
+<li><p><strong>Estado como factos</strong></p>
+<ul>
+<li>Substitui as 4 variáveis por um dicionário:
+<code>sist = {'td': TD1cidade, 'pc': PC1sol, 'ip': IP1historia, 'de': DE2moderada}</code>.</li>
+<li>Mantém <code>A1default</code> como ação por defeito.</li>
+</ul></li>
+<li><p><strong>Extrair regras nomeadas</strong></p>
+<ul>
+<li>Para cada <code>if (...) decisao = Ax</code> cria uma regra booleana
+<code>Rk</code> (R1…R5) que testa <code>sist</code> com
+<strong>símbolos</strong>, ex.:
+<code>R2 = sist['td']==TD1cidade and sist['pc']==PC1sol and sist['ip']==IP1historia and sist['de']==DE2moderada</code>.</li>
+</ul></li>
+<li><p><strong>Motor simples + política</strong></p>
+<ul>
+<li>Decide uma <strong>política de conflitos</strong>: ou
+<strong>primeira que dispara</strong> ou <strong>última vence</strong>
+(replica a sequência dos <code>if</code>).</li>
+<li>Implementa a varredura das regras pela ordem escolhida: quando uma
+regra é verdadeira, atualiza <code>decisao</code>.</li>
+</ul></li>
+<li><p><strong>Explicabilidade mínima</strong></p>
+<ul>
+<li>Antes de atualizar a decisão, imprime o nome da regra que disparou,
+p.ex.: <code>print(sist, "=&gt;", "R2")</code>.</li>
+</ul></li>
+<li><p><strong>Final</strong></p>
+<ul>
+<li>No fim, imprime a decisão.</li>
+<li>Testa alterando <code>sist</code> (pelo menos 3 combinações,
+incluindo uma que não dispare nenhuma regra → devolve
+<code>A1default</code>).</li>
+</ul></li>
+</ol>
+<hr />
+<h3 id="checklist-rápida-o-que-deve-ficar-no-ficheiro">Checklist rápida
+(o que deve ficar no ficheiro)</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />Constantes simbólicas
+<code>TD*</code>, <code>PC*</code>, <code>IP*</code>, <code>DE*</code>,
+<code>A*</code>.</label></li>
+<li><label><input type="checkbox" /><code>sist = {...}</code> com os
+símbolos.</label></li>
+<li><label><input type="checkbox" />Regras <code>R1..R5</code> a testar
+<code>sist</code>.</label></li>
+<li><label><input type="checkbox" />Varredura segundo a política
+escolhida (<strong>primeira</strong> ou
+<strong>última</strong>).</label></li>
+<li><label><input type="checkbox" />Impressão de explicabilidade (nome
+da regra disparada) + decisão final.</label></li>
+</ul>
+<p><strong>Para quem não quiser esperar, aqui fica uma hipótese para o
+código final do ficheiro:</strong></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># definir os SIMBOLOS tipo destino</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>TD1cidade <span class="op">=</span> <span class="st">&quot;cidade&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>TD2praia <span class="op">=</span> <span class="st">&quot;praia&quot;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>TD3montanha <span class="op">=</span> <span class="st">&quot;montanha&quot;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># definir os SIMBOLOS preferencia climatica</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>PC1sol <span class="op">=</span> <span class="st">&quot;sol&quot;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>PC2frio <span class="op">=</span> <span class="st">&quot;frio&quot;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>PC3neve <span class="op">=</span> <span class="st">&quot;neve&quot;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># definir os SIMBOLOS interesse principal</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>IP1historia <span class="op">=</span> <span class="st">&quot;historia&quot;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>IP2aventura <span class="op">=</span> <span class="st">&quot;aventura&quot;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>IP3relaxamento <span class="op">=</span> <span class="st">&quot;relaxamento&quot;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># definir os SIMBOLOS duracao estadia</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>DE1curta <span class="op">=</span> <span class="st">&quot;curta&quot;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>DE2moderada <span class="op">=</span> <span class="st">&quot;moderada&quot;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>DE3longa <span class="op">=</span> <span class="st">&quot;longa&quot;</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># definir os SIMBOLOS actividade</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>A1default <span class="op">=</span> <span class="st">&quot;Nenhuma atividade recomendada para esta combinação de fatores.&quot;</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>A2museu_passeio_cidade <span class="op">=</span> <span class="st">&quot;Visitar museus e fazer um passeio guiado pela cidade.&quot;</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>A3museu_passeio_bairros <span class="op">=</span> <span class="st">&quot;Visitar museus, fazer um passeio guiado e explorar bairros históricos.&quot;</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>A4bicicleta_caminhada <span class="op">=</span> <span class="st">&quot;Fazer um passeio de bicicleta e uma caminhada urbana.&quot;</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>A5praia_spa <span class="op">=</span> <span class="st">&quot;Ficar na praia, fazer yoga ao ar livre e relaxar no spa.&quot;</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>A6neve <span class="op">=</span> <span class="st">&quot;Fazer esqui, snowboarding e explorar trilhas de neve.&quot;</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co"># SAFE STATE</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>decisao <span class="op">=</span> A1default</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Entradas do sitema</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>sist <span class="op">=</span> {</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;td&#39;</span>: TD1cidade,</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;pc&#39;</span>: PC1sol,</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;ip&#39;</span>: IP1historia,</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;de&#39;</span>: DE2moderada</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co"># REGRAS</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>R1 <span class="op">=</span> sist[<span class="st">&#39;td&#39;</span>] <span class="op">==</span> TD1cidade <span class="kw">and</span> sist[<span class="st">&#39;pc&#39;</span>] <span class="op">==</span> PC1sol <span class="kw">and</span> sist[<span class="st">&#39;ip&#39;</span>] <span class="op">==</span> IP1historia <span class="kw">and</span> sist[<span class="st">&#39;de&#39;</span>] <span class="op">==</span> DE1curta</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>R2 <span class="op">=</span> sist[<span class="st">&#39;td&#39;</span>] <span class="op">==</span> TD1cidade <span class="kw">and</span> sist[<span class="st">&#39;pc&#39;</span>] <span class="op">==</span> PC1sol <span class="kw">and</span> sist[<span class="st">&#39;ip&#39;</span>] <span class="op">==</span> IP1historia <span class="kw">and</span> sist[<span class="st">&#39;de&#39;</span>] <span class="op">==</span> DE2moderada</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>R3 <span class="op">=</span> sist[<span class="st">&#39;td&#39;</span>] <span class="op">==</span> TD1cidade <span class="kw">and</span> sist[<span class="st">&#39;pc&#39;</span>] <span class="op">==</span> PC1sol <span class="kw">and</span> sist[<span class="st">&#39;ip&#39;</span>] <span class="op">==</span> IP2aventura <span class="kw">and</span> sist[<span class="st">&#39;de&#39;</span>] <span class="op">==</span> DE1curta</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>R4 <span class="op">=</span> sist[<span class="st">&#39;td&#39;</span>] <span class="op">==</span> TD2praia <span class="kw">and</span> sist[<span class="st">&#39;pc&#39;</span>] <span class="op">==</span> PC1sol <span class="kw">and</span> sist[<span class="st">&#39;ip&#39;</span>] <span class="op">==</span> IP3relaxamento <span class="kw">and</span> sist[<span class="st">&#39;de&#39;</span>] <span class="op">==</span> DE3longa</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>R5 <span class="op">=</span> sist[<span class="st">&#39;td&#39;</span>] <span class="op">==</span> TD3montanha <span class="kw">and</span> sist[<span class="st">&#39;pc&#39;</span>] <span class="op">==</span> PC3neve <span class="kw">and</span> sist[<span class="st">&#39;ip&#39;</span>] <span class="op">==</span> IP2aventura <span class="kw">and</span> sist[<span class="st">&#39;de&#39;</span>] <span class="op">==</span> DE3longa</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="co"># Explicabilidade</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> Explicabilidade(regra, sistema):</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(sistema, <span class="st">&quot;=&gt;&quot;</span>, regra)</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Decidir atividades com base nos fatores</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> R1:</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>    Explicabilidade(<span class="st">&quot;R1&quot;</span>, sist)</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>    decisao <span class="op">=</span> A2museu_passeio_cidade</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> R2:</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>    Explicabilidade(<span class="st">&quot;R2&quot;</span>, sist)</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>    decisao <span class="op">=</span> A3museu_passeio_bairros</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> R3:</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>    Explicabilidade(<span class="st">&quot;R3&quot;</span>, sist)</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>    decisao <span class="op">=</span> A4bicicleta_caminhada</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> R4:</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>    Explicabilidade(<span class="st">&quot;R4&quot;</span>, sist)</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>    decisao <span class="op">=</span> A5praia_spa</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> R5:</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>    Explicabilidade(<span class="st">&quot;R5&quot;</span>, sist)</span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>    decisao <span class="op">=</span> A6neve</span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(decisao)</span></code></pre></div>
+<div style="page-break-after: always;">
+
+</div>
+<h3 id="ex-2-navegação-ia-simbólica-do-drone-entre-posições"><strong>Ex
+2: Navegação IA Simbólica do Drone Entre Posições</strong></h3>
+<p><strong>Objetivo:</strong> transformar um motor vazio num sistema com
+<strong>um passo = uma regra</strong>, com registo de decisões no
+log.</p>
+<p>Regras a implementar:</p>
+<ol type="1">
+<li>Mover o obstáculo.</li>
+<li>Prever colisão e desviar por rota alternativa.</li>
+<li>Mover o drone até ao destino.</li>
+<li>Atualizar a navegação (A → B → C → D → Base).</li>
+<li>Verificar colisão real e travar.</li>
+</ol>
+<blockquote>
+<p>Mantém as funções de logging (<code>iniciar_log_voo</code>,
+<code>log_explicabilidade</code>, <code>fechar_log_voo</code>) e a base
+de dados conforme o enunciado.</p>
+</blockquote>
+<hr />
+<blockquote>
+<p><strong>Para testar:</strong> correr como
+<code>python run_drone.py</code></p>
+</blockquote>
+<hr />
+<h3 id="passo-0-ponto-de-partida">Passo 0 — Ponto de partida</h3>
+<p><strong>Porquê assim:</strong> O motor começa vazio para deixar
+evidente a arquitetura “regra isolada + orquestração”. A base de dados
+já expõe todos os factos necessários (posições, estado do drone,
+obstáculo, etc.). Só precisamos de encaixar as regras no
+<code>motor_de_inferencia</code>.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> motor_de_inferencia(base_de_dados):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Aplica a sequência de regras para atualizar o estado do sistema.</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> base_de_dados</span></code></pre></div>
+<hr />
+<h3 id="passo-1-regra-mover-obstáculo">Passo 1 — Regra: <strong>Mover
+Obstáculo</strong></h3>
+<p><strong>Porquê assim:</strong> O obstáculo precisa de atualizar a
+posição a cada ciclo para criar um ambiente dinâmico. A inversão da
+direção nos limites da janela impede sair do ecrã e mantém o desafio
+constante ao planeamento do drone.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> regra_mover_obstaculo(base_de_dados):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    base_de_dados[<span class="st">&#39;obstaculo_y&#39;</span>] <span class="op">+=</span> base_de_dados[<span class="st">&#39;OBSTACULO_VELOCIDADE&#39;</span>] <span class="op">*</span> base_de_dados[<span class="st">&#39;obstaculo_direcao&#39;</span>]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (base_de_dados[<span class="st">&#39;obstaculo_y&#39;</span>] <span class="op">&lt;=</span> <span class="dv">0</span> <span class="kw">or</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;obstaculo_y&#39;</span>] <span class="op">+</span> base_de_dados[<span class="st">&#39;OBSTACULO_ALTURA&#39;</span>] <span class="op">&gt;=</span> base_de_dados[<span class="st">&#39;ALTURA&#39;</span>]):</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;obstaculo_direcao&#39;</span>] <span class="op">*=</span> <span class="op">-</span><span class="dv">1</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> base_de_dados</span></code></pre></div>
+<blockquote>
+<p><strong>Ligação no motor:</strong> vamos chamá-la depois de mover o
+drone e de atualizar a navegação, antes da verificação final de
+colisão.</p>
+</blockquote>
+<hr />
+<h3 id="passo-2-regra-evitar-obstáculo-com-utilitários">Passo 2 — Regra:
+<strong>Evitar Obstáculo</strong> (com utilitários)</h3>
+<p><strong>Porquê assim:</strong> A segurança nasce da
+<strong>previsão</strong>. Antes de mover, o sistema estima se haverá
+colisão no segmento direto até ao destino. Se sim, introduz um
+<strong>ponto de desvio</strong> lateral ao obstáculo, guarda o destino
+original e muda temporariamente a rota. Quando o desvio termina, retoma
+o destino inicial. Cada transição fica registada no log para
+explicabilidade.</p>
+<p><strong>Utilitários:</strong></p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> verificar_colisao(base_de_dados, posicao_drone):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    drone_x, drone_y <span class="op">=</span> posicao_drone</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    obstaculo_x <span class="op">=</span> base_de_dados[<span class="st">&#39;LARGURA&#39;</span>] <span class="op">//</span> <span class="dv">2</span> <span class="op">-</span> base_de_dados[<span class="st">&#39;OBSTACULO_LARGURA&#39;</span>] <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    drone_rect <span class="op">=</span> pygame.Rect(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        drone_x <span class="op">-</span> base_de_dados[<span class="st">&#39;RAIO_DRONE&#39;</span>], drone_y <span class="op">-</span> base_de_dados[<span class="st">&#39;RAIO_DRONE&#39;</span>],</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;RAIO_DRONE&#39;</span>] <span class="op">*</span> <span class="dv">2</span>, base_de_dados[<span class="st">&#39;RAIO_DRONE&#39;</span>] <span class="op">*</span> <span class="dv">2</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    obstaculo_rect <span class="op">=</span> pygame.Rect(</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        obstaculo_x, base_de_dados[<span class="st">&#39;obstaculo_y&#39;</span>],</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;OBSTACULO_LARGURA&#39;</span>], base_de_dados[<span class="st">&#39;OBSTACULO_ALTURA&#39;</span>]</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> drone_rect.colliderect(obstaculo_rect)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> prever_colisao(base_de_dados):</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    x1, y1 <span class="op">=</span> base_de_dados[<span class="st">&#39;posicao_drone&#39;</span>]</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    x2, y2 <span class="op">=</span> base_de_dados[<span class="st">&#39;destino&#39;</span>]</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        t <span class="op">=</span> i <span class="op">/</span> <span class="fl">10.0</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> x1 <span class="op">+</span> (x2 <span class="op">-</span> x1) <span class="op">*</span> t</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        y <span class="op">=</span> y1 <span class="op">+</span> (y2 <span class="op">-</span> y1) <span class="op">*</span> t</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> verificar_colisao(base_de_dados, (x, y)):</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calcular_rota_alternativa(base_de_dados):</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    drone_x, drone_y <span class="op">=</span> base_de_dados[<span class="st">&#39;posicao_drone&#39;</span>]</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    obstaculo_x <span class="op">=</span> base_de_dados[<span class="st">&#39;LARGURA&#39;</span>] <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    destino_x, destino_y <span class="op">=</span> base_de_dados[<span class="st">&#39;destino&#39;</span>]</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> drone_x <span class="op">&lt;</span> obstaculo_x:</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        ponto_desvio <span class="op">=</span> (obstaculo_x <span class="op">-</span> base_de_dados[<span class="st">&#39;OBSTACULO_LARGURA&#39;</span>] <span class="op">-</span> <span class="dv">30</span>, (drone_y <span class="op">+</span> destino_y) <span class="op">/</span> <span class="dv">2</span>)</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>        ponto_desvio <span class="op">=</span> (obstaculo_x <span class="op">+</span> base_de_dados[<span class="st">&#39;OBSTACULO_LARGURA&#39;</span>] <span class="op">+</span> <span class="dv">30</span>, (drone_y <span class="op">+</span> destino_y) <span class="op">/</span> <span class="dv">2</span>)</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ponto_desvio</span></code></pre></div>
+<p><strong>Regra:</strong></p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> regra_evitar_obstaculo(base_de_dados):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> base_de_dados[<span class="st">&#39;evitando_obstaculo&#39;</span>] <span class="kw">and</span> prever_colisao(base_de_dados):</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        estado_anterior <span class="op">=</span> base_de_dados[<span class="st">&#39;estado_drone&#39;</span>]</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;evitando_obstaculo&#39;</span>] <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;rota_alternativa&#39;</span>] <span class="op">=</span> calcular_rota_alternativa(base_de_dados)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;destino_original&#39;</span>] <span class="op">=</span> base_de_dados[<span class="st">&#39;destino&#39;</span>]</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;destino&#39;</span>] <span class="op">=</span> base_de_dados[<span class="st">&#39;rota_alternativa&#39;</span>]</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        log_explicabilidade(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>            regra<span class="op">=</span><span class="st">&quot;Evitar Obstáculo&quot;</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>            estado_anterior<span class="op">=</span>estado_anterior,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>            estado_novo<span class="op">=</span><span class="st">&quot;Evitando Obstáculo&quot;</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>            justificacao<span class="op">=</span><span class="st">&quot;Colisão prevista. A calcular e seguir rota alternativa.&quot;</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> base_de_dados[<span class="st">&#39;evitando_obstaculo&#39;</span>] <span class="kw">and</span> base_de_dados[<span class="st">&#39;movimento_completo&#39;</span>]:</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        estado_anterior <span class="op">=</span> base_de_dados[<span class="st">&#39;estado_drone&#39;</span>]</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;destino&#39;</span>] <span class="op">=</span> base_de_dados[<span class="st">&#39;destino_original&#39;</span>]</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;rota_alternativa&#39;</span>] <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;evitando_obstaculo&#39;</span>] <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;movimento_completo&#39;</span>] <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>        log_explicabilidade(</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>            regra<span class="op">=</span><span class="st">&quot;Retomar Rota Original&quot;</span>,</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>            estado_anterior<span class="op">=</span>estado_anterior,</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>            estado_novo<span class="op">=</span><span class="st">&quot;Em Rota&quot;</span>,</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>            justificacao<span class="op">=</span><span class="st">&quot;Desvio concluído. A regressar ao destino original.&quot;</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> base_de_dados</span></code></pre></div>
+<blockquote>
+<p><strong>Ligação no motor:</strong> chamar <strong>logo no
+início</strong> do ciclo, antes de qualquer movimento.</p>
+</blockquote>
+<hr />
+<h3 id="passo-3-regra-mover-drone">Passo 3 — Regra: <strong>Mover
+Drone</strong></h3>
+<p><strong>Porquê assim:</strong> Após decidir a rota, o drone
+desloca-se na direção do <code>destino</code> com velocidade constante.
+Ao atingir o destino, marca <code>movimento_completo=True</code> para
+permitir à regra de navegação decidir o próximo segmento. Em estado de
+“Colisão” não avança.</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> regra_mover_drone(base_de_dados):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> base_de_dados[<span class="st">&#39;estado_drone&#39;</span>] <span class="op">==</span> <span class="st">&#39;Colisão&#39;</span>:</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> base_de_dados</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    velocidade <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    x1, y1 <span class="op">=</span> base_de_dados[<span class="st">&#39;posicao_drone&#39;</span>]</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    x2, y2 <span class="op">=</span> base_de_dados[<span class="st">&#39;destino&#39;</span>]</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    dx, dy <span class="op">=</span> x2 <span class="op">-</span> x1, y2 <span class="op">-</span> y1</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    distancia <span class="op">=</span> math.sqrt(dx<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> dy<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> distancia <span class="op">&gt;=</span> velocidade:</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        fator <span class="op">=</span> velocidade <span class="op">/</span> distancia</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        novo_x <span class="op">=</span> x1 <span class="op">+</span> dx <span class="op">*</span> fator</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        novo_y <span class="op">=</span> y1 <span class="op">+</span> dy <span class="op">*</span> fator</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;posicao_drone&#39;</span>] <span class="op">=</span> (novo_x, novo_y)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;posicao_drone&#39;</span>] <span class="op">=</span> base_de_dados[<span class="st">&#39;destino&#39;</span>]</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;movimento_completo&#39;</span>] <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> base_de_dados</span></code></pre></div>
+<blockquote>
+<p><strong>Ligação no motor:</strong> depois de
+<code>regra_evitar_obstaculo</code>.</p>
+</blockquote>
+<hr />
+<h3 id="passo-4-regra-atualizar-navegação">Passo 4 — Regra:
+<strong>Atualizar Navegação</strong></h3>
+<p><strong>Porquê assim:</strong> Quando o segmento atual termina e não
+existe desvio ativo, a navegação avança na sequência A → B → C → D →
+Base. Na primeira transição, o estado passa de “Descolagem” para “Em
+Rota”. O log explica a passagem e o próximo objetivo.</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> regra_atualizar_estado_navegacao(base_de_dados):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> base_de_dados[<span class="st">&#39;movimento_completo&#39;</span>] <span class="kw">and</span> <span class="kw">not</span> base_de_dados[<span class="st">&#39;evitando_obstaculo&#39;</span>]:</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        estado_anterior <span class="op">=</span> base_de_dados[<span class="st">&#39;estado_drone&#39;</span>]</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> base_de_dados[<span class="st">&#39;estado_drone&#39;</span>] <span class="op">==</span> <span class="st">&#39;Descolagem&#39;</span>:</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>            base_de_dados[<span class="st">&#39;estado_drone&#39;</span>] <span class="op">=</span> <span class="st">&#39;Em Rota&#39;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        posicao_anterior <span class="op">=</span> base_de_dados[<span class="st">&#39;posicao_atual&#39;</span>]</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;posicao_atual&#39;</span>] <span class="op">=</span> base_de_dados[<span class="st">&#39;proximo_destino&#39;</span>]</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        ordem <span class="op">=</span> [<span class="st">&#39;A&#39;</span>, <span class="st">&#39;B&#39;</span>, <span class="st">&#39;C&#39;</span>, <span class="st">&#39;D&#39;</span>, <span class="st">&#39;Base&#39;</span>]</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        idx <span class="op">=</span> ordem.index(base_de_dados[<span class="st">&#39;posicao_atual&#39;</span>])</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        proxima_posicao <span class="op">=</span> ordem[(idx <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="bu">len</span>(ordem)]</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;proximo_destino&#39;</span>] <span class="op">=</span> proxima_posicao</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;destino&#39;</span>] <span class="op">=</span> base_de_dados[<span class="st">&#39;POSICOES&#39;</span>][proxima_posicao]</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        base_de_dados[<span class="st">&#39;movimento_completo&#39;</span>] <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        log_explicabilidade(</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>            regra<span class="op">=</span><span class="st">&quot;Atualizar Navegação&quot;</span>,</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>            estado_anterior<span class="op">=</span><span class="st">&quot;Em trânsito para &quot;</span> <span class="op">+</span> <span class="bu">str</span>(posicao_anterior),</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>            estado_novo<span class="op">=</span><span class="st">&quot;Chegou a &quot;</span> <span class="op">+</span> <span class="bu">str</span>(base_de_dados[<span class="st">&#39;posicao_atual&#39;</span>]) <span class="op">+</span> <span class="st">&quot;. Próximo destino: &quot;</span> <span class="op">+</span> <span class="bu">str</span>(proxima_posicao),</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>            justificacao<span class="op">=</span><span class="st">&quot;O drone completou o trajeto e inicia o próximo segmento.&quot;</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> base_de_dados</span></code></pre></div>
+<blockquote>
+<p><strong>Ligação no motor:</strong> imediatamente depois de
+<code>regra_mover_drone</code>.</p>
+</blockquote>
+<hr />
+<h3 id="passo-5-regra-verificar-colisão-real">Passo 5 — Regra:
+<strong>Verificar Colisão Real</strong></h3>
+<p><strong>Porquê assim:</strong> A verificação no fim do ciclo garante
+que o sistema aplica todas as atualizações do passo e só depois conclui
+se ocorreu colisão real. Em caso positivo, muda para “Colisão” e o motor
+deixa de aplicar as restantes regras no ciclo seguinte.</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> regra_verificar_colisao_real(base_de_dados):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> verificar_colisao(base_de_dados, base_de_dados[<span class="st">&#39;posicao_drone&#39;</span>]):</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> base_de_dados[<span class="st">&#39;estado_drone&#39;</span>] <span class="op">!=</span> <span class="st">&#39;Colisão&#39;</span>:</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>            estado_anterior <span class="op">=</span> base_de_dados[<span class="st">&#39;estado_drone&#39;</span>]</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>            base_de_dados[<span class="st">&#39;estado_drone&#39;</span>] <span class="op">=</span> <span class="st">&#39;Colisão&#39;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>            log_explicabilidade(</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                regra<span class="op">=</span><span class="st">&quot;Verificar Colisão Real&quot;</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                estado_anterior<span class="op">=</span>estado_anterior,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                estado_novo<span class="op">=</span><span class="st">&quot;Colisão&quot;</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                justificacao<span class="op">=</span><span class="st">&quot;O drone colidiu com o obstáculo. Operação abortada.&quot;</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> base_de_dados</span></code></pre></div>
+<blockquote>
+<p><strong>Ligação no motor:</strong> por <strong>último</strong>.</p>
+</blockquote>
+<hr />
+<h3 id="orquestração-no-motor_de_inferencia">Orquestração no
+<code>motor_de_inferencia</code></h3>
+<p><strong>Porquê assim:</strong> A ordem respeita o ciclo de decisão
+sensato: <strong>prever e ajustar rota → mover → fechar segmento →
+atualizar ambiente → confirmar segurança</strong>. O estado “Colisão”
+bloqueia a execução para evitar efeitos posteriores.</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> motor_de_inferencia(base_de_dados):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Aplica a sequência de regras para atualizar o estado do sistema.</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> base_de_dados[<span class="st">&#39;estado_drone&#39;</span>] <span class="op">!=</span> <span class="st">&#39;Colisão&#39;</span>:</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        base_de_dados <span class="op">=</span> regra_evitar_obstaculo(base_de_dados)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        base_de_dados <span class="op">=</span> regra_mover_drone(base_de_dados)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        base_de_dados <span class="op">=</span> regra_atualizar_estado_navegacao(base_de_dados)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        base_de_dados <span class="op">=</span> regra_mover_obstaculo(base_de_dados)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        base_de_dados <span class="op">=</span> regra_verificar_colisao_real(base_de_dados)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> base_de_dados</span></code></pre></div>
+<hr />
+<h3 id="pergunta-final-do-exercício">Pergunta final do exercício</h3>
+<p><strong>Qual é o <em>safe state</em> do sistema?</strong> (Indica o
+nome do estado seguro no teu modelo — por exemplo, o estado que registas
+na “Inicialização” — e justifica numa frase.)</p>
+</body>
+</html>

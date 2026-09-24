@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Lab 06.5 - Aprendizagem Profunda (Deep Learning) — Regressão com Rede Neural (1 Neurónio)</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        background-color: #232629;
+        color: #7a7c7d;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #7a7c7d;  padding-left: 4px; }
+    div.sourceCode
+      { color: #cfcfc2; background-color: #232629; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #cfcfc2; } /* Normal */
+    code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } /* Alert */
+    code span.an { color: #3f8058; } /* Annotation */
+    code span.at { color: #2980b9; } /* Attribute */
+    code span.bn { color: #f67400; } /* BaseN */
+    code span.bu { color: #7f8c8d; } /* BuiltIn */
+    code span.cf { color: #fdbc4b; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #3daee9; } /* Char */
+    code span.cn { color: #27aeae; font-weight: bold; } /* Constant */
+    code span.co { color: #7a7c7d; } /* Comment */
+    code span.cv { color: #7f8c8d; } /* CommentVar */
+    code span.do { color: #a43340; } /* Documentation */
+    code span.dt { color: #2980b9; } /* DataType */
+    code span.dv { color: #f67400; } /* DecVal */
+    code span.er { color: #da4453; text-decoration: underline; } /* Error */
+    code span.ex { color: #0099ff; font-weight: bold; } /* Extension */
+    code span.fl { color: #f67400; } /* Float */
+    code span.fu { color: #8e44ad; } /* Function */
+    code span.im { color: #27ae60; } /* Import */
+    code span.in { color: #c45b00; } /* Information */
+    code span.kw { color: #cfcfc2; font-weight: bold; } /* Keyword */
+    code span.op { color: #cfcfc2; } /* Operator */
+    code span.ot { color: #27ae60; } /* Other */
+    code span.pp { color: #27ae60; } /* Preprocessor */
+    code span.re { color: #2980b9; background-color: #153042; } /* RegionMarker */
+    code span.sc { color: #3daee9; } /* SpecialChar */
+    code span.ss { color: #da4453; } /* SpecialString */
+    code span.st { color: #f44f4f; } /* String */
+    code span.va { color: #27aeae; } /* Variable */
+    code span.vs { color: #da4453; } /* VerbatimString */
+    code span.wa { color: #da4453; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="style_dark.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1
+id="lab-06.5---aprendizagem-profunda-deep-learning-regressão-com-rede-neural-1-neurónio-estimar-a-duração-de-voo">Lab
+06.5 - Aprendizagem Profunda (Deep Learning) — Regressão com Rede Neural
+(1 Neurónio) — Estimar a Duração de Voo</h1>
+<p><strong>Tema:</strong> Redes Neurais com PyTorch - Equivalência com
+Regressão Linear</p>
+<h2 id="objetivo">1. Objetivo</h2>
+<p>O objetivo deste exercício é demonstrar que <strong>uma rede neural
+com apenas 1 neurónio é matematicamente equivalente à Regressão Linear
+Múltipla</strong>. Vamos construir este neurónio usando
+<strong>PyTorch</strong> e compará-lo com os modelos clássicos do Lab
+5.1.</p>
+<h3 id="por-que-este-exercício-é-importante">Por que este exercício é
+importante?</h3>
+<ul>
+<li>Compreender que redes neurais são uma <strong>generalização</strong>
+de modelos lineares</li>
+<li>Aprender os fundamentos de PyTorch: tensors, autograd, e loops de
+treino</li>
+<li>Estabelecer a base para redes neurais mais complexas (próximos
+labs)</li>
+</ul>
+<h2 id="dados">2. Dados</h2>
+<p>Continuamos a trabalhar com o mesmo dataset
+<code>voos_telemetria.csv</code>: - <code>distancia_planeada</code> (km)
+- <code>carga_util_kg</code> (kg) - <code>altitude_media_m</code>
+(metros) - <code>condicao_meteo</code> (categórica: <code>Bom</code>,
+<code>Moderado</code>, <code>Adverso</code>) -
+<code>duracao_voo_min</code> (minutos) — <strong>variável
+alvo</strong></p>
+<h2 id="tarefas">3. Tarefas</h2>
+<h3 id="preparação-dos-dados">3.1. Preparação dos Dados</h3>
+<ol type="1">
+<li><strong>Pré-processamento:</strong>
+<ul>
+<li>Carrega e limpa os dados (igual ao Lab 5.1)</li>
+<li>Aplica <em>one-hot encoding</em> à variável
+<code>condicao_meteo</code></li>
+<li><strong>Normaliza/Padroniza</strong> as features (crucial para redes
+neurais!)</li>
+<li>Converte os dados para <strong>Tensors do PyTorch</strong></li>
+</ul></li>
+<li><strong>Divisão:</strong>
+<ul>
+<li>Separa em conjuntos de treino (70%), validação (15%) e teste
+(15%)</li>
+</ul></li>
+</ol>
+<h3 id="construção-do-modelo-neural">3.2. Construção do Modelo
+Neural</h3>
+<p><strong>Arquitetura: 1 Neurónio Linear</strong></p>
+<p>Implementa um modelo com: - <strong>Input:</strong> n features (após
+one-hot encoding) - <strong>Output:</strong> 1 valor (duração prevista)
+- <strong>Função de ativação:</strong> Nenhuma (identidade) — mantém
+linearidade - <strong>Função de perda:</strong> MSE (Mean Squared Error)
+- <strong>Otimizador:</strong> SGD ou Adam</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RegressaoNeuronio(nn.Module):</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, n_features):</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.linear <span class="op">=</span> nn.Linear(n_features, <span class="dv">1</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.linear(x)</span></code></pre></div>
+<h3 id="treino-do-modelo">3.3. Treino do Modelo</h3>
+<p>Implementa o <strong>loop de treino</strong> completo: 1. Forward
+pass 2. Cálculo da loss 3. Backward pass (gradientes) 4. Atualização dos
+pesos</p>
+<p><strong>Pontos de atenção:</strong> - Usa <code>model.train()</code>
+durante o treino - Usa <code>model.eval()</code> e
+<code>torch.no_grad()</code> durante a validação - Monitoriza a loss de
+treino e validação por época - Implementa <strong>early
+stopping</strong> (opcional)</p>
+<h3 id="comparação-com-sklearn">3.4. Comparação com Sklearn</h3>
+<p>Treina também um modelo de <strong>Regressão Linear Múltipla</strong>
+com sklearn (Lab 5.1) e compara: - Os <strong>coeficientes</strong>
+(pesos) dos dois modelos — devem ser similares! - O
+<strong>bias</strong> (intercept) - As <strong>métricas de
+desempenho</strong> no conjunto de teste</p>
+<h3 id="visualizações">3.5. Visualizações</h3>
+<p>Cria os seguintes gráficos: 1. <strong>Curva de
+Aprendizagem:</strong> Loss de treino vs. validação por época 2.
+<strong>Valores Reais vs. Previstos</strong> no conjunto de teste 3.
+<strong>Comparação de Coeficientes:</strong> Barplot comparando pesos
+PyTorch vs. sklearn 4. <strong>Distribuição dos Resíduos</strong></p>
+<h2 id="avaliação">4. Avaliação</h2>
+<p>Para o modelo neural, calcula: - <strong>MAE</strong> (Mean Absolute
+Error) - <strong>RMSE</strong> (Root Mean Squared Error) -
+<strong>R²</strong> (Coeficiente de Determinação)</p>
+<p><strong>Pergunta crucial:</strong> Os resultados são idênticos ao
+modelo sklearn? Se não, por quê?</p>
+<h2 id="conceitos-importantes">5. Conceitos Importantes</h2>
+<h3 id="por-que-1-neurónio-regressão-linear">5.1. Por que 1 Neurónio =
+Regressão Linear?</h3>
+<p>Um neurónio realiza a operação:</p>
+<pre><code>y = w₁x₁ + w₂x₂ + ... + wₙxₙ + b</code></pre>
+<p>Isto é <strong>exatamente</strong> a equação da regressão linear
+múltipla!</p>
+<h3 id="hiperparâmetros-a-explorar">5.2. Hiperparâmetros a Explorar</h3>
+<ul>
+<li><strong>Learning rate:</strong> Muito alto → diverge; muito baixo →
+treino lento</li>
+<li><strong>Batch size:</strong> Tamanho do lote para calcular
+gradientes</li>
+<li><strong>Número de épocas:</strong> Quantas vezes passar por todo o
+dataset</li>
+</ul>
+<h3 id="normalização-de-features">5.3. Normalização de Features</h3>
+<p><strong>Por que é crítico?</strong> - Diferentes escalas podem fazer
+gradientes explodirem ou desaparecerem - Acelera a convergência - Torna
+o modelo mais estável</p>
+<h2 id="produto-final">6. Produto Final</h2>
+<p>Um notebook Jupyter ou script Python que contenha:</p>
+<ol type="1">
+<li><strong>Código completo e comentado</strong> com:
+<ul>
+<li>Preparação dos dados em tensors</li>
+<li>Definição da classe do modelo</li>
+<li>Loop de treino implementado do zero</li>
+<li>Avaliação e comparação com sklearn</li>
+</ul></li>
+<li><strong>Visualizações:</strong>
+<ul>
+<li>Curva de aprendizagem</li>
+<li>Comparação de coeficientes</li>
+<li>Scatter plot de previsões</li>
+</ul></li>
+<li><strong>Análise escrita:</strong>
+<ul>
+<li>Confirmação da equivalência matemática</li>
+<li>Discussão sobre hiperparâmetros</li>
+<li>Conclusões sobre quando usar PyTorch vs. sklearn</li>
+</ul></li>
+</ol>
+</body>
+</html>

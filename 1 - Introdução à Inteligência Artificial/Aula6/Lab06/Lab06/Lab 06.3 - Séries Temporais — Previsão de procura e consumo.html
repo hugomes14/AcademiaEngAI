@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Lab 06.3 - Séries Temporais — Previsão de procura e consumo</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="style_dark.css" />
+</head>
+<body>
+<h1 id="lab-06.3---séries-temporais-previsão-de-procura-e-consumo">Lab
+06.3 - Séries Temporais — Previsão de procura e consumo</h1>
+<p><strong>Tema:</strong> Análise e Previsão de Séries Temporais</p>
+<h2 id="objetivo">1. Objetivo</h2>
+<p>Este laboratório foca-se em modelar e prever duas séries temporais
+distintas: 1. O <strong>consumo de voltagem</strong> de uma bateria,
+medido minuto a minuto, para antecipar picos ou quedas. 2. O
+<strong>número de missões de voo diárias</strong>, para otimizar o
+planeamento de recursos.</p>
+<p>Iremos explorar desde modelos clássicos até abordagens mais modernas
+como o Prophet.</p>
+<h2 id="dados">2. Dados</h2>
+<p>Trabalharás com dois datasets: 1. <code>voltagem_bateria.csv</code>:
+* <code>timestamp</code> (a cada minuto) * <code>voltagem</code> (V) —
+<strong>série alvo 1</strong>. 2. <code>missoes_diarias.csv</code>: *
+<code>data</code> (diária) * <code>num_missoes</code> — <strong>série
+alvo 2</strong>.</p>
+<h2 id="tarefas">3. Tarefas</h2>
+<h3 id="parte-a-previsão-de-voltagem-série-de-alta-frequência">Parte A:
+Previsão de Voltagem (Série de Alta Frequência)</h3>
+<ol type="1">
+<li><strong>Análise Exploratória:</strong>
+<ul>
+<li>Visualiza a série temporal de voltagem. Identifica tendências,
+sazonalidades (diária, semanal?) e anomalias.</li>
+<li>Verifica a <strong>estacionariedade</strong> da série usando testes
+estatísticos (e.g., Augmented Dickey-Fuller). Se não for estacionária,
+aplica diferenciação.</li>
+<li>Plota as funções de Autocorrelação (ACF) e Autocorrelação Parcial
+(PACF) para ajudar a identificar os parâmetros (p, d, q) de um modelo
+ARIMA.</li>
+</ul></li>
+<li><strong>Modelagem Clássica:</strong>
+<ul>
+<li>Treina um modelo <strong>ARIMA</strong> (ou <strong>SARIMA</strong>
+se houver sazonalidade clara) para prever a voltagem nos próximos 60
+minutos.</li>
+<li>Experimenta um modelo de <strong>Suavização Exponencial</strong>
+(e.g., Holt-Winters) e compara os resultados.</li>
+</ul></li>
+</ol>
+<h3 id="parte-b-previsão-de-missões-diárias-série-sazonal">Parte B:
+Previsão de Missões Diárias (Série Sazonal)</h3>
+<ol type="1">
+<li><strong>Análise Exploratória:</strong>
+<ul>
+<li>Visualiza a série de missões diárias. Procura por tendências de
+longo prazo e sazonalidades (semanal, mensal, anual).</li>
+<li>Decompõe a série nos seus componentes de tendência, sazonalidade e
+resíduo.</li>
+</ul></li>
+<li><strong>Modelagem com Prophet e LSTM:</strong>
+<ul>
+<li>Treina um modelo <strong>Prophet</strong> (do Facebook) para prever
+o número de missões para as próximas 4 semanas. Tira partido da sua
+capacidade de modelar múltiplos padrões sazonais e feriados.</li>
+<li>(Opcional Avançado) Treina um modelo <strong>LSTM (Long Short-Term
+Memory)</strong> simples. Compara a sua complexidade e desempenho com o
+Prophet.</li>
+</ul></li>
+<li><strong>Avaliação:</strong>
+<ul>
+<li>Para ambos os cenários, avalia as previsões usando as métricas
+<strong>MAE</strong>, <strong>RMSE</strong> e <strong>MAPE</strong> (ou
+sMAPE).</li>
+<li>Visualiza as previsões sobrepostas aos dados reais, incluindo os
+<strong>intervalos de confiança/previsão</strong>.</li>
+</ul></li>
+</ol>
+<h2 id="desafios-e-lições">4. Desafios e Lições</h2>
+<ul>
+<li><strong>Estacionariedade:</strong> Compreende por que a
+estacionariedade é uma premissa fundamental para modelos como o ARIMA e
+como as transformações (diferenciação, log) ajudam a alcançá-la.</li>
+<li><strong>Validação Temporal:</strong> A validação cruzada tradicional
+não funciona para séries temporais. Utiliza uma abordagem de
+<em>walk-forward validation</em> ou um simples <em>train-test split</em>
+cronológico.</li>
+<li><strong>Escolha do Modelo:</strong> Reflete sobre quando usar um
+modelo clássico como ARIMA vs. uma ferramenta mais automatizada como o
+Prophet. Quais são os prós e contras de cada um?</li>
+</ul>
+<h2 id="produto-final">Produto Final</h2>
+<p>Um relatório que documente:<br />
+- A análise e pré-processamento de cada série temporal.<br />
+- O código de treino para os modelos aplicados (ARIMA/SARIMA, Prophet,
+etc.).<br />
+- Gráficos que mostram as previsões, os valores reais e os intervalos de
+confiança.<br />
+- Uma discussão sobre os resultados e as características de cada série
+que influenciaram a escolha do modelo.</p>
+</body>
+</html>

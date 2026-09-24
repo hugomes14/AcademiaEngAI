@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Lab 01 - OpenCV e Trabalho de Imagens</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        background-color: #232629;
+        color: #7a7c7d;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #7a7c7d;  padding-left: 4px; }
+    div.sourceCode
+      { color: #cfcfc2; background-color: #232629; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #cfcfc2; } /* Normal */
+    code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } /* Alert */
+    code span.an { color: #3f8058; } /* Annotation */
+    code span.at { color: #2980b9; } /* Attribute */
+    code span.bn { color: #f67400; } /* BaseN */
+    code span.bu { color: #7f8c8d; } /* BuiltIn */
+    code span.cf { color: #fdbc4b; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #3daee9; } /* Char */
+    code span.cn { color: #27aeae; font-weight: bold; } /* Constant */
+    code span.co { color: #7a7c7d; } /* Comment */
+    code span.cv { color: #7f8c8d; } /* CommentVar */
+    code span.do { color: #a43340; } /* Documentation */
+    code span.dt { color: #2980b9; } /* DataType */
+    code span.dv { color: #f67400; } /* DecVal */
+    code span.er { color: #da4453; text-decoration: underline; } /* Error */
+    code span.ex { color: #0099ff; font-weight: bold; } /* Extension */
+    code span.fl { color: #f67400; } /* Float */
+    code span.fu { color: #8e44ad; } /* Function */
+    code span.im { color: #27ae60; } /* Import */
+    code span.in { color: #c45b00; } /* Information */
+    code span.kw { color: #cfcfc2; font-weight: bold; } /* Keyword */
+    code span.op { color: #cfcfc2; } /* Operator */
+    code span.ot { color: #27ae60; } /* Other */
+    code span.pp { color: #27ae60; } /* Preprocessor */
+    code span.re { color: #2980b9; background-color: #153042; } /* RegionMarker */
+    code span.sc { color: #3daee9; } /* SpecialChar */
+    code span.ss { color: #da4453; } /* SpecialString */
+    code span.st { color: #f44f4f; } /* String */
+    code span.va { color: #27aeae; } /* Variable */
+    code span.vs { color: #da4453; } /* VerbatimString */
+    code span.wa { color: #da4453; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="style_dark.css" />
+</head>
+<body>
+<h1 id="lab-01---opencv-e-trabalho-de-imagens">Lab 01 - OpenCV e
+Trabalho de Imagens</h1>
+<p><a href="#ex-01-leitura-e-exibição-de-imagens-com-opencv">Ex 01:
+Leitura e Exibição de Imagens com OpenCV</a><br />
+<a href="#ex-02-carregar-e-gravar-uma-imagem-com-opencv">Ex 02: Carregar
+e Gravar uma Imagem com OpenCV</a><br />
+<a href="#ex-03-leitura-e-exibição-de-imagens-com-matplotlib">Ex 03:
+Leitura e Exibição de Imagens com Matplotlib</a><br />
+<a href="#ex-04-manipulação-de-roi-região-de-interesse-com-opencv">Ex
+04: Manipulação de ROI (Região de Interesse) com OpenCV</a><br />
+<a href="#ex-05-funções-de-desenho-no-opencv">Ex 05: Funções de Desenho
+no OpenCV</a><br />
+<a
+href="#ex-06-operações-aritméticas-máscaras-e-blending-de-imagens-no-opencv">Ex
+06: Operações Aritméticas e Máscaras de Imagens no OpenCV</a><br />
+<a href="#ex-07-transformações-geométricas-no-opencv">Ex 07:
+Transformações Geométricas no OpenCV</a><br />
+<a href="#ex-08-carregamento-e-correção-de-cores-bgr-para-rgb-e-hsv">Ex
+08: Carregamento e Correção de Cores (BGR para RGB e HSV)</a><br />
+<a
+href="#ex-09-comparação-entre-simple-thresholding-e-adaptive-thresholding">Ex
+09: Comparação entre Simple Thresholding e Adaptive
+Thresholding</a><br />
+<a href="#ex-10-técnicas-de-suavização-de-imagens-smoothingblurring">Ex
+10: Técnicas de Suavização de Imagens (Smoothing/Blurring)</a><br />
+<a href="#ex-11-operações-morfológicas-com-opencv">Ex 11: Operações
+Morfológicas com OpenCV</a><br />
+<a href="#ex-12-extração-do-primeiro-plano-com-grabcut">Ex 12: Extração
+do Primeiro Plano com GrabCut</a><br />
+<a href="#ex-13-análise-da-imagem-com-dft-e-idft">Ex 13: Análise da
+Imagem com DFT e IDFT</a><br />
+<a href="#ex-14-análise-de-histograma-de-imagem-em-tons-de-cinza">Ex 14:
+Análise de Histograma de Imagem em Tons de Cinza</a><br />
+<a href="#ex-15-detecção-de-bordas-com-canny-sobel-e-laplacian">Ex 15:
+Detecção de Bordas com Canny, Sobel e Laplacian</a><br />
+<a
+href="#ex-16-segmentação-watershed-detecção-de-linhas-e-círculos-hough-lines-e-hough-circles">Ex
+16: Segmentação Watershed, Detecção de Linhas e Círculos (Hough Lines e
+Hough Circles)</a><br />
+<a href="#ex-17-detecção-de-objetos-com-template-matching">Ex 17:
+Detecção de Objetos com Template Matching</a></p>
+<hr style="page-break-after: always;" />
+<h2 id="ex-01-leitura-e-exibição-de-imagens-com-opencv">Ex 01: Leitura e
+Exibição de Imagens com OpenCV</h2>
+<hr />
+<h3 id="passo-1-criar-o-programa"><strong>Passo 1: Criar o
+Programa</strong></h3>
+<ol type="1">
+<li><p><strong>Criar o Ficheiro Python</strong><br />
+No editor ou IDE, crie o ficheiro <code>ex_01_Ler_uma_imagem.py</code>
+na mesma pasta da imagem <code>Ovar.jpg</code>.</p></li>
+<li><p><strong>Adicionar as Bibliotecas</strong><br />
+No início do ficheiro, importe:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span></code></pre></div></li>
+<li><p><strong>Carregar a Imagem</strong><br />
+Adicione o código para carregar a imagem em cores:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(<span class="st">&#39;Ovar.jpg&#39;</span>, cv2.IMREAD_COLOR)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> img <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Erro ao carregar a imagem.&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    exit()</span></code></pre></div></li>
+</ol>
+<hr />
+<h3 id="passo-2-exibir-a-imagem"><strong>Passo 2: Exibir a
+Imagem</strong></h3>
+<ol type="1">
+<li><p><strong>Mostrar a Imagem</strong><br />
+Exiba a imagem numa janela chamada <code>imagem</code>:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;imagem&#39;</span>, img)</span></code></pre></div></li>
+<li><p><strong>Manter a Janela Aberta</strong><br />
+Adicione o comando para pausar até que uma tecla seja pressionada:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cv2.waitKey(<span class="dv">0</span>)</span></code></pre></div></li>
+</ol>
+<hr />
+<h3 id="passo-3-fechar-as-janelas"><strong>Passo 3: Fechar as
+Janelas</strong></h3>
+<p>Feche todas as janelas abertas:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div>
+<hr />
+<h3 id="passo-4-executar-o-programa"><strong>Passo 4: Executar o
+Programa</strong></h3>
+<ol type="1">
+<li><p>Guarde o ficheiro e execute no terminal:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex_01_Ler_uma_imagem.py</span></code></pre></div></li>
+</ol>
+<hr />
+<h3 id="resultado-esperado"><strong>Resultado Esperado</strong></h3>
+<ul>
+<li>A imagem <code>Ovar.jpg</code> será exibida numa janela chamada
+<code>imagem</code>.<br />
+</li>
+<li>Pressione qualquer tecla para fechar a janela e encerrar o
+programa.</li>
+</ul>
+<hr style="page-break-after: always;" />
+<h2 id="ex-02-carregar-e-gravar-uma-imagem-com-opencv">Ex 02: Carregar e
+Gravar uma Imagem com OpenCV</h2>
+<hr />
+<h3 id="passo-1-criar-o-programa-1"><strong>Passo 1: Criar o
+Programa</strong></h3>
+<ol type="1">
+<li><p><strong>Criar o Ficheiro Python</strong><br />
+No editor ou IDE, crie o ficheiro
+<code>ex_02_Gravar_uma_imagem.py</code> na mesma pasta da imagem
+<code>ovar.jpg</code>.</p></li>
+<li><p><strong>Adicionar as Bibliotecas</strong><br />
+No início do ficheiro, importe:</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span></code></pre></div></li>
+<li><p><strong>Carregar a Imagem</strong><br />
+Adicione o código para carregar a imagem em tons de cinza:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(<span class="st">&#39;ovar.jpg&#39;</span>, cv2.IMREAD_GRAYSCALE)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> img <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Erro ao carregar a imagem.&quot;</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    exit()</span></code></pre></div></li>
+</ol>
+<hr />
+<h3 id="passo-2-gravar-a-imagem"><strong>Passo 2: Gravar a
+Imagem</strong></h3>
+<p>Adicione o código para gravar a imagem como
+<code>ovar.png</code>:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cv2.imwrite(<span class="st">&#39;ovar.png&#39;</span>, img)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Imagem gravada com sucesso como &#39;ovar.png&#39;.&quot;</span>)</span></code></pre></div>
+<hr />
+<h3 id="passo-3-executar-o-programa"><strong>Passo 3: Executar o
+Programa</strong></h3>
+<ol type="1">
+<li><p>Guarde o ficheiro e execute no terminal:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex_02_Gravar_uma_imagem.py</span></code></pre></div></li>
+</ol>
+<hr />
+<h3 id="resultado-esperado-1"><strong>Resultado Esperado</strong></h3>
+<ul>
+<li>A imagem <code>ovar.jpg</code> será carregada em tons de
+cinza.<br />
+</li>
+<li>Será criada uma nova imagem chamada <code>ovar.png</code> na mesma
+pasta.<br />
+</li>
+<li>A mensagem
+<code>"Imagem gravada com sucesso como 'ovar.png'."</code> será exibida
+no terminal.</li>
+</ul>
+<hr style="page-break-after: always;" />
+<h2 id="ex-03-leitura-e-exibição-de-imagens-com-matplotlib">Ex 03:
+Leitura e Exibição de Imagens com Matplotlib</h2>
+<hr />
+<h3 id="passo-1-criar-o-programa-2"><strong>Passo 1: Criar o
+Programa</strong></h3>
+<ol type="1">
+<li><p><strong>Criar o Ficheiro Python</strong><br />
+No editor ou IDE, crie o ficheiro
+<code>ex_03_Ler_uma_imagem_com_matplotlib.py</code> na mesma pasta da
+imagem <code>ovar.jpg</code>.</p></li>
+<li><p><strong>Adicionar as Bibliotecas</strong><br />
+No início do ficheiro, importe:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span></code></pre></div></li>
+<li><p><strong>Carregar a Imagem</strong><br />
+Adicione o código para carregar a imagem em tons de cinza:</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(<span class="st">&#39;ovar.jpg&#39;</span>, <span class="dv">0</span>)</span></code></pre></div></li>
+</ol>
+<hr />
+<h3 id="passo-2-exibir-a-imagem-com-matplotlib"><strong>Passo 2: Exibir
+a Imagem com Matplotlib</strong></h3>
+<ol type="1">
+<li><p><strong>Mostrar a Imagem</strong><br />
+Adicione o código para exibir a imagem com Matplotlib, em escala de
+cinza e com interpolação bicúbica:</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>plt.imshow(img, cmap<span class="op">=</span><span class="st">&#39;gray&#39;</span>, interpolation<span class="op">=</span><span class="st">&#39;bicubic&#39;</span>)</span></code></pre></div></li>
+<li><p><strong>Ocultar os Valores dos Eixos</strong><br />
+Remova os valores das escalas nos eixos X e Y:</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>plt.xticks([]), plt.yticks([])</span></code></pre></div></li>
+<li><p><strong>Exibir o Gráfico</strong><br />
+Mostre o gráfico:</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div></li>
+</ol>
+<hr />
+<h3 id="passo-3-executar-o-programa-1"><strong>Passo 3: Executar o
+Programa</strong></h3>
+<ol type="1">
+<li><p>Guarde o ficheiro e execute no terminal:</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex_03_Ler_uma_imagem_com_matplotlib.py</span></code></pre></div></li>
+</ol>
+<hr />
+<h3 id="resultado-esperado-2"><strong>Resultado Esperado</strong></h3>
+<ul>
+<li>A imagem <code>ovar.jpg</code> será exibida num gráfico em escala de
+cinza, com interpolação bicúbica.<br />
+</li>
+<li>Não serão exibidos valores nos eixos X e Y.</li>
+</ul>
+<hr style="page-break-after: always;" />
+<h2 id="ex-04-manipulação-de-roi-região-de-interesse-com-opencv">Ex 04:
+Manipulação de ROI (Região de Interesse) com OpenCV</h2>
+<hr />
+<h3 id="passo-1-criar-o-programa-3"><strong>Passo 1: Criar o
+Programa</strong></h3>
+<ol type="1">
+<li><p><strong>Criar o Ficheiro Python</strong><br />
+No editor ou IDE, crie o ficheiro <code>ex_04_ROI_da_Imagem.py</code> na
+mesma pasta da imagem <code>Ovar.jpg</code>.</p></li>
+<li><p><strong>Adicionar as Bibliotecas</strong><br />
+No início do ficheiro, importe:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code></pre></div></li>
+<li><p><strong>Carregar a Imagem</strong><br />
+Adicione o código para carregar a imagem:</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(<span class="st">&#39;Ovar.jpg&#39;</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> img <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Erro ao carregar a imagem.&quot;</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    exit()</span></code></pre></div></li>
+<li><p><strong>Obter Informações da Imagem</strong><br />
+Inclua informações sobre o formato e o tamanho da imagem:</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Shape da imagem: </span><span class="sc">{</span>img<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">&quot;</span>)  <span class="co"># Altura, largura e canais</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Tamanho da imagem: </span><span class="sc">{</span>img<span class="sc">.</span>size<span class="sc">}</span><span class="ss"> pixels&quot;</span>)  <span class="co"># Total de pixels</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Tipo da imagem: </span><span class="sc">{</span>img<span class="sc">.</span>dtype<span class="sc">}</span><span class="ss">&quot;</span>)  <span class="co"># Tipo de dados dos pixels</span></span></code></pre></div></li>
+</ol>
+<hr />
+<h3 id="passo-2-trabalhar-com-a-região-de-interesse-roi"><strong>Passo
+2: Trabalhar com a Região de Interesse (ROI)</strong></h3>
+<ol type="1">
+<li><p><strong>Definir uma ROI</strong><br />
+Selecione uma região específica da imagem (linhas 300 a 400, colunas 400
+a 600):</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>ROI <span class="op">=</span> img[<span class="dv">300</span>:<span class="dv">400</span>, <span class="dv">400</span>:<span class="dv">600</span>]</span></code></pre></div></li>
+<li><p><strong>Modificar a Imagem</strong><br />
+Substitua uma região (linhas 0 a 100, colunas 0 a 200) pela ROI:</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>img[<span class="dv">0</span>:<span class="dv">100</span>, <span class="dv">0</span>:<span class="dv">200</span>] <span class="op">=</span> ROI</span></code></pre></div></li>
+</ol>
+<hr />
+<h3 id="passo-3-exibir-a-imagem-modificada"><strong>Passo 3: Exibir a
+Imagem Modificada</strong></h3>
+<ol type="1">
+<li><p><strong>Mostrar a Imagem com OpenCV</strong><br />
+Exiba a imagem alterada numa janela:</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&quot;Imagem com ROI Modificada&quot;</span>, img)</span></code></pre></div></li>
+<li><p><strong>Manter a Janela Aberta</strong><br />
+Adicione o comando para aguardar uma tecla antes de fechar:</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>cv2.waitKey(<span class="dv">0</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div></li>
+</ol>
+<hr />
+<h3 id="passo-4-executar-o-programa-1"><strong>Passo 4: Executar o
+Programa</strong></h3>
+<ol type="1">
+<li><p>Guarde o ficheiro e execute no terminal:</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex_04_ROI_da_Imagem.py</span></code></pre></div></li>
+</ol>
+<hr />
+<h3 id="resultado-esperado-3"><strong>Resultado Esperado</strong></h3>
+<ul>
+<li><p>O programa exibe informações sobre a imagem:</p>
+<ul>
+<li><strong>Shape</strong>: Altura, largura e número de canais.<br />
+</li>
+<li><strong>Tamanho</strong>: Total de pixels.<br />
+</li>
+<li><strong>Tipo</strong>: Tipo de dados dos pixels.</li>
+</ul></li>
+<li><p>A região selecionada (linhas 300 a 400, colunas 400 a 600) será
+copiada e substituída na área inicial (linhas 0 a 100, colunas 0 a
+200).</p></li>
+<li><p>A imagem modificada será exibida numa janela chamada
+<strong>“Imagem com ROI Modificada”</strong>.<br />
+</p></li>
+<li><p>A janela fechará após pressionar qualquer tecla.</p></li>
+</ul>
+<hr style="page-break-after: always;" />
+<h2 id="ex-05-funções-de-desenho-no-opencv">Ex 05: Funções de Desenho no
+OpenCV</h2>
+<hr />
+<h3 id="passo-1-criar-o-ficheiro-python">Passo 1: Criar o Ficheiro
+Python</h3>
+<ol type="1">
+<li><p><strong>Criação do Ficheiro</strong><br />
+Abra o editor de texto ou IDE e crie o ficheiro
+<code>ex_05_Funções_de_Desenho_no_OpenCV.py</code>.</p></li>
+<li><p><strong>Importar as Bibliotecas</strong><br />
+No início do ficheiro, importe as bibliotecas necessárias:</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span></code></pre></div></li>
+</ol>
+<hr />
+<h3 id="passo-2-criar-e-manipular-a-imagem">Passo 2: Criar e Manipular a
+Imagem</h3>
+<ol type="1">
+<li><p><strong>Criar uma Imagem Preta</strong><br />
+Utilize o código abaixo para criar uma imagem preta com 512x512 pixels e
+3 canais (cor):</p>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.zeros((<span class="dv">512</span>,<span class="dv">512</span>,<span class="dv">3</span>), np.uint8)</span></code></pre></div></li>
+<li><p><strong>Desenhar uma Linha</strong><br />
+Adicione uma linha diagonal azul com espessura de 5 pixels:</p>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.line(img, (<span class="dv">0</span>,<span class="dv">0</span>), (<span class="dv">511</span>,<span class="dv">511</span>), (<span class="dv">255</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="dv">5</span>)</span></code></pre></div></li>
+<li><p><strong>Desenhar um Retângulo</strong><br />
+Insira um retângulo verde com espessura de 3 pixels:</p>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.rectangle(img, (<span class="dv">384</span>,<span class="dv">0</span>), (<span class="dv">510</span>,<span class="dv">128</span>), (<span class="dv">0</span>,<span class="dv">255</span>,<span class="dv">0</span>), <span class="dv">3</span>)</span></code></pre></div></li>
+<li><p><strong>Desenhar um Círculo</strong><br />
+Adicione um círculo vermelho preenchido:</p>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.circle(img, (<span class="dv">447</span>,<span class="dv">63</span>), <span class="dv">63</span>, (<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">255</span>), <span class="op">-</span><span class="dv">1</span>)</span></code></pre></div></li>
+<li><p><strong>Desenhar uma Elipse</strong><br />
+Desenhe uma elipse preenchida a partir do centro da imagem:</p>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.ellipse(img, (<span class="dv">256</span>,<span class="dv">256</span>), (<span class="dv">100</span>,<span class="dv">50</span>), <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">180</span>, <span class="dv">255</span>, <span class="op">-</span><span class="dv">1</span>)</span></code></pre></div></li>
+<li><p><strong>Desenhar um Polígono</strong><br />
+Insira um polígono com pontos definidos manualmente:</p>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>pts <span class="op">=</span> np.array([[<span class="dv">10</span>,<span class="dv">5</span>],[<span class="dv">20</span>,<span class="dv">30</span>],[<span class="dv">70</span>,<span class="dv">20</span>],[<span class="dv">50</span>,<span class="dv">10</span>]], np.int32)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>pts <span class="op">=</span> pts.reshape((<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.polylines(img, [pts], <span class="va">True</span>, (<span class="dv">0</span>,<span class="dv">255</span>,<span class="dv">255</span>))</span></code></pre></div></li>
+</ol>
+<hr />
+<h3 id="passo-3-adicionar-texto">Passo 3: Adicionar Texto</h3>
+<p>Adicione o texto “Viseu” à imagem com a fonte especificada:</p>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>font <span class="op">=</span> cv2.FONT_HERSHEY_SIMPLEX</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>cv2.putText(img, <span class="st">&#39;Viseu&#39;</span>, (<span class="dv">10</span>,<span class="dv">500</span>), font, <span class="dv">4</span>, (<span class="dv">255</span>,<span class="dv">255</span>,<span class="dv">255</span>), <span class="dv">2</span>, cv2.LINE_AA)</span></code></pre></div>
+<hr />
+<h3 id="passo-4-exibir-a-imagem">Passo 4: Exibir a Imagem</h3>
+<ol type="1">
+<li><p><strong>Mostrar a Imagem</strong><br />
+Exiba a imagem numa janela interativa:</p>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;image&#39;</span>, img)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>cv2.waitKey(<span class="dv">0</span>)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div></li>
+</ol>
+<hr />
+<h3 id="passo-5-executar-o-programa">Passo 5: Executar o Programa</h3>
+<ol type="1">
+<li><p>Guarde o ficheiro e execute no terminal:</p>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex_05_Funções_de_Desenho_no_OpenCV.py</span></code></pre></div></li>
+</ol>
+<hr />
+<h3 id="resultado-esperado-4">Resultado Esperado</h3>
+<ul>
+<li>A janela <strong>“image”</strong> exibirá uma imagem com:
+<ul>
+<li>Uma linha diagonal azul.<br />
+</li>
+<li>Um retângulo verde.<br />
+</li>
+<li>Um círculo vermelho preenchido.<br />
+</li>
+<li>Uma elipse preenchida.<br />
+</li>
+<li>Um polígono amarelo.<br />
+</li>
+<li>O texto “Viseu” em branco no canto inferior esquerdo.</li>
+</ul></li>
+</ul>
+<p>Feche a janela ao pressionar qualquer tecla.</p>
+<hr style="page-break-after: always;" />
+<h2
+id="ex-06-operações-aritméticas-máscaras-e-blending-de-imagens-no-opencv">Ex
+06: Operações Aritméticas, Máscaras e Blending de Imagens no OpenCV</h2>
+<hr />
+<h3 id="descrição">Descrição</h3>
+<p>Neste exercício, vamos:</p>
+<ol type="1">
+<li>Demonstrar a diferença entre a soma saturada do OpenCV e a soma
+modular do NumPy.</li>
+<li>Sobrepor uma imagem de um robô (<code>bot.png</code>) sobre uma
+imagem de fundo (<code>Ovar.jpg</code>) através da criação de
+máscaras.</li>
+<li>Combinar a imagem resultante com uma terceira imagem de fundo
+(<code>bot_background.png</code>) utilizando a função
+<code>cv2.addWeighted</code>, ajustando o tamanho da imagem para evitar
+erros de dimensão.</li>
+</ol>
+<hr />
+<h3 id="passo-1-criação-do-arquivo-python">Passo 1: Criação do Arquivo
+Python</h3>
+<p>Crie um arquivo chamado
+<code>ex_06_Operacoes_e_Mascaras_no_OpenCV.py</code> e insira o código
+abaixo.</p>
+<hr />
+<h3 id="passo-2-importar-as-bibliotecas">Passo 2: Importar as
+Bibliotecas</h3>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code></pre></div>
+<hr />
+<h3 id="passo-3-operações-aritméticas-com-arrays">Passo 3: Operações
+Aritméticas com Arrays</h3>
+<p>Demonstraremos a diferença entre <code>cv2.add()</code> e a soma
+simples do NumPy em arrays <code>uint8</code>.</p>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.uint8([[<span class="dv">250</span>]])</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.uint8([[<span class="dv">10</span>]])</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Soma com cv2.add:&quot;</span>, cv2.add(x, y))  <span class="co"># Soma saturada (250 + 10 = 260 =&gt; 255)</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Soma com NumPy  :&quot;</span>, x <span class="op">+</span> y)         <span class="co"># Soma modular (250 + 10 = 260 % 256 = 4)</span></span></code></pre></div>
+<p>A saída esperada no terminal:</p>
+<pre><code>Soma com cv2.add: [[255]]
+Soma com NumPy  : [4]</code></pre>
+<hr />
+<h3 id="passo-4-carregar-e-preparar-imagens">Passo 4: Carregar e
+Preparar Imagens</h3>
+<p>Carregue a imagem de fundo <code>Ovar.jpg</code> e a imagem do robô
+<code>bot.png</code>.</p>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>img1 <span class="op">=</span> cv2.imread(<span class="st">&#39;Ovar.jpg&#39;</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>img2 <span class="op">=</span> cv2.imread(<span class="st">&#39;bot.png&#39;</span>)</span></code></pre></div>
+<p>Verifique se as imagens foram carregadas corretamente:</p>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> img1 <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">IOError</span>(<span class="st">&quot;Erro ao carregar &#39;Ovar.jpg&#39;. Verifique o nome e a localização do arquivo.&quot;</span>)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> img2 <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">IOError</span>(<span class="st">&quot;Erro ao carregar &#39;bot.png&#39;. Verifique o nome e a localização do arquivo.&quot;</span>)</span></code></pre></div>
+<hr />
+<h3
+id="passo-5-criar-máscaras-e-sobrepor-o-robô-sobre-a-imagem-de-fundo">Passo
+5: Criar Máscaras e Sobrepor o Robô sobre a Imagem de Fundo</h3>
+<p>Defina a região de interesse (ROI) na imagem <code>img1</code> onde o
+robô <code>img2</code> será inserido.</p>
+<div class="sourceCode" id="cb40"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>rows, cols, channels <span class="op">=</span> img2.shape</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>roi <span class="op">=</span> img1[<span class="dv">0</span>:rows, <span class="dv">0</span>:cols]</span></code></pre></div>
+<p>Converta a imagem do robô para escala de cinza e crie uma máscara
+binária.</p>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>img2gray <span class="op">=</span> cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>ret, mask <span class="op">=</span> cv2.threshold(img2gray, <span class="dv">10</span>, <span class="dv">255</span>, cv2.THRESH_BINARY)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>mask_inv <span class="op">=</span> cv2.bitwise_not(mask)</span></code></pre></div>
+<p>Remova a área do robô da ROI do fundo:</p>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>img1_bg <span class="op">=</span> cv2.bitwise_and(roi, roi, mask<span class="op">=</span>mask_inv)</span></code></pre></div>
+<p>Obtenha apenas a parte do robô:</p>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>img2_fg <span class="op">=</span> cv2.bitwise_and(img2, img2, mask<span class="op">=</span>mask)</span></code></pre></div>
+<p>Combine as duas partes e atualize a imagem principal
+<code>img1</code>:</p>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>dst <span class="op">=</span> cv2.add(img1_bg, img2_fg)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>img1[<span class="dv">0</span>:rows, <span class="dv">0</span>:cols] <span class="op">=</span> dst</span></code></pre></div>
+<hr />
+<h3 id="passo-6-leitura-da-terceira-imagem-e-blending">Passo 6: Leitura
+da Terceira Imagem e Blending</h3>
+<p>Carregue a terceira imagem (<code>bot_background.png</code>):</p>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>img3 <span class="op">=</span> cv2.imread(<span class="st">&#39;bot_background.png&#39;</span>)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> img3 <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">IOError</span>(<span class="st">&quot;Erro ao carregar &#39;bot_background.png&#39;. Verifique o nome e a localização do arquivo.&quot;</span>)</span></code></pre></div>
+<p>Garanta que <code>img3</code> tenha o mesmo tamanho que
+<code>img1</code> para evitar erros na função
+<code>cv2.addWeighted</code>:</p>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>img3 <span class="op">=</span> cv2.resize(img3, (img1.shape[<span class="dv">1</span>], img1.shape[<span class="dv">0</span>]))</span></code></pre></div>
+<p>Agora realize o blending entre <code>img1</code> (que já possui o
+robô sobreposto) e <code>img3</code>:</p>
+<div class="sourceCode" id="cb47"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>final <span class="op">=</span> cv2.addWeighted(img1, <span class="fl">0.7</span>, img3, <span class="fl">0.3</span>, <span class="dv">0</span>)</span></code></pre></div>
+<hr />
+<h3 id="passo-7-exibir-as-imagens">Passo 7: Exibir as Imagens</h3>
+<p>Exiba as imagens para verificar os resultados:</p>
+<div class="sourceCode" id="cb48"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Imagem com Robo&#39;</span>, img1)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Imagem de Fundo Extra&#39;</span>, img3)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Resultado Blending&#39;</span>, final)</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>cv2.waitKey(<span class="dv">0</span>)</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div>
+<hr />
+<h3 id="passo-8-executar-o-programa">Passo 8: Executar o Programa</h3>
+<p>No terminal, execute:</p>
+<div class="sourceCode" id="cb49"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex_06_Operacoes_e_Mascaras_no_OpenCV.py</span></code></pre></div>
+<hr />
+<h3 id="resultado-esperado-5">Resultado Esperado</h3>
+<ul>
+<li>No terminal, você verá a diferença entre a soma saturada do OpenCV e
+a soma modular do NumPy.</li>
+<li>Na janela “Imagem com Robo”, o robô <code>bot.png</code> deve
+aparecer sobre a imagem <code>Ovar.jpg</code>.</li>
+<li>Na janela “Resultado Blending”, você verá a combinação da imagem
+resultante com <code>bot_background.png</code>, criando um efeito de
+mistura entre as duas imagens.</li>
+</ul>
+<p>Feche as janelas pressionando qualquer tecla.</p>
+<hr style="page-break-after: always;" />
+<h2 id="ex-07-transformações-geométricas-no-opencv">Ex 07:
+Transformações Geométricas no OpenCV</h2>
+<hr />
+<h3 id="descrição-1">Descrição</h3>
+<p>Neste exercício, serão realizadas diversas transformações geométricas
+sobre uma imagem:</p>
+<ol type="1">
+<li><strong>Escalamento (Scaling)</strong> com <code>cv2.resize()</code>
+para aumentar e reduzir.</li>
+<li><strong>PyrDown e PyrUp</strong>: Redução e ampliação utilizando
+pirâmides Gaussianas.</li>
+<li><strong>Translação (Translation)</strong> usando
+<code>cv2.warpAffine()</code> com matriz de translação.</li>
+<li><strong>Rotação (Rotation)</strong> usando
+<code>cv2.getRotationMatrix2D()</code> e
+<code>cv2.warpAffine()</code>.</li>
+<li><strong>Transformação Afim (Affine Transformation)</strong> usando
+<code>cv2.getAffineTransform()</code> e
+<code>cv2.warpAffine()</code>.</li>
+<li><strong>Transformação por Perspectiva (Perspective
+Transformation)</strong> usando
+<code>cv2.getPerspectiveTransform()</code> e
+<code>cv2.warpPerspective()</code>.</li>
+</ol>
+<hr />
+<h3 id="passo-1-criação-do-arquivo-python-1">Passo 1: Criação do Arquivo
+Python</h3>
+<p>Crie o ficheiro
+<code>ex_07_Transformacoes_Geometricas_no_OpenCV.py</code> e insira o
+código abaixo.</p>
+<hr />
+<h3 id="passo-2-importar-as-bibliotecas-1">Passo 2: Importar as
+Bibliotecas</h3>
+<div class="sourceCode" id="cb50"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code></pre></div>
+<hr />
+<h3 id="passo-3-carregar-a-imagem">Passo 3: Carregar a Imagem</h3>
+<p>Certifique-se de ter a imagem <code>Ovar.jpg</code> no mesmo
+diretório do script.</p>
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(<span class="st">&#39;Ovar.jpg&#39;</span>)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> img <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">IOError</span>(<span class="st">&quot;Erro ao carregar &#39;Ovar.jpg&#39;. Verifique o nome e a localização do arquivo.&quot;</span>)</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>height, width <span class="op">=</span> img.shape[:<span class="dv">2</span>]</span></code></pre></div>
+<hr />
+<h3 id="passo-4-escalamento-resize">Passo 4: Escalamento (Resize)</h3>
+<ul>
+<li>Aumentar a imagem (2x)</li>
+<li>Reduzir a imagem (0.5x)</li>
+</ul>
+<div class="sourceCode" id="cb52"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>img_scale_up <span class="op">=</span> cv2.resize(img, <span class="va">None</span>, fx<span class="op">=</span><span class="dv">2</span>, fy<span class="op">=</span><span class="dv">2</span>, interpolation<span class="op">=</span>cv2.INTER_CUBIC)</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>img_scale_down <span class="op">=</span> cv2.resize(img, <span class="va">None</span>, fx<span class="op">=</span><span class="fl">0.5</span>, fy<span class="op">=</span><span class="fl">0.5</span>, interpolation<span class="op">=</span>cv2.INTER_AREA)</span></code></pre></div>
+<hr />
+<h3 id="passo-5-pyrdown-e-pyrup">Passo 5: PyrDown e PyrUp</h3>
+<ul>
+<li><code>cv2.pyrDown()</code> reduz o tamanho da imagem pela metade
+(tanto em largura quanto em altura).</li>
+<li><code>cv2.pyrUp()</code> aumenta o tamanho da imagem em duas vezes
+(inverso do pyrDown).</li>
+</ul>
+<div class="sourceCode" id="cb53"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>img_pyr_down <span class="op">=</span> cv2.pyrDown(img)   <span class="co"># Reduz a imagem</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>img_pyr_up <span class="op">=</span> cv2.pyrUp(img)       <span class="co"># Aumenta a imagem</span></span></code></pre></div>
+<hr />
+<h3 id="passo-6-translação-translation">Passo 6: Translação
+(Translation)</h3>
+<p>Criação de uma matriz de translação para deslocar a imagem.</p>
+<div class="sourceCode" id="cb54"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>tx, ty <span class="op">=</span> <span class="dv">100</span>, <span class="dv">50</span>  <span class="co"># Deslocar 100 pixeis à direita e 50 pixeis para baixo</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>M_translation <span class="op">=</span> np.float32([[<span class="dv">1</span>, <span class="dv">0</span>, tx],</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>                            [<span class="dv">0</span>, <span class="dv">1</span>, ty]])</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>img_translation <span class="op">=</span> cv2.warpAffine(img, M_translation, (width, height))</span></code></pre></div>
+<hr />
+<h3 id="passo-7-rotação-rotation">Passo 7: Rotação (Rotation)</h3>
+<p>Rodar a imagem em torno do centro.</p>
+<div class="sourceCode" id="cb55"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>center <span class="op">=</span> (width<span class="op">//</span><span class="dv">2</span>, height<span class="op">//</span><span class="dv">2</span>)  </span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>angle <span class="op">=</span> <span class="dv">45</span>                      </span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>scale <span class="op">=</span> <span class="fl">1.0</span>                     </span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>M_rotation <span class="op">=</span> cv2.getRotationMatrix2D(center, angle, scale)</span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>img_rotation <span class="op">=</span> cv2.warpAffine(img, M_rotation, (width, height))</span></code></pre></div>
+<hr />
+<h3 id="passo-8-transformação-afim-affine-transform">Passo 8:
+Transformação Afim (Affine Transform)</h3>
+<p>Definir três pontos de origem e três pontos de destino para criar uma
+transformação linear.</p>
+<div class="sourceCode" id="cb56"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>pts1 <span class="op">=</span> np.float32([[<span class="dv">50</span>, <span class="dv">50</span>],</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>                   [<span class="dv">200</span>, <span class="dv">50</span>],</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>                   [<span class="dv">50</span>, <span class="dv">200</span>]])</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>pts2 <span class="op">=</span> np.float32([[<span class="dv">10</span>, <span class="dv">100</span>],</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>                   [<span class="dv">200</span>, <span class="dv">50</span>],</span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>                   [<span class="dv">100</span>, <span class="dv">250</span>]])</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>M_affine <span class="op">=</span> cv2.getAffineTransform(pts1, pts2)</span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>img_affine <span class="op">=</span> cv2.warpAffine(img, M_affine, (width, height))</span></code></pre></div>
+<hr />
+<h3
+id="passo-9-transformação-por-perspectiva-perspective-transform">Passo
+9: Transformação por Perspectiva (Perspective Transform)</h3>
+<p>Definir quatro pontos de origem e quatro pontos de destino para
+alterar a perspectiva.</p>
+<div class="sourceCode" id="cb57"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>pts1_persp <span class="op">=</span> np.float32([[<span class="dv">50</span>,<span class="dv">50</span>],</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>                         [width<span class="op">-</span><span class="dv">50</span>,<span class="dv">50</span>],</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>                         [<span class="dv">50</span>,height<span class="op">-</span><span class="dv">50</span>],</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>                         [width<span class="op">-</span><span class="dv">50</span>,height<span class="op">-</span><span class="dv">50</span>]])</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>pts2_persp <span class="op">=</span> np.float32([[<span class="dv">0</span>,<span class="dv">0</span>],</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>                         [<span class="dv">300</span>,<span class="dv">0</span>],</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>                         [<span class="dv">0</span>,<span class="dv">300</span>],</span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>                         [<span class="dv">300</span>,<span class="dv">300</span>]])</span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>M_perspective <span class="op">=</span> cv2.getPerspectiveTransform(pts1_persp, pts2_persp)</span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>img_perspective <span class="op">=</span> cv2.warpPerspective(img, M_perspective, (<span class="dv">300</span>, <span class="dv">300</span>))</span></code></pre></div>
+<hr />
+<h3 id="passo-10-exibir-as-imagens">Passo 10: Exibir as Imagens</h3>
+<div class="sourceCode" id="cb58"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Original&#39;</span>, img)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Scale Up (2x)&#39;</span>, img_scale_up)</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Scale Down (0.5x)&#39;</span>, img_scale_down)</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;PyrDown&#39;</span>, img_pyr_down)</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;PyrUp&#39;</span>, img_pyr_up)</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Translation&#39;</span>, img_translation)</span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Rotation 45 graus&#39;</span>, img_rotation)</span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Affine Transformation&#39;</span>, img_affine)</span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Perspective Transformation&#39;</span>, img_perspective)</span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>cv2.waitKey(<span class="dv">0</span>)</span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div>
+<hr />
+<h3 id="passo-11-executar-o-programa">Passo 11: Executar o Programa</h3>
+<p>No terminal:</p>
+<div class="sourceCode" id="cb59"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex_07_Transformacoes_Geometricas_no_OpenCV.py</span></code></pre></div>
+<hr />
+<h3 id="resultado-esperado-6">Resultado Esperado</h3>
+<ul>
+<li><strong>Original</strong>: Imagem sem modificações.</li>
+<li><strong>Scale Up (2x)</strong>: Imagem ampliada em 2 vezes.</li>
+<li><strong>Scale Down (0.5x)</strong>: Imagem reduzida pela
+metade.</li>
+<li><strong>PyrDown</strong>: Imagem reduzida usando pirâmides
+Gaussianas.</li>
+<li><strong>PyrUp</strong>: Imagem ampliada usando pirâmides
+Gaussianas.</li>
+<li><strong>Translation</strong>: Imagem deslocada à direita e para
+baixo.</li>
+<li><strong>Rotation 45 graus</strong>: Imagem rotacionada em 45
+graus.</li>
+<li><strong>Affine Transformation</strong>: Imagem transformada afim
+(cisalhamento, rotação e/ou translação baseada em três pontos).</li>
+<li><strong>Perspective Transformation</strong>: Imagem alterada de
+perspectiva (quatro pontos).</li>
+</ul>
+<p>Feche todas as janelas pressionando qualquer tecla.</p>
+<hr style="page-break-after: always;" />
+<h2 id="ex-08-carregamento-e-correção-de-cores-bgr-para-rgb-e-hsv">Ex
+08: Carregamento e Correção de Cores (BGR para RGB e HSV)</h2>
+<hr />
+<h3 id="descrição-2">Descrição</h3>
+<ol type="1">
+<li><strong>Carregar Imagem com OpenCV</strong>: Carregar a imagem
+<code>Ovar.jpg</code> usando <code>cv2.imread()</code>.</li>
+<li><strong>Exibir com Matplotlib sem Correção</strong>: Exibir a imagem
+usando <code>matplotlib.pyplot.imshow()</code> diretamente após o
+carregamento. Será observado que as cores não aparecem
+corretamente.</li>
+<li><strong>Corrigir a Ordem dos Canais (BGR para RGB)</strong>:
+Converter a imagem de BGR para RGB usando
+<code>cv2.cvtColor(img, cv2.COLOR_BGR2RGB)</code> e exibi-la novamente,
+observando a diferença.</li>
+<li><strong>Converter para HSV</strong>: Converter a imagem de BGR para
+HSV usando <code>cv2.COLOR_BGR2HSV</code> e exibir o resultado no
+Matplotlib.</li>
+</ol>
+<hr />
+<h3 id="passo-1-criação-do-arquivo-python-2">Passo 1: Criação do Arquivo
+Python</h3>
+<p>Crie o arquivo <code>ex_08_Correcao_de_Espaço_de_Cores.py</code> e
+adicione o código abaixo.</p>
+<hr />
+<h3 id="passo-2-importar-as-bibliotecas-2">Passo 2: Importar as
+Bibliotecas</h3>
+<div class="sourceCode" id="cb60"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span></code></pre></div>
+<hr />
+<h3 id="passo-3-carregar-a-imagem-com-opencv">Passo 3: Carregar a Imagem
+com OpenCV</h3>
+<p>Certifique-se de ter a imagem <code>Ovar.jpg</code> no mesmo
+diretório do script.</p>
+<div class="sourceCode" id="cb61"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(<span class="st">&#39;Ovar.jpg&#39;</span>)</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> img <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">IOError</span>(<span class="st">&quot;Erro ao carregar &#39;Ovar.jpg&#39;. Verifique o nome e a localização do arquivo.&quot;</span>)</span></code></pre></div>
+<p>Note que <code>img</code> está no formato BGR.</p>
+<hr />
+<h3 id="passo-4-exibir-a-imagem-diretamente-no-matplotlib">Passo 4:
+Exibir a Imagem Diretamente no Matplotlib</h3>
+<p>O Matplotlib espera imagens no formato RGB. Se exibirmos a imagem
+diretamente, as cores ficarão distorcidas.</p>
+<div class="sourceCode" id="cb62"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>,<span class="dv">4</span>))</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">1</span>)</span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)  <span class="co"># Aqui as cores aparecerão incorretas (BGR exibido como RGB)</span></span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">&#39;BGR exibido diretamente&#39;</span>)</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">&#39;off&#39;</span>)</span></code></pre></div>
+<hr />
+<h3 id="passo-5-converter-de-bgr-para-rgb">Passo 5: Converter de BGR
+para RGB</h3>
+<p>Converter a imagem para RGB para exibir corretamente no
+Matplotlib:</p>
+<div class="sourceCode" id="cb63"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>img_rgb <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2RGB)</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">2</span>)</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>plt.imshow(img_rgb)</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">&#39;Imagem em RGB&#39;</span>)</span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">&#39;off&#39;</span>)</span></code></pre></div>
+<p>Agora a imagem deve aparecer com as cores corretas.</p>
+<hr />
+<h3 id="passo-6-converter-de-bgr-para-hsv">Passo 6: Converter de BGR
+para HSV</h3>
+<p>Converter a imagem para o espaço de cor HSV:</p>
+<div class="sourceCode" id="cb64"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>img_hsv <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2HSV)</span></code></pre></div>
+<p>Por padrão, <code>imshow</code> do Matplotlib irá interpretar o array
+HSV também como RGB. Para visualizar de maneira coerente, não existe uma
+conversão direta para exibir HSV “corretamente” no
+<code>plt.imshow()</code>, pois HSV é um espaço de cor conceptual, não
+diretamente representável como uma imagem colorida normal. Ainda assim,
+podemos exibir a imagem HSV diretamente e notar que a aparência é
+diferente da RGB.<br />
+<strong>Observação</strong>: O que veremos será a interpretação dos
+valores HSV como se fossem RGB, o que não faz sentido sem conversão. É
+apenas para fins de ilustrar o resultado num espaço diferente.
+Idealmente, para analisar HSV, deveríamos inspecionar cada canal
+separadamente ou converter de volta a RGB antes de exibir. Entretanto,
+aqui, exibiremos diretamente para perceber o quão “estranho” fica.</p>
+<div class="sourceCode" id="cb65"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">3</span>)</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>plt.imshow(img_hsv)</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">&#39;Imagem em HSV (interpretada como RGB)&#39;</span>)</span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">&#39;off&#39;</span>)</span></code></pre></div>
+<p>Para ver os canais separadamente, poderíamos fazer algo como:</p>
+<div class="sourceCode" id="cb66"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Separar canais H, S e V para visualizar</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>h, s, v <span class="op">=</span> cv2.split(img_hsv)</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Exibir o canal H, S e V separadamente em tons de cinza</span></span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>,<span class="dv">3</span>))</span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">1</span>)</span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>plt.imshow(h, cmap<span class="op">=</span><span class="st">&#39;gray&#39;</span>)</span>
+<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">&#39;Canal H&#39;</span>)</span>
+<span id="cb66-9"><a href="#cb66-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">2</span>)</span>
+<span id="cb66-11"><a href="#cb66-11" aria-hidden="true" tabindex="-1"></a>plt.imshow(s, cmap<span class="op">=</span><span class="st">&#39;gray&#39;</span>)</span>
+<span id="cb66-12"><a href="#cb66-12" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">&#39;Canal S&#39;</span>)</span>
+<span id="cb66-13"><a href="#cb66-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-14"><a href="#cb66-14" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">3</span>)</span>
+<span id="cb66-15"><a href="#cb66-15" aria-hidden="true" tabindex="-1"></a>plt.imshow(v, cmap<span class="op">=</span><span class="st">&#39;gray&#39;</span>)</span>
+<span id="cb66-16"><a href="#cb66-16" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">&#39;Canal V&#39;</span>)</span></code></pre></div>
+<hr />
+<h3 id="passo-7-mostrar-as-janelas-do-matplotlib">Passo 7: Mostrar as
+Janelas do Matplotlib</h3>
+<div class="sourceCode" id="cb67"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div>
+<hr />
+<h3 id="executar-o-programa">Executar o Programa</h3>
+<p>No terminal, execute:</p>
+<div class="sourceCode" id="cb68"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex_08_Correcao_de_Espaço_de_Cores.py</span></code></pre></div>
+<hr />
+<h3 id="resultado-esperado-7">Resultado Esperado</h3>
+<ul>
+<li><strong>Primeira Imagem (BGR exibido diretamente)</strong>: Cores
+distorcidas, pois a imagem está em BGR e o Matplotlib interpreta como
+RGB.</li>
+<li><strong>Segunda Imagem (RGB)</strong>: Cores corretas, após
+converter de BGR para RGB.</li>
+<li><strong>Terceira Imagem (HSV)</strong>: A imagem apresentada de
+forma estranha, pois o HSV não é um espaço diretamente interpretado como
+RGB. Esta é apenas uma ilustração.<br />
+</li>
+<li>As figuras com canais H, S, V em tons de cinza permitirão
+compreender a decomposição da imagem em HSV.</li>
+</ul>
+<hr style="page-break-after: always;" />
+<h2
+id="ex-09-comparação-entre-simple-thresholding-e-adaptive-thresholding">Ex
+09: Comparação entre Simple Thresholding e Adaptive Thresholding</h2>
+<hr />
+<h3 id="descrição-3">Descrição</h3>
+<ol type="1">
+<li><strong>Carregar Imagem em Tons de Cinza</strong>: Carregar a imagem
+<code>sudoku.png</code> já em escala de cinza.</li>
+<li><strong>Remover Ruídos com Filtro Mediana</strong>: Aplicar
+<code>cv2.medianBlur()</code> para reduzir o ruído da imagem.</li>
+<li><strong>Limiarização Global (Simple Thresholding)</strong>: Definir
+um valor global de limiar e segmentar a imagem.</li>
+<li><strong>Limiarização Adaptativa</strong>: Aplicar métodos de limiar
+adaptativo (média e gaussiano) para comparar com a limiarização
+simples.</li>
+<li><strong>Visualizar Resultados com Matplotlib</strong>: Exibir a
+imagem original e as diferentes imagens resultantes lado a lado.</li>
+</ol>
+<hr />
+<h3 id="passo-1-criação-do-arquivo-python-3">Passo 1: Criação do Arquivo
+Python</h3>
+<p>Crie o arquivo <code>ex_09_Comparacao_Thresholding.py</code> e insira
+o código abaixo.</p>
+<hr />
+<h3 id="passo-2-importar-bibliotecas">Passo 2: Importar Bibliotecas</h3>
+<div class="sourceCode" id="cb69"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span></code></pre></div>
+<hr />
+<h3 id="passo-3-carregar-a-imagem-e-aplicar-filtro-mediana">Passo 3:
+Carregar a Imagem e Aplicar Filtro Mediana</h3>
+<p>Carregue a imagem <code>sudoku.png</code> em escala de cinza.
+Certifique-se de que o arquivo esteja no mesmo diretório do script.</p>
+<div class="sourceCode" id="cb70"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(<span class="st">&#39;sudoku.png&#39;</span>, <span class="dv">0</span>)</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> img <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">IOError</span>(<span class="st">&quot;Erro ao carregar &#39;sudoku.png&#39;. Verifique o nome e a localização do arquivo.&quot;</span>)</span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicar filtro mediana para redução de ruído</span></span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.medianBlur(img, <span class="dv">5</span>)</span></code></pre></div>
+<hr />
+<h3 id="passo-4-limiarização-global-simple-thresholding">Passo 4:
+Limiarização Global (Simple Thresholding)</h3>
+<p>Aplicar um threshold fixo (global) de 127. Tudo acima de 127 será
+branco (255) e abaixo será preto (0).</p>
+<div class="sourceCode" id="cb71"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>ret, th1 <span class="op">=</span> cv2.threshold(img, <span class="dv">127</span>, <span class="dv">255</span>, cv2.THRESH_BINARY)</span></code></pre></div>
+<hr />
+<h3 id="passo-5-limiarização-adaptativa">Passo 5: Limiarização
+Adaptativa</h3>
+<p>Utilizar dois métodos:</p>
+<ol type="1">
+<li><strong>Média Adaptativa (ADAPTIVE_THRESH_MEAN_C)</strong>: O limiar
+é a média dos valores dos píxeis vizinhos.</li>
+<li><strong>Gaussiana Adaptativa (ADAPTIVE_THRESH_GAUSSIAN_C)</strong>:
+O limiar é calculado a partir de uma soma ponderada Gaussianamente dos
+vizinhos.</li>
+</ol>
+<div class="sourceCode" id="cb72"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>th2 <span class="op">=</span> cv2.adaptiveThreshold(img, <span class="dv">255</span>, cv2.ADAPTIVE_THRESH_MEAN_C, </span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>                            cv2.THRESH_BINARY, <span class="dv">11</span>, <span class="dv">2</span>)</span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>th3 <span class="op">=</span> cv2.adaptiveThreshold(img, <span class="dv">255</span>, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, </span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a>                            cv2.THRESH_BINARY, <span class="dv">11</span>, <span class="dv">2</span>)</span></code></pre></div>
+<hr />
+<h3 id="passo-6-visualização-com-matplotlib">Passo 6: Visualização com
+Matplotlib</h3>
+<p>Criar um arranjo de imagens e títulos para exibir usando subplots no
+Matplotlib.</p>
+<div class="sourceCode" id="cb73"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>titles <span class="op">=</span> [</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;Original Image&#39;</span>,</span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;Global Thresholding (v = 127)&#39;</span>,</span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;Adaptive Mean Thresholding&#39;</span>,</span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;Adaptive Gaussian Thresholding&#39;</span></span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-8"><a href="#cb73-8" aria-hidden="true" tabindex="-1"></a>images <span class="op">=</span> [img, th1, th2, th3]</span>
+<span id="cb73-9"><a href="#cb73-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-10"><a href="#cb73-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">4</span>):</span>
+<span id="cb73-11"><a href="#cb73-11" aria-hidden="true" tabindex="-1"></a>    plt.subplot(<span class="dv">2</span>, <span class="dv">2</span>, i<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb73-12"><a href="#cb73-12" aria-hidden="true" tabindex="-1"></a>    plt.imshow(images[i], <span class="st">&#39;gray&#39;</span>)</span>
+<span id="cb73-13"><a href="#cb73-13" aria-hidden="true" tabindex="-1"></a>    plt.title(titles[i])</span>
+<span id="cb73-14"><a href="#cb73-14" aria-hidden="true" tabindex="-1"></a>    plt.xticks([]), plt.yticks([])</span>
+<span id="cb73-15"><a href="#cb73-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-16"><a href="#cb73-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div>
+<hr />
+<h3 id="passo-7-executar-o-programa">Passo 7: Executar o Programa</h3>
+<p>No terminal:</p>
+<div class="sourceCode" id="cb74"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex_09_Comparacao_Thresholding.py</span></code></pre></div>
+<hr />
+<h3 id="resultado-esperado-8">Resultado Esperado</h3>
+<ul>
+<li><strong>Original Image</strong>: A imagem original em tons de cinza,
+após aplicação do filtro mediana.</li>
+<li><strong>Global Thresholding</strong>: Limiarização simples
+utilizando um único valor (127), resultando em uma segmentação
+rudimentar.</li>
+<li><strong>Adaptive Mean Thresholding</strong>: Limiarização adaptativa
+baseada na média dos vizinhos. Áreas com diferentes iluminações recebem
+limiares distintos, melhorando a segmentação.</li>
+<li><strong>Adaptive Gaussian Thresholding</strong>: Similar ao método
+de média, porém utilizando ponderações Gaussianas, resultando em uma
+segmentação mais suave em regiões complexas.</li>
+</ul>
+<hr style="page-break-after: always;" />
+<h2 id="ex-10-técnicas-de-suavização-de-imagens-smoothingblurring">Ex
+10: Técnicas de Suavização de Imagens (Smoothing/Blurring)</h2>
+<hr />
+<h3 id="enunciado">Enunciado</h3>
+<p>Crie um programa em Python, denominado
+<code>ex_10_Filtros_de_Suavizacao.py</code>, que:</p>
+<ol type="1">
+<li>Carregue uma imagem (<code>bot.png</code>).</li>
+<li>Aplique diferentes técnicas de suavização:
+<ul>
+<li>Filtro de média (<code>cv2.blur</code>)</li>
+<li>Filtro Gaussiano (<code>cv2.GaussianBlur</code>)</li>
+<li>Filtro Mediana (<code>cv2.medianBlur</code>)</li>
+<li>Filtro Bilateral (<code>cv2.bilateralFilter</code>)</li>
+</ul></li>
+<li>Exiba as imagens (original e filtradas) em janelas separadas
+utilizando <code>cv2.imshow()</code>.</li>
+<li>Aguarde uma tecla ser pressionada e, então, feche todas as
+janelas.</li>
+</ol>
+<hr />
+<h3 id="passo-a-passo">Passo a Passo</h3>
+<ol type="1">
+<li><p><strong>Importar Bibliotecas</strong></p>
+<div class="sourceCode" id="cb75"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code></pre></div></li>
+<li><p><strong>Carregar a Imagem</strong><br />
+Certifique-se de que a imagem <code>bot.png</code> está no mesmo
+diretório do script.</p>
+<div class="sourceCode" id="cb76"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(<span class="st">&#39;bot.png&#39;</span>)</span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> img <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">IOError</span>(<span class="st">&quot;Erro ao carregar &#39;bot.png&#39;. Verifique o nome e a localização do arquivo.&quot;</span>)</span></code></pre></div></li>
+<li><p><strong>Aplicar Filtros de Suavização</strong></p>
+<ul>
+<li><p><strong>Filtro de Média</strong>:</p>
+<div class="sourceCode" id="cb77"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>blur <span class="op">=</span> cv2.blur(img, (<span class="dv">5</span>,<span class="dv">5</span>))</span></code></pre></div></li>
+<li><p><strong>Filtro Gaussiano</strong>:</p>
+<div class="sourceCode" id="cb78"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>gaussian_blur <span class="op">=</span> cv2.GaussianBlur(img, (<span class="dv">5</span>,<span class="dv">5</span>), <span class="dv">0</span>)</span></code></pre></div></li>
+<li><p><strong>Filtro Mediana</strong>:</p>
+<div class="sourceCode" id="cb79"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>median <span class="op">=</span> cv2.medianBlur(img, <span class="dv">5</span>)</span></code></pre></div></li>
+<li><p><strong>Filtro Bilateral</strong>:</p>
+<div class="sourceCode" id="cb80"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>bilateral <span class="op">=</span> cv2.bilateralFilter(img, <span class="dv">9</span>, <span class="dv">75</span>, <span class="dv">75</span>)</span></code></pre></div></li>
+</ul></li>
+<li><p><strong>Exibir as Imagens com cv2.imshow()</strong></p>
+<div class="sourceCode" id="cb81"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Original&#39;</span>, img)</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Blur (Média)&#39;</span>, blur)</span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Gaussian Blur&#39;</span>, gaussian_blur)</span>
+<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Median Blur&#39;</span>, median)</span>
+<span id="cb81-5"><a href="#cb81-5" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Bilateral Filter&#39;</span>, bilateral)</span>
+<span id="cb81-6"><a href="#cb81-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-7"><a href="#cb81-7" aria-hidden="true" tabindex="-1"></a>cv2.waitKey(<span class="dv">0</span>)</span>
+<span id="cb81-8"><a href="#cb81-8" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div></li>
+</ol>
+<hr />
+<h3 id="execução">Execução</h3>
+<p>Salve o arquivo como <code>ex_10_Filtros_de_Suavizacao.py</code> e,
+no terminal, execute:</p>
+<div class="sourceCode" id="cb82"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex_10_Filtros_de_Suavizacao.py</span></code></pre></div>
+<hr />
+<h3 id="resultado-esperado-9">Resultado Esperado</h3>
+<p>Serão exibidas cinco janelas:</p>
+<ul>
+<li><strong>Original</strong>: Imagem original sem modificações.<br />
+</li>
+<li><strong>Blur (Média)</strong>: Imagem suavizada uniformemente,
+resultando em perda de detalhes finos.<br />
+</li>
+<li><strong>Gaussian Blur</strong>: Suavização suave e mais natural, com
+menor perda de detalhe.<br />
+</li>
+<li><strong>Median Blur</strong>: Boa para remover ruídos pontuais,
+preservando contornos.<br />
+</li>
+<li><strong>Bilateral Filter</strong>: Suavização mantendo as arestas
+mais definidas, ideal para reduzir ruído preservando detalhes
+importantes.</li>
+</ul>
+<p>Pressione qualquer tecla enquanto estiver com o foco em uma das
+janelas para fechá-las.</p>
+<hr style="page-break-after: always;" />
+<h2 id="ex-11-operações-morfológicas-com-opencv">Ex 11: Operações
+Morfológicas com OpenCV</h2>
+<hr />
+<h3 id="descrição-4">Descrição</h3>
+<p>Este exercício consiste em:</p>
+<ol type="1">
+<li>Carregar uma imagem em escala de cinza (<code>bot.png</code>).</li>
+<li>Criar um elemento estruturante (kernel).</li>
+<li>Aplicar várias operações morfológicas básicas e avançadas:
+<ul>
+<li><strong>Erosão (Erode)</strong>: Remove camadas de píxeis das
+fronteiras de objetos.</li>
+<li><strong>Dilatação (Dilate)</strong>: Expande as fronteiras de
+objetos.</li>
+<li><strong>Abertura (Opening)</strong>: Erosão seguida de dilatação,
+remove ruídos pontuais.</li>
+<li><strong>Fechamento (Closing)</strong>: Dilatação seguida de erosão,
+preenche falhas no objeto.</li>
+<li><strong>Gradiente Morfológico (Morphological Gradient)</strong>:
+Diferença entre dilatação e erosão, destacando contornos.</li>
+<li><strong>Top-Hat</strong>: Diferença entre a imagem original e sua
+abertura, destacando detalhes mais claros.</li>
+<li><strong>Black-Hat</strong>: Diferença entre o fechamento da imagem e
+a imagem original, destacando detalhes mais escuros.</li>
+</ul></li>
+<li>Exibir os resultados lado a lado para comparar as
+transformações.</li>
+</ol>
+<hr />
+<h3 id="passo-1-criar-o-arquivo-python">Passo 1: Criar o Arquivo
+Python</h3>
+<p>Crie o arquivo <code>ex_11_Operacoes_Morfologicas.py</code> e insira
+o código abaixo.</p>
+<hr />
+<h3 id="passo-2-importar-bibliotecas-1">Passo 2: Importar
+Bibliotecas</h3>
+<div class="sourceCode" id="cb83"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code></pre></div>
+<hr />
+<h3 id="passo-3-carregar-a-imagem-1">Passo 3: Carregar a Imagem</h3>
+<div class="sourceCode" id="cb84"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(<span class="st">&#39;bot.png&#39;</span>, <span class="dv">0</span>)</span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> img <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">IOError</span>(<span class="st">&quot;Erro ao carregar &#39;bot.png&#39;. Verifique o nome e a localização do arquivo.&quot;</span>)</span></code></pre></div>
+<hr />
+<h3 id="passo-4-definir-o-kernel-elemento-estruturante">Passo 4: Definir
+o Kernel (Elemento Estruturante)</h3>
+<div class="sourceCode" id="cb85"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>kernel <span class="op">=</span> np.ones((<span class="dv">5</span>,<span class="dv">5</span>), np.uint8)</span></code></pre></div>
+<hr />
+<h3 id="passo-5-aplicar-operações-morfológicas">Passo 5: Aplicar
+Operações Morfológicas</h3>
+<div class="sourceCode" id="cb86"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>erosion <span class="op">=</span> cv2.erode(img, kernel, iterations<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>dilation <span class="op">=</span> cv2.dilate(img, kernel, iterations<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>opening <span class="op">=</span> cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)</span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>closing <span class="op">=</span> cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)</span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>gradient <span class="op">=</span> cv2.morphologyEx(img, cv2.MORPH_GRADIENT, kernel)</span>
+<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a>tophat <span class="op">=</span> cv2.morphologyEx(img, cv2.MORPH_TOPHAT, kernel)</span>
+<span id="cb86-7"><a href="#cb86-7" aria-hidden="true" tabindex="-1"></a>blackhat <span class="op">=</span> cv2.morphologyEx(img, cv2.MORPH_BLACKHAT, kernel)</span></code></pre></div>
+<hr />
+<h3 id="passo-6-exibir-resultados-com-cv2.imshow">Passo 6: Exibir
+Resultados com cv2.imshow()</h3>
+<div class="sourceCode" id="cb87"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Original&#39;</span>, img)</span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Erosion&#39;</span>, erosion)</span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Dilation&#39;</span>, dilation)</span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Opening&#39;</span>, opening)</span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Closing&#39;</span>, closing)</span>
+<span id="cb87-6"><a href="#cb87-6" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Gradient&#39;</span>, gradient)</span>
+<span id="cb87-7"><a href="#cb87-7" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Top-Hat&#39;</span>, tophat)</span>
+<span id="cb87-8"><a href="#cb87-8" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Black-Hat&#39;</span>, blackhat)</span>
+<span id="cb87-9"><a href="#cb87-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-10"><a href="#cb87-10" aria-hidden="true" tabindex="-1"></a>cv2.waitKey(<span class="dv">0</span>)</span>
+<span id="cb87-11"><a href="#cb87-11" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div>
+<hr />
+<h3 id="passo-7-executar-o-programa-1">Passo 7: Executar o Programa</h3>
+<p>No terminal, digite:</p>
+<div class="sourceCode" id="cb88"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex_11_Operacoes_Morfologicas.py</span></code></pre></div>
+<hr />
+<h3 id="resultado-esperado-10">Resultado Esperado</h3>
+<ul>
+<li><strong>Original</strong>: A imagem original em escala de
+cinza.</li>
+<li><strong>Erosion</strong>: Objeto reduzido, removendo bordas
+externas.</li>
+<li><strong>Dilation</strong>: Objeto expandido, preenchendo
+lacunas.</li>
+<li><strong>Opening</strong>: Ruídos pontuais removidos, mantendo a
+forma do objeto.</li>
+<li><strong>Closing</strong>: Pequenos buracos preenchidos dentro do
+objeto.</li>
+<li><strong>Gradient</strong>: Contornos realçados, mostrando a
+diferença entre dilatação e erosão.</li>
+<li><strong>Top-Hat</strong>: Detalhes claros realçados sobre o
+fundo.</li>
+<li><strong>Black-Hat</strong>: Detalhes escuros realçados sobre o
+fundo.</li>
+</ul>
+<p>Feche todas as janelas pressionando qualquer tecla.</p>
+<hr style="page-break-after: always;" />
+<h2 id="ex-12-extração-do-primeiro-plano-com-grabcut">Ex 12: Extração do
+Primeiro Plano com GrabCut</h2>
+<hr />
+<h3 id="descrição-5">Descrição</h3>
+<p>Este exercício consiste em:</p>
+<ol type="1">
+<li>Carregar uma imagem colorida (<code>Ovar.jpg</code>).</li>
+<li>Criar uma máscara e modelos de fundo e primeiro plano para o
+algoritmo GrabCut.</li>
+<li>Definir um retângulo englobando a área de interesse (onde se
+encontra o objeto a ser isolado).</li>
+<li>Executar o algoritmo GrabCut para segmentar o primeiro plano do
+plano de fundo.</li>
+<li>Criar uma máscara final para isolar apenas o objeto de
+interesse.</li>
+<li>Exibir a imagem resultante utilizando
+<code>cv2.imshow()</code>.</li>
+</ol>
+<hr />
+<h3 id="passo-1-criar-o-arquivo-python-1">Passo 1: Criar o Arquivo
+Python</h3>
+<p>Crie o arquivo <code>ex_12_GrabCut_Foreground_Extraction.py</code> e
+insira o código abaixo.</p>
+<hr />
+<h3 id="passo-2-importar-bibliotecas-2">Passo 2: Importar
+Bibliotecas</h3>
+<div class="sourceCode" id="cb89"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code></pre></div>
+<hr />
+<h3 id="passo-3-carregar-a-imagem-2">Passo 3: Carregar a Imagem</h3>
+<div class="sourceCode" id="cb90"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(<span class="st">&#39;Ovar.jpg&#39;</span>)</span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> img <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">IOError</span>(<span class="st">&quot;Erro ao carregar &#39;Ovar.jpg&#39;. Verifique o nome e a localização do arquivo.&quot;</span>)</span></code></pre></div>
+<hr />
+<h3 id="passo-4-criar-máscara-e-modelos">Passo 4: Criar Máscara e
+Modelos</h3>
+<p>Crie a máscara inicial (inicialmente com zeros), e os modelos de
+fundo (bgdModel) e primeiro plano (fgdModel) necessários para o
+GrabCut.</p>
+<div class="sourceCode" id="cb91"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>mask <span class="op">=</span> np.zeros(img.shape[:<span class="dv">2</span>], np.uint8)</span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>bgdModel <span class="op">=</span> np.zeros((<span class="dv">1</span>,<span class="dv">65</span>), np.float64)</span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>fgdModel <span class="op">=</span> np.zeros((<span class="dv">1</span>,<span class="dv">65</span>), np.float64)</span></code></pre></div>
+<hr />
+<h3 id="passo-5-definir-o-retângulo-de-interesse">Passo 5: Definir o
+Retângulo de Interesse</h3>
+<p>Defina o retângulo que engloba a área onde o objeto principal se
+encontra.</p>
+<div class="sourceCode" id="cb92"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>rect <span class="op">=</span> (<span class="dv">50</span>, <span class="dv">50</span>, <span class="dv">450</span>, <span class="dv">290</span>)  <span class="co"># (x, y, largura, altura)</span></span></code></pre></div>
+<hr />
+<h3 id="passo-6-aplicar-o-grabcut">Passo 6: Aplicar o GrabCut</h3>
+<p>Utilize o retângulo definido e a inicialização do GrabCut:</p>
+<div class="sourceCode" id="cb93"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>cv2.grabCut(img, mask, rect, bgdModel, fgdModel, <span class="dv">5</span>, cv2.GC_INIT_WITH_RECT)</span></code></pre></div>
+<hr />
+<h3 id="passo-7-criar-a-máscara-final">Passo 7: Criar a Máscara
+Final</h3>
+<p>Píxeis classificados como 0 ou 2 são background, enquanto 1 e 3 são
+foreground:</p>
+<div class="sourceCode" id="cb94"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>mask2 <span class="op">=</span> np.where((mask <span class="op">==</span> <span class="dv">2</span>) <span class="op">|</span> (mask <span class="op">==</span> <span class="dv">0</span>), <span class="dv">0</span>, <span class="dv">1</span>).astype(<span class="st">&#39;uint8&#39;</span>)</span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>img_result <span class="op">=</span> img <span class="op">*</span> mask2[:, :, np.newaxis]</span></code></pre></div>
+<hr />
+<h3 id="passo-8-exibir-resultados-com-cv2.imshow">Passo 8: Exibir
+Resultados com cv2.imshow()</h3>
+<p>Exibir a imagem original e a imagem resultante (foreground
+extraído).</p>
+<div class="sourceCode" id="cb95"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Original&#39;</span>, cv2.imread(<span class="st">&#39;Ovar.jpg&#39;</span>))  <span class="co"># Recarregar para exibir a original</span></span>
+<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Foreground Extraido&#39;</span>, img_result)</span>
+<span id="cb95-3"><a href="#cb95-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-4"><a href="#cb95-4" aria-hidden="true" tabindex="-1"></a>cv2.waitKey(<span class="dv">0</span>)</span>
+<span id="cb95-5"><a href="#cb95-5" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div>
+<hr />
+<h3 id="passo-9-executar-o-programa">Passo 9: Executar o Programa</h3>
+<p>No terminal, digite:</p>
+<div class="sourceCode" id="cb96"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex_12_GrabCut_Foreground_Extraction.py</span></code></pre></div>
+<hr />
+<h3 id="resultado-esperado-11">Resultado Esperado</h3>
+<ul>
+<li><strong>Original</strong>: A imagem original carregada.</li>
+<li><strong>Foreground Extraido</strong>: A imagem resultante mostrando
+apenas o objeto de interesse isolado do fundo. As áreas de fundo deverão
+aparecer pretas (zeros), enquanto o objeto permanece visível.</li>
+</ul>
+<p>Feche as janelas pressionando qualquer tecla.</p>
+<hr style="page-break-after: always;" />
+<h2 id="ex-13-análise-da-imagem-com-dft-e-idft">Ex 13: Análise da Imagem
+com DFT e IDFT</h2>
+<hr />
+<h3 id="descrição-6">Descrição</h3>
+<p>Este exercício consiste em:</p>
+<ol type="1">
+<li>Carregar a imagem <code>Ovar.jpg</code> em escala de cinza.</li>
+<li>Aplicar a Transformada de Fourier Discreta (<code>cv2.dft()</code>)
+para obter o espectro de frequências da imagem.</li>
+<li>Centralizar o espectro, de modo a posicionar as frequências baixas
+no centro da imagem.</li>
+<li>Exibir o espectro de magnitude da imagem transformada.</li>
+<li>Aplicar a Transformada Inversa de Fourier Discreta
+(<code>cv2.idft()</code>) para retornar ao domínio espacial e obter a
+imagem original novamente.</li>
+<li>Exibir a imagem reconstruída a partir do espectro.</li>
+</ol>
+<hr />
+<h3 id="passo-1-criar-o-arquivo-python-2">Passo 1: Criar o Arquivo
+Python</h3>
+<p>Crie o arquivo <code>ex_13_Analise_DFT_IDFT.py</code> e insira o
+código abaixo.</p>
+<hr />
+<h3 id="passo-2-importar-bibliotecas-3">Passo 2: Importar
+Bibliotecas</h3>
+<div class="sourceCode" id="cb97"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code></pre></div>
+<hr />
+<h3 id="passo-3-carregar-a-imagem-em-tons-de-cinza">Passo 3: Carregar a
+Imagem em Tons de Cinza</h3>
+<div class="sourceCode" id="cb98"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(<span class="st">&#39;Ovar.jpg&#39;</span>, <span class="dv">0</span>)</span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> img <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">IOError</span>(<span class="st">&quot;Erro ao carregar &#39;Ovar.jpg&#39;. Verifique o nome e a localização do arquivo.&quot;</span>)</span></code></pre></div>
+<hr />
+<h3 id="passo-4-preparar-a-imagem-para-a-dft">Passo 4: Preparar a Imagem
+para a DFT</h3>
+<p>A função <code>cv2.dft()</code> espera uma matriz do tipo
+<code>float32</code>. Também é comum “acolchoar” a imagem para obter
+dimensões ótimas para a DFT, porém neste exemplo simples faremos apenas
+a conversão de tipo.</p>
+<div class="sourceCode" id="cb99"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a>dft_input <span class="op">=</span> np.float32(img)</span></code></pre></div>
+<hr />
+<h3 id="passo-5-aplicar-a-dft">Passo 5: Aplicar a DFT</h3>
+<p>Utilize a flag <code>cv2.DFT_COMPLEX_OUTPUT</code> para obter a parte
+real e imaginária separadamente.</p>
+<div class="sourceCode" id="cb100"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>dft <span class="op">=</span> cv2.dft(dft_input, flags<span class="op">=</span>cv2.DFT_COMPLEX_OUTPUT)</span></code></pre></div>
+<hr />
+<h3 id="passo-6-centralizar-o-espectro">Passo 6: Centralizar o
+Espectro</h3>
+<p>A DFT no OpenCV coloca as frequências baixas no canto da imagem. Para
+melhor visualização, é comum deslocar o zero da transformada para o
+centro da imagem. Podemos fazer isso com a função
+<code>np.fft.fftshift()</code>.</p>
+<div class="sourceCode" id="cb101"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>dft_shift <span class="op">=</span> np.fft.fftshift(dft)</span></code></pre></div>
+<hr />
+<h3 id="passo-7-calcular-o-espectro-de-magnitude">Passo 7: Calcular o
+Espectro de Magnitude</h3>
+<p>O espectro de magnitude é dado por
+<code>log(1 + sqrt(real^2 + imag^2))</code>.</p>
+<div class="sourceCode" id="cb102"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>magnitude_spectrum <span class="op">=</span> <span class="dv">20</span> <span class="op">*</span> np.log(cv2.magnitude(dft_shift[:,:,<span class="dv">0</span>], dft_shift[:,:,<span class="dv">1</span>]) <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a>magnitude_spectrum <span class="op">=</span> np.uint8(cv2.normalize(magnitude_spectrum, <span class="va">None</span>, <span class="dv">0</span>, <span class="dv">255</span>, cv2.NORM_MINMAX))</span></code></pre></div>
+<hr />
+<h3 id="passo-8-exibir-o-espectro-com-cv2.imshow">Passo 8: Exibir o
+Espectro com cv2.imshow()</h3>
+<div class="sourceCode" id="cb103"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Imagem Original&#39;</span>, img)</span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Espectro de Magnitude&#39;</span>, magnitude_spectrum)</span>
+<span id="cb103-3"><a href="#cb103-3" aria-hidden="true" tabindex="-1"></a>cv2.waitKey(<span class="dv">0</span>)</span>
+<span id="cb103-4"><a href="#cb103-4" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div>
+<p>Feche as janelas antes de prosseguir com a IDFT.</p>
+<hr />
+<h3 id="passo-9-aplicar-a-idft-para-reconstruir-a-imagem">Passo 9:
+Aplicar a IDFT para Reconstruir a Imagem</h3>
+<p>Para retornar ao domínio espacial, aplicamos a IDFT. Antes disso,
+precisamos desfazer o shift aplicado ao espectro.</p>
+<div class="sourceCode" id="cb104"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Desfazer o shift:</span></span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a>dft_ishift <span class="op">=</span> np.fft.ifftshift(dft_shift)</span>
+<span id="cb104-3"><a href="#cb104-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb104-4"><a href="#cb104-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicar IDFT:</span></span>
+<span id="cb104-5"><a href="#cb104-5" aria-hidden="true" tabindex="-1"></a>img_back <span class="op">=</span> cv2.idft(dft_ishift)</span>
+<span id="cb104-6"><a href="#cb104-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb104-7"><a href="#cb104-7" aria-hidden="true" tabindex="-1"></a><span class="co"># A saída da IDFT também é complexa, pegue apenas a parte real</span></span>
+<span id="cb104-8"><a href="#cb104-8" aria-hidden="true" tabindex="-1"></a>img_back <span class="op">=</span> cv2.magnitude(img_back[:,:,<span class="dv">0</span>], img_back[:,:,<span class="dv">1</span>])</span></code></pre></div>
+<p>Normalizar a imagem resultante para poder exibi-la adequadamente:</p>
+<div class="sourceCode" id="cb105"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>img_back_normalized <span class="op">=</span> cv2.normalize(img_back, <span class="va">None</span>, <span class="dv">0</span>, <span class="dv">255</span>, cv2.NORM_MINMAX)</span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a>img_back_normalized <span class="op">=</span> np.uint8(img_back_normalized)</span></code></pre></div>
+<hr />
+<h3 id="passo-10-exibir-a-imagem-reconstruída">Passo 10: Exibir a Imagem
+Reconstruída</h3>
+<div class="sourceCode" id="cb106"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Imagem Reconstruída (IDFT)&#39;</span>, img_back_normalized)</span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>cv2.waitKey(<span class="dv">0</span>)</span>
+<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div>
+<hr />
+<h3 id="passo-11-executar-o-programa-1">Passo 11: Executar o
+Programa</h3>
+<p>No terminal, digite:</p>
+<div class="sourceCode" id="cb107"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex_13_Analise_DFT_IDFT.py</span></code></pre></div>
+<hr />
+<h3 id="resultado-esperado-12">Resultado Esperado</h3>
+<ul>
+<li><strong>Imagem Original</strong>: A imagem Ovar em tons de
+cinza.</li>
+<li><strong>Espectro de Magnitude</strong>: Uma representação visual do
+domínio da frequência da imagem, com as baixas frequências (mais
+importantes) concentradas no centro.</li>
+<li><strong>Imagem Reconstruída</strong>: Após aplicar a IDFT, a imagem
+resultante deve ser visualmente idêntica (ou muito próxima) à imagem
+original, comprovando que a transformação não ocasiona perda de
+informação no processo.</li>
+</ul>
+<p>Pressione qualquer tecla para fechar as janelas.</p>
+<hr style="page-break-after: always;" />
+<h2 id="ex-14-análise-de-histograma-de-imagem-em-tons-de-cinza">Ex 14:
+Análise de Histograma de Imagem em Tons de Cinza</h2>
+<hr />
+<h3 id="descrição-7">Descrição</h3>
+<p>Este exercício consiste em:</p>
+<ol type="1">
+<li>Carregar uma imagem em tons de cinza (<code>Ovar.jpg</code>).</li>
+<li>Redimensionar a imagem para melhor visualização.</li>
+<li>Exibir a imagem redimensionada usando
+<code>cv2.imshow()</code>.</li>
+<li>Calcular o histograma dos valores de intensidade da imagem.</li>
+<li>Exibir o histograma com o Matplotlib, inicialmente com 256
+bins.</li>
+<li>Permitir a alteração da quantização do histograma (por exemplo, 64
+bins) para observar a diferença.</li>
+<li>Aguardar a tecla <strong>ESC</strong> para encerrar o programa.</li>
+</ol>
+<hr />
+<h3 id="passo-1-criar-o-arquivo-python-3">Passo 1: Criar o Arquivo
+Python</h3>
+<p>Crie o arquivo <code>ex_14_Histograma_Imagem_Gray.py</code> e insira
+o código abaixo.</p>
+<hr />
+<h3 id="passo-2-importar-as-bibliotecas-3">Passo 2: Importar as
+Bibliotecas</h3>
+<div class="sourceCode" id="cb108"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span></code></pre></div>
+<hr />
+<h3 id="passo-3-carregar-a-imagem-em-tons-de-cinza-1">Passo 3: Carregar
+a Imagem em Tons de Cinza</h3>
+<div class="sourceCode" id="cb109"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a>gray_img <span class="op">=</span> cv2.imread(<span class="st">&#39;Ovar.jpg&#39;</span>, <span class="dv">0</span>)</span>
+<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> gray_img <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb109-3"><a href="#cb109-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">IOError</span>(<span class="st">&quot;Erro ao carregar &#39;Ovar.jpg&#39;. Verifique o nome e a localização do arquivo.&quot;</span>)</span></code></pre></div>
+<hr />
+<h3 id="passo-4-redimensionar-a-imagem-para-exibição">Passo 4:
+Redimensionar a Imagem para Exibição</h3>
+<div class="sourceCode" id="cb110"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>imS <span class="op">=</span> cv2.resize(gray_img, (<span class="dv">1024</span>, <span class="dv">768</span>))</span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Imagem Ovar Redimensionada&#39;</span>, imS)</span></code></pre></div>
+<hr />
+<h3 id="passo-5-calcular-e-exibir-o-histograma-com-256-bins">Passo 5:
+Calcular e Exibir o Histograma com 256 Bins</h3>
+<p>Calcular o histograma utilizando <code>cv2.calcHist()</code> e
+exibi-lo com Matplotlib.</p>
+<div class="sourceCode" id="cb111"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Histograma com 256 bins</span></span>
+<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a>hist_256 <span class="op">=</span> cv2.calcHist([gray_img], [<span class="dv">0</span>], <span class="va">None</span>, [<span class="dv">256</span>], [<span class="dv">0</span>,<span class="dv">256</span>])</span>
+<span id="cb111-3"><a href="#cb111-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb111-4"><a href="#cb111-4" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">4</span>))</span>
+<span id="cb111-5"><a href="#cb111-5" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>)</span>
+<span id="cb111-6"><a href="#cb111-6" aria-hidden="true" tabindex="-1"></a>plt.hist(gray_img.ravel(), <span class="dv">256</span>, [<span class="dv">0</span>,<span class="dv">256</span>])</span>
+<span id="cb111-7"><a href="#cb111-7" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">&#39;Histograma (256 bins)&#39;</span>)</span>
+<span id="cb111-8"><a href="#cb111-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">&#39;Intensidade&#39;</span>)</span>
+<span id="cb111-9"><a href="#cb111-9" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">&#39;Frequência&#39;</span>)</span></code></pre></div>
+<hr />
+<h3 id="passo-6-calcular-e-exibir-o-histograma-com-64-bins">Passo 6:
+Calcular e Exibir o Histograma com 64 Bins</h3>
+<p>Podemos alterar o número de bins para visualizar a diferença no nível
+de quantização.</p>
+<div class="sourceCode" id="cb112"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Histograma com 64 bins</span></span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>hist_64 <span class="op">=</span> cv2.calcHist([gray_img], [<span class="dv">0</span>], <span class="va">None</span>, [<span class="dv">64</span>], [<span class="dv">0</span>,<span class="dv">256</span>])</span>
+<span id="cb112-3"><a href="#cb112-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb112-4"><a href="#cb112-4" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>)</span>
+<span id="cb112-5"><a href="#cb112-5" aria-hidden="true" tabindex="-1"></a>plt.hist(gray_img.ravel(), <span class="dv">64</span>, [<span class="dv">0</span>,<span class="dv">256</span>])</span>
+<span id="cb112-6"><a href="#cb112-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">&#39;Histograma (64 bins)&#39;</span>)</span>
+<span id="cb112-7"><a href="#cb112-7" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">&#39;Intensidade&#39;</span>)</span>
+<span id="cb112-8"><a href="#cb112-8" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">&#39;Frequência&#39;</span>)</span>
+<span id="cb112-9"><a href="#cb112-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb112-10"><a href="#cb112-10" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb112-11"><a href="#cb112-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div>
+<hr />
+<h3 id="passo-7-aguardar-tecla-esc-para-encerrar">Passo 7: Aguardar
+Tecla ESC para Encerrar</h3>
+<div class="sourceCode" id="cb113"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> cv2.waitKey(<span class="dv">0</span>) <span class="op">&amp;</span> <span class="bn">0xFF</span>     </span>
+<span id="cb113-3"><a href="#cb113-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> k <span class="op">==</span> <span class="dv">27</span>: <span class="co"># ESC</span></span>
+<span id="cb113-4"><a href="#cb113-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb113-5"><a href="#cb113-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb113-6"><a href="#cb113-6" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div>
+<hr />
+<h3 id="execução-1">Execução</h3>
+<p>No terminal, digite:</p>
+<div class="sourceCode" id="cb114"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex_14_Histograma_Imagem_Gray.py</span></code></pre></div>
+<hr />
+<h3 id="resultado-esperado-13">Resultado Esperado</h3>
+<ul>
+<li>Uma janela será aberta exibindo a imagem <code>Ovar.jpg</code>
+redimensionada.</li>
+<li>Uma figura do Matplotlib mostrará dois gráficos de histograma: um
+com 256 bins e outro com 64 bins, permitindo visualizar a diferença na
+quantização das intensidades.</li>
+<li>Pressionando a tecla ESC na janela da imagem, todas as janelas serão
+fechadas.</li>
+</ul>
+<hr style="page-break-after: always;" />
+<h2 id="ex-15-detecção-de-bordas-com-canny-sobel-e-laplacian">Ex 15:
+Detecção de Bordas com Canny, Sobel e Laplacian</h2>
+<hr />
+<h3 id="descrição-8">Descrição</h3>
+<p>Este exercício consiste em:</p>
+<ol type="1">
+<li>Carregar uma imagem em tons de cinza (<code>Ovar.jpg</code>).</li>
+<li>Aplicar o detector de bordas Canny (<code>cv2.Canny()</code>).</li>
+<li>Calcular as derivadas usando Sobel (<code>cv2.Sobel()</code>) para
+detectar bordas.</li>
+<li>Aplicar o filtro Laplacian (<code>cv2.Laplacian()</code>) para
+realçar regiões de mudança rápida de intensidade.</li>
+<li>Exibir os resultados lado a lado para comparação.</li>
+</ol>
+<hr />
+<h3 id="passo-1-criar-o-arquivo-python-4">Passo 1: Criar o Arquivo
+Python</h3>
+<p>Crie o arquivo <code>ex_15_Deteccao_de_Bordas.py</code> e insira o
+código abaixo.</p>
+<hr />
+<h3 id="passo-2-importar-bibliotecas-4">Passo 2: Importar
+Bibliotecas</h3>
+<div class="sourceCode" id="cb115"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code></pre></div>
+<hr />
+<h3 id="passo-3-carregar-a-imagem-em-tons-de-cinza-2">Passo 3: Carregar
+a Imagem em Tons de Cinza</h3>
+<div class="sourceCode" id="cb116"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(<span class="st">&#39;Ovar.jpg&#39;</span>, <span class="dv">0</span>)</span>
+<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> img <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb116-3"><a href="#cb116-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">IOError</span>(<span class="st">&quot;Erro ao carregar &#39;Ovar.jpg&#39;. Verifique o nome e a localização do arquivo.&quot;</span>)</span></code></pre></div>
+<hr />
+<h3 id="passo-4-detecção-de-bordas-com-canny">Passo 4: Detecção de
+Bordas com Canny</h3>
+<div class="sourceCode" id="cb117"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>edges_canny <span class="op">=</span> cv2.Canny(img, <span class="dv">100</span>, <span class="dv">200</span>)</span></code></pre></div>
+<p>Aqui, <code>100</code> e <code>200</code> são valores típicos para o
+threshold inferior e superior, respectivamente. Ajuste conforme
+necessário.</p>
+<hr />
+<h3 id="passo-5-detecção-de-bordas-com-sobel">Passo 5: Detecção de
+Bordas com Sobel</h3>
+<p>Para Sobel, devemos calcular a derivada em x e em y, depois
+combiná-las:</p>
+<div class="sourceCode" id="cb118"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a>sobelx <span class="op">=</span> cv2.Sobel(img, cv2.CV_64F, <span class="dv">1</span>, <span class="dv">0</span>, ksize<span class="op">=</span><span class="dv">3</span>)  <span class="co"># derivada em x</span></span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a>sobely <span class="op">=</span> cv2.Sobel(img, cv2.CV_64F, <span class="dv">0</span>, <span class="dv">1</span>, ksize<span class="op">=</span><span class="dv">3</span>)  <span class="co"># derivada em y</span></span>
+<span id="cb118-3"><a href="#cb118-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-4"><a href="#cb118-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Converter a magnitude das derivadas para um formato exibível</span></span>
+<span id="cb118-5"><a href="#cb118-5" aria-hidden="true" tabindex="-1"></a>sobel_magnitude <span class="op">=</span> cv2.magnitude(sobelx, sobely)</span>
+<span id="cb118-6"><a href="#cb118-6" aria-hidden="true" tabindex="-1"></a>sobel_magnitude <span class="op">=</span> cv2.convertScaleAbs(sobel_magnitude)</span></code></pre></div>
+<hr />
+<h3 id="passo-6-detecção-de-bordas-com-laplacian">Passo 6: Detecção de
+Bordas com Laplacian</h3>
+<p>Aplique o operador Laplaciano diretamente na imagem:</p>
+<div class="sourceCode" id="cb119"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a>laplacian <span class="op">=</span> cv2.Laplacian(img, cv2.CV_64F)</span>
+<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a>laplacian <span class="op">=</span> cv2.convertScaleAbs(laplacian)</span></code></pre></div>
+<hr />
+<h3 id="passo-7-exibir-os-resultados-com-cv2.imshow">Passo 7: Exibir os
+Resultados com cv2.imshow()</h3>
+<div class="sourceCode" id="cb120"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Original&#39;</span>, img)</span>
+<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Canny&#39;</span>, edges_canny)</span>
+<span id="cb120-3"><a href="#cb120-3" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Sobel Magnitude&#39;</span>, sobel_magnitude)</span>
+<span id="cb120-4"><a href="#cb120-4" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Laplacian&#39;</span>, laplacian)</span>
+<span id="cb120-5"><a href="#cb120-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-6"><a href="#cb120-6" aria-hidden="true" tabindex="-1"></a>cv2.waitKey(<span class="dv">0</span>)</span>
+<span id="cb120-7"><a href="#cb120-7" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div>
+<hr />
+<h3 id="passo-8-executar-o-programa-1">Passo 8: Executar o Programa</h3>
+<p>No terminal, digite:</p>
+<div class="sourceCode" id="cb121"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex_15_Deteccao_de_Bordas.py</span></code></pre></div>
+<hr />
+<h3 id="resultado-esperado-14">Resultado Esperado</h3>
+<ul>
+<li><strong>Original</strong>: Imagem original em tons de cinza.</li>
+<li><strong>Canny</strong>: Bordas bem definidas, resultado do algoritmo
+Canny.</li>
+<li><strong>Sobel Magnitude</strong>: Bordas detectadas a partir do
+gradiente da imagem nos eixos x e y.</li>
+<li><strong>Laplacian</strong>: Bordas realçadas a partir da segunda
+derivada, evidenciando mudanças abruptas de intensidade.</li>
+</ul>
+<p>Feche as janelas pressionando qualquer tecla.</p>
+<hr style="page-break-after: always;" />
+<h2
+id="ex-16-segmentação-watershed-detecção-de-linhas-e-círculos-hough-lines-e-hough-circles">Ex
+16: Segmentação Watershed, Detecção de Linhas e Círculos (Hough Lines e
+Hough Circles)</h2>
+<hr />
+<h3 id="descrição-9">Descrição</h3>
+<p>Este exercício consiste em aplicar três técnicas diferentes à imagem
+<code>bot.png</code>:</p>
+<ol type="1">
+<li><p><strong>Segmentação com Watershed</strong>:<br />
+Separar objetos sobrepostos e segmentar regiões usando o algoritmo
+Watershed.</p></li>
+<li><p><strong>Detecção de Linhas com Hough Lines</strong>:<br />
+Identificar linhas retas presentes na imagem utilizando a Transformada
+de Hough.</p></li>
+<li><p><strong>Detecção de Círculos com Hough Circles</strong>:<br />
+Identificar círculos presentes na imagem por meio da Transformada de
+Hough para círculos.</p></li>
+</ol>
+<hr />
+<h3 id="passo-1-criar-o-arquivo-python-5">Passo 1: Criar o Arquivo
+Python</h3>
+<p>Crie o arquivo <code>ex_16_Watershed_Hough.py</code> e insira o
+código abaixo.</p>
+<hr />
+<h3 id="passo-2-importar-bibliotecas-5">Passo 2: Importar
+Bibliotecas</h3>
+<div class="sourceCode" id="cb122"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code></pre></div>
+<hr />
+<h3 id="passo-3-carregar-a-imagem-3">Passo 3: Carregar a Imagem</h3>
+<div class="sourceCode" id="cb123"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(<span class="st">&#39;bot.png&#39;</span>)</span>
+<span id="cb123-2"><a href="#cb123-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> img <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb123-3"><a href="#cb123-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">IOError</span>(<span class="st">&quot;Erro ao carregar &#39;bot.png&#39;. Verifique o nome e a localização do arquivo.&quot;</span>)</span></code></pre></div>
+<hr />
+<h3 id="segmentação-por-watershed">Segmentação por Watershed</h3>
+<p>A segmentação por Watershed necessita de uma imagem em tons de cinza,
+binarizações e marcadores.</p>
+<p><strong>Passos para Watershed:</strong></p>
+<ol type="1">
+<li>Converter a imagem para tons de cinza.</li>
+<li>Aplicar limiarização (threshold) ou binarização para encontrar áreas
+de primeiro plano e fundo.</li>
+<li>Encontrar marcadores usando distância transform e connected
+components.</li>
+<li>Aplicar o algoritmo Watershed.</li>
+</ol>
+<div class="sourceCode" id="cb124"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Converter para tons de cinza</span></span>
+<span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a>gray <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)</span>
+<span id="cb124-3"><a href="#cb124-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb124-4"><a href="#cb124-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicar um limiar (poderíamos usar Otsu ou um threshold fixo)</span></span>
+<span id="cb124-5"><a href="#cb124-5" aria-hidden="true" tabindex="-1"></a>ret, thresh <span class="op">=</span> cv2.threshold(gray, <span class="dv">0</span>, <span class="dv">255</span>, cv2.THRESH_BINARY_INV<span class="op">+</span>cv2.THRESH_OTSU)</span>
+<span id="cb124-6"><a href="#cb124-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb124-7"><a href="#cb124-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Remover ruídos pequenos com abertura morfológica</span></span>
+<span id="cb124-8"><a href="#cb124-8" aria-hidden="true" tabindex="-1"></a>kernel <span class="op">=</span> np.ones((<span class="dv">3</span>,<span class="dv">3</span>), np.uint8)</span>
+<span id="cb124-9"><a href="#cb124-9" aria-hidden="true" tabindex="-1"></a>opening <span class="op">=</span> cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel, iterations<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb124-10"><a href="#cb124-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb124-11"><a href="#cb124-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Dilatação para obter sure background</span></span>
+<span id="cb124-12"><a href="#cb124-12" aria-hidden="true" tabindex="-1"></a>sure_bg <span class="op">=</span> cv2.dilate(opening, kernel, iterations<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb124-13"><a href="#cb124-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb124-14"><a href="#cb124-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Distance transform para encontrar sure foreground</span></span>
+<span id="cb124-15"><a href="#cb124-15" aria-hidden="true" tabindex="-1"></a>dist_transform <span class="op">=</span> cv2.distanceTransform(opening, cv2.DIST_L2, <span class="dv">5</span>)</span>
+<span id="cb124-16"><a href="#cb124-16" aria-hidden="true" tabindex="-1"></a>ret, sure_fg <span class="op">=</span> cv2.threshold(dist_transform, <span class="fl">0.7</span><span class="op">*</span>dist_transform.<span class="bu">max</span>(), <span class="dv">255</span>, <span class="dv">0</span>)</span>
+<span id="cb124-17"><a href="#cb124-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb124-18"><a href="#cb124-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Sure_fg deve ser uint8</span></span>
+<span id="cb124-19"><a href="#cb124-19" aria-hidden="true" tabindex="-1"></a>sure_fg <span class="op">=</span> np.uint8(sure_fg)</span>
+<span id="cb124-20"><a href="#cb124-20" aria-hidden="true" tabindex="-1"></a>unknown <span class="op">=</span> cv2.subtract(sure_bg, sure_fg)</span>
+<span id="cb124-21"><a href="#cb124-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb124-22"><a href="#cb124-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Marcadores: cada componente conectado do foreground é um marcador</span></span>
+<span id="cb124-23"><a href="#cb124-23" aria-hidden="true" tabindex="-1"></a>ret, markers <span class="op">=</span> cv2.connectedComponents(sure_fg)</span>
+<span id="cb124-24"><a href="#cb124-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb124-25"><a href="#cb124-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Somar 1 a todos os marcadores, para background ser 1 ao invés de 0</span></span>
+<span id="cb124-26"><a href="#cb124-26" aria-hidden="true" tabindex="-1"></a>markers <span class="op">=</span> markers <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb124-27"><a href="#cb124-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb124-28"><a href="#cb124-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Marcar os pixels desconhecidos como 0</span></span>
+<span id="cb124-29"><a href="#cb124-29" aria-hidden="true" tabindex="-1"></a>markers[unknown <span class="op">==</span> <span class="dv">255</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb124-30"><a href="#cb124-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb124-31"><a href="#cb124-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicar Watershed</span></span>
+<span id="cb124-32"><a href="#cb124-32" aria-hidden="true" tabindex="-1"></a>markers <span class="op">=</span> cv2.watershed(img, markers)</span>
+<span id="cb124-33"><a href="#cb124-33" aria-hidden="true" tabindex="-1"></a>watershed_result <span class="op">=</span> img.copy()</span>
+<span id="cb124-34"><a href="#cb124-34" aria-hidden="true" tabindex="-1"></a>watershed_result[markers <span class="op">==</span> <span class="op">-</span><span class="dv">1</span>] <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">255</span>]  <span class="co"># Bordas marcadas em vermelho</span></span></code></pre></div>
+<hr />
+<h3 id="detecção-de-linhas-hough-lines">Detecção de Linhas (Hough
+Lines)</h3>
+<p>Para detectar linhas, normalmente aplicamos Canny primeiro e depois a
+transformada de Hough:</p>
+<div class="sourceCode" id="cb125"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a>gray_for_lines <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)</span>
+<span id="cb125-2"><a href="#cb125-2" aria-hidden="true" tabindex="-1"></a>edges <span class="op">=</span> cv2.Canny(gray_for_lines, <span class="dv">50</span>, <span class="dv">150</span>, apertureSize<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb125-3"><a href="#cb125-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb125-4"><a href="#cb125-4" aria-hidden="true" tabindex="-1"></a>lines <span class="op">=</span> cv2.HoughLinesP(edges, <span class="dv">1</span>, np.pi<span class="op">/</span><span class="dv">180</span>, <span class="dv">100</span>, minLineLength<span class="op">=</span><span class="dv">100</span>, maxLineGap<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb125-5"><a href="#cb125-5" aria-hidden="true" tabindex="-1"></a>hough_lines_result <span class="op">=</span> img.copy()</span>
+<span id="cb125-6"><a href="#cb125-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb125-7"><a href="#cb125-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> lines <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb125-8"><a href="#cb125-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> line <span class="kw">in</span> lines:</span>
+<span id="cb125-9"><a href="#cb125-9" aria-hidden="true" tabindex="-1"></a>        x1, y1, x2, y2 <span class="op">=</span> line[<span class="dv">0</span>]</span>
+<span id="cb125-10"><a href="#cb125-10" aria-hidden="true" tabindex="-1"></a>        cv2.line(hough_lines_result, (x1,y1), (x2,y2), (<span class="dv">0</span>,<span class="dv">255</span>,<span class="dv">0</span>), <span class="dv">2</span>)</span></code></pre></div>
+<hr />
+<h3 id="detecção-de-círculos-hough-circles">Detecção de Círculos (Hough
+Circles)</h3>
+<p>Para detectar círculos, aplicamos a função
+<code>cv2.HoughCircles()</code> sobre a imagem em tons de cinza
+suavizada:</p>
+<div class="sourceCode" id="cb126"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a>gray_for_circles <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)</span>
+<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a>gray_for_circles <span class="op">=</span> cv2.medianBlur(gray_for_circles, <span class="dv">5</span>)</span>
+<span id="cb126-3"><a href="#cb126-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb126-4"><a href="#cb126-4" aria-hidden="true" tabindex="-1"></a>circles <span class="op">=</span> cv2.HoughCircles(gray_for_circles, cv2.HOUGH_GRADIENT, dp<span class="op">=</span><span class="dv">1</span>, minDist<span class="op">=</span><span class="dv">50</span>,</span>
+<span id="cb126-5"><a href="#cb126-5" aria-hidden="true" tabindex="-1"></a>                           param1<span class="op">=</span><span class="dv">100</span>, param2<span class="op">=</span><span class="dv">30</span>, minRadius<span class="op">=</span><span class="dv">0</span>, maxRadius<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb126-6"><a href="#cb126-6" aria-hidden="true" tabindex="-1"></a>hough_circles_result <span class="op">=</span> img.copy()</span>
+<span id="cb126-7"><a href="#cb126-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb126-8"><a href="#cb126-8" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> circles <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb126-9"><a href="#cb126-9" aria-hidden="true" tabindex="-1"></a>    circles <span class="op">=</span> np.uint16(np.around(circles))</span>
+<span id="cb126-10"><a href="#cb126-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> circles[<span class="dv">0</span>,:]:</span>
+<span id="cb126-11"><a href="#cb126-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Desenhar círculo</span></span>
+<span id="cb126-12"><a href="#cb126-12" aria-hidden="true" tabindex="-1"></a>        cv2.circle(hough_circles_result, (i[<span class="dv">0</span>], i[<span class="dv">1</span>]), i[<span class="dv">2</span>], (<span class="dv">255</span>,<span class="dv">0</span>,<span class="dv">0</span>), <span class="dv">2</span>)</span>
+<span id="cb126-13"><a href="#cb126-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Desenhar centro</span></span>
+<span id="cb126-14"><a href="#cb126-14" aria-hidden="true" tabindex="-1"></a>        cv2.circle(hough_circles_result, (i[<span class="dv">0</span>], i[<span class="dv">1</span>]), <span class="dv">2</span>, (<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">255</span>), <span class="dv">3</span>)</span></code></pre></div>
+<hr />
+<h3 id="exibir-resultados-com-cv2.imshow">Exibir Resultados com
+cv2.imshow()</h3>
+<div class="sourceCode" id="cb127"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Original&#39;</span>, img)</span>
+<span id="cb127-2"><a href="#cb127-2" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Watershed Result&#39;</span>, watershed_result)</span>
+<span id="cb127-3"><a href="#cb127-3" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Hough Lines&#39;</span>, hough_lines_result)</span>
+<span id="cb127-4"><a href="#cb127-4" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Hough Circles&#39;</span>, hough_circles_result)</span>
+<span id="cb127-5"><a href="#cb127-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb127-6"><a href="#cb127-6" aria-hidden="true" tabindex="-1"></a>cv2.waitKey(<span class="dv">0</span>)</span>
+<span id="cb127-7"><a href="#cb127-7" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div>
+<hr />
+<h3 id="passo-9-executar-o-programa-1">Passo 9: Executar o Programa</h3>
+<p>No terminal, digite:</p>
+<div class="sourceCode" id="cb128"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex_16_Watershed_Hough.py</span></code></pre></div>
+<hr />
+<h3 id="resultado-esperado-15">Resultado Esperado</h3>
+<ul>
+<li><strong>Original</strong>: A imagem original
+<code>bot.png</code>.</li>
+<li><strong>Watershed Result</strong>: A imagem com as fronteiras entre
+regiões segmentadas marcadas em vermelho.</li>
+<li><strong>Hough Lines</strong>: A imagem original com linhas verdes
+desenhadas sobre as linhas detectadas.</li>
+<li><strong>Hough Circles</strong>: A imagem original com círculos azuis
+marcando os círculos detectados e um ponto vermelho no centro de cada
+círculo.</li>
+</ul>
+<p>Pressione qualquer tecla para fechar as janelas.</p>
+<hr style="page-break-after: always;" />
+<h2 id="ex-17-detecção-de-objetos-com-template-matching">Ex 17: Detecção
+de Objetos com Template Matching</h2>
+<hr />
+<h3 id="descrição-10">Descrição</h3>
+<p>Este exercício consiste em:</p>
+<ol type="1">
+<li>Carregar uma imagem em que há várias moedas de euro
+(<code>coins_euros.jpg</code>).</li>
+<li>Converter a imagem para tons de cinza.</li>
+<li>Carregar uma imagem de uma moeda de 20 centavos
+(<code>coin_20cents.jpg</code>), que servirá como template.</li>
+<li>Aplicar o template matching para encontrar regiões na imagem
+original que sejam semelhantes ao template.</li>
+<li>Desenhar retângulos em torno dos locais detectados.</li>
+<li>Salvar a imagem resultante com as detecções.</li>
+</ol>
+<hr />
+<h3 id="passo-1-criação-do-arquivo-python-4">Passo 1: Criação do Arquivo
+Python</h3>
+<p>Crie o arquivo <code>ex_17_Template_Matching.py</code> e insira o
+código abaixo.</p>
+<hr />
+<h3 id="passo-2-importar-bibliotecas-6">Passo 2: Importar
+Bibliotecas</h3>
+<div class="sourceCode" id="cb129"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb129-2"><a href="#cb129-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb129-3"><a href="#cb129-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span></code></pre></div>
+<hr />
+<h3 id="passo-3-carregar-a-imagem-original">Passo 3: Carregar a Imagem
+Original</h3>
+<p>Carregue a imagem <code>coins_euros.jpg</code>. Certifique-se de que
+o arquivo esteja no mesmo diretório do script:</p>
+<div class="sourceCode" id="cb130"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a>img_rgb <span class="op">=</span> cv2.imread(<span class="st">&#39;coins_euros.jpg&#39;</span>)</span>
+<span id="cb130-2"><a href="#cb130-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> img_rgb <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb130-3"><a href="#cb130-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">IOError</span>(<span class="st">&quot;Erro ao carregar &#39;coins_euros.jpg&#39;. Verifique o nome e a localização do arquivo.&quot;</span>)</span></code></pre></div>
+<p>Converta a imagem para tons de cinza, pois o template matching é
+frequentemente aplicado em imagens em escala de cinza.</p>
+<div class="sourceCode" id="cb131"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a>img_gray <span class="op">=</span> cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)</span></code></pre></div>
+<hr />
+<h3 id="passo-4-carregar-o-template">Passo 4: Carregar o Template</h3>
+<p>Carregue a imagem do template, por exemplo, uma moeda de 20 centavos
+(<code>coin_20cents.jpg</code>):</p>
+<div class="sourceCode" id="cb132"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a>template <span class="op">=</span> cv2.imread(<span class="st">&#39;coin_20cents.jpg&#39;</span>, <span class="dv">0</span>)</span>
+<span id="cb132-2"><a href="#cb132-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> template <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb132-3"><a href="#cb132-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">IOError</span>(<span class="st">&quot;Erro ao carregar &#39;coin_20cents.jpg&#39;. Verifique o nome e a localização do arquivo.&quot;</span>)</span></code></pre></div>
+<p>Obtenha as dimensões do template para poder desenhar o retângulo
+depois:</p>
+<div class="sourceCode" id="cb133"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a>w, h <span class="op">=</span> template.shape[::<span class="op">-</span><span class="dv">1</span>]</span></code></pre></div>
+<hr />
+<h3 id="passo-5-aplicar-o-template-matching">Passo 5: Aplicar o Template
+Matching</h3>
+<p>Utilize o método <code>cv2.TM_CCOEFF_NORMED</code> para detectar
+regiões semelhantes ao template. Ajuste o <code>threshold</code>
+conforme necessário (0.8 é um bom ponto de partida):</p>
+<div class="sourceCode" id="cb134"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)</span>
+<span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a>threshold <span class="op">=</span> <span class="fl">0.8</span></span>
+<span id="cb134-3"><a href="#cb134-3" aria-hidden="true" tabindex="-1"></a>loc <span class="op">=</span> np.where(res <span class="op">&gt;=</span> threshold)</span></code></pre></div>
+<hr />
+<h3 id="passo-6-desenhar-os-retângulos-ao-redor-das-detecções">Passo 6:
+Desenhar os Retângulos ao Redor das Detecções</h3>
+<p>Para cada ponto onde o template foi encontrado, desenhe um retângulo
+vermelho sobre a imagem original.</p>
+<div class="sourceCode" id="cb135"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> pt <span class="kw">in</span> <span class="bu">zip</span>(<span class="op">*</span>loc[::<span class="op">-</span><span class="dv">1</span>]):</span>
+<span id="cb135-2"><a href="#cb135-2" aria-hidden="true" tabindex="-1"></a>    cv2.rectangle(img_rgb, pt, (pt[<span class="dv">0</span>] <span class="op">+</span> w, pt[<span class="dv">1</span>] <span class="op">+</span> h), (<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">255</span>), <span class="dv">2</span>)</span></code></pre></div>
+<hr />
+<h3 id="passo-7-salvar-a-imagem-resultante">Passo 7: Salvar a Imagem
+Resultante</h3>
+<p>Salve a imagem com as detecções para inspeção posterior.</p>
+<div class="sourceCode" id="cb136"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a>cv2.imwrite(<span class="st">&#39;res_euros.jpg&#39;</span>, img_rgb)</span></code></pre></div>
+<p>Também é possível exibir a imagem resultante em uma janela do
+OpenCV:</p>
+<div class="sourceCode" id="cb137"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a>cv2.imshow(<span class="st">&#39;Detecções&#39;</span>, img_rgb)</span>
+<span id="cb137-2"><a href="#cb137-2" aria-hidden="true" tabindex="-1"></a>cv2.waitKey(<span class="dv">0</span>)</span>
+<span id="cb137-3"><a href="#cb137-3" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div>
+<hr />
+<h3 id="passo-8-executar-o-programa-2">Passo 8: Executar o Programa</h3>
+<p>No terminal, execute:</p>
+<div class="sourceCode" id="cb138"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> ex_17_Template_Matching.py</span></code></pre></div>
+<hr />
+<h3 id="resultado-esperado-16">Resultado Esperado</h3>
+<ul>
+<li>Uma imagem chamada <code>res_euros.jpg</code> será gerada, mostrando
+retângulos vermelhos em torno das moedas de 20 centavos detectadas.</li>
+<li>Ao abrir a janela “Detecções” do OpenCV, também será possível
+visualizar diretamente o resultado na tela.</li>
+<li>Caso nenhuma correspondência seja encontrada, tente ajustar o valor
+do <code>threshold</code> para torná-lo mais permissivo ou mais
+restritivo.</li>
+</ul>
+</body>
+</html>

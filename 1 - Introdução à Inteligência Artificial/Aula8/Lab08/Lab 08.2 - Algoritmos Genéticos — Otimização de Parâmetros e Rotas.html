@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Lab 08.2 - Algoritmos Genéticos — Otimização de Parâmetros e Rotas</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="style_dark.css" />
+</head>
+<body>
+<h1
+id="lab-08.2---algoritmos-genéticos-otimização-de-parâmetros-e-rotas">Lab
+08.2 - Algoritmos Genéticos — Otimização de Parâmetros e Rotas</h1>
+<p><strong>Tema:</strong> Otimização Heurística com Algoritmos
+Genéticos</p>
+<h2 id="objetivo">1. Objetivo</h2>
+<p>Neste laboratório, vais utilizar <strong>Algoritmos Genéticos
+(AGs)</strong> para resolver problemas de otimização complexos. Ao
+contrário dos métodos tradicionais que exploram um único ponto de cada
+vez, os AGs trabalham com uma “população” de soluções candidatas,
+evoluindo-as ao longo de gerações para encontrar ótimos globais.</p>
+<p>Vamos focar-nos em dois cenários: 1. <strong>Otimização de
+Hiperparâmetros:</strong> Encontrar a melhor combinação de
+hiperparâmetros para um modelo de Machine Learning. 2.
+<strong>Otimização Multi-objetivo:</strong> Encontrar as melhores rotas
+de voo que equilibram dois objetivos concorrentes: <strong>minimizar o
+tempo de voo</strong> e <strong>minimizar o consumo de
+combustível</strong>.</p>
+<h2 id="o-espaço-de-decisões">2. O Espaço de Decisões</h2>
+<p>Em vez de um dataset tradicional, o teu “input” é o <strong>espaço de
+possíveis soluções</strong>.</p>
+<p><strong>Cenário 1: Otimização de Hiperparâmetros</strong> -
+<strong>Indivíduo (Cromossoma):</strong> Uma lista de hiperparâmetros
+para um modelo (e.g., XGBoost), como
+<code>[n_estimators, max_depth, learning_rate]</code>. - <strong>Função
+de Fitness:</strong> O desempenho do modelo (e.g., F1-Score ou ROC-AUC)
+treinado com esses hiperparâmetros. O objetivo é
+<strong>maximizar</strong> o fitness.</p>
+<p><strong>Cenário 2: Otimização de Rota Multi-objetivo</strong> -
+<strong>Indivíduo (Cromossoma):</strong> Uma sequência de waypoints que
+define uma rota. - <strong>Funções de Fitness (Múltiplas):</strong> 1.
+<code>f1(rota) = tempo_total_voo</code> (minimizar) 2.
+<code>f2(rota) = consumo_total_combustivel</code> (minimizar) - O
+objetivo é encontrar um conjunto de rotas que representem o melhor
+compromisso entre estes dois objetivos.</p>
+<h2 id="tarefas">3. Tarefas</h2>
+<h3 id="parte-a-otimização-de-hiperparâmetros-com-um-ag-clássico">Parte
+A: Otimização de Hiperparâmetros com um AG Clássico</h3>
+<ol type="1">
+<li><strong>Implementação:</strong>
+<ul>
+<li>Define a representação do cromossoma (os hiperparâmetros).</li>
+<li>Cria a <strong>função de fitness</strong>, que recebe um indivíduo,
+treina um modelo de ML e retorna a sua pontuação.</li>
+<li>Implementa ou utiliza uma biblioteca (e.g., <code>DEAP</code>,
+<code>geneticalgorithm</code>) para executar o ciclo do AG:
+<ul>
+<li><strong>Seleção:</strong> (e.g., Roleta, Torneio)</li>
+<li><strong>Crossover:</strong> (e.g., Um Ponto, Dois Pontos)</li>
+<li><strong>Mutação:</strong> (e.g., Inverter um bit, adicionar ruído
+gaussiano)</li>
+</ul></li>
+</ul></li>
+<li><strong>Avaliação:</strong>
+<ul>
+<li>Executa o AG por um número de gerações.</li>
+<li>Plota a evolução do <strong>fitness máximo e médio</strong> da
+população ao longo das gerações.</li>
+<li>Qual foi a melhor combinação de hiperparâmetros encontrada? Compara
+o desempenho com uma busca em grelha (<code>GridSearch</code>) ou
+aleatória (<code>RandomSearch</code>).</li>
+</ul></li>
+</ol>
+<h3 id="parte-b-otimização-multi-objetivo-com-nsga-ii">Parte B:
+Otimização Multi-objetivo com NSGA-II</h3>
+<ol type="1">
+<li><strong>Implementação:</strong>
+<ul>
+<li>Utiliza um algoritmo especializado em multi-objetivo, como o
+<strong>NSGA-II (Non-dominated Sorting Genetic Algorithm
+II)</strong>.</li>
+<li>Define as duas funções de fitness (tempo e consumo).</li>
+</ul></li>
+<li><strong>Avaliação:</strong>
+<ul>
+<li>O resultado de uma otimização multi-objetivo não é uma única
+solução, mas um conjunto de soluções ótimas não-dominadas, conhecido
+como a <strong>Frente de Pareto</strong>.</li>
+<li>Plota a Frente de Pareto final num gráfico de dispersão, com o tempo
+de voo num eixo e o consumo de combustível no outro.</li>
+<li>Analisa o gráfico. Ele mostra visualmente o <em>trade-off</em>: para
+diminuir o tempo de voo, tens de aceitar um maior consumo, e
+vice-versa.</li>
+</ul></li>
+</ol>
+<h2 id="desafios-e-lições">4. Desafios e Lições</h2>
+<ul>
+<li><strong>Convergência Prematura:</strong> Discute o que acontece se a
+diversidade da população for perdida muito cedo. Como os operadores de
+mutação e seleção ajudam a evitar que o algoritmo fique preso num ótimo
+local?</li>
+<li><strong>Diversidade da População:</strong> A diversidade é a chave
+para a exploração do espaço de busca. Reflete sobre como o NSGA-II usa
+mecanismos como o <em>crowding distance</em> para manter a diversidade
+ao longo da Frente de Pareto.</li>
+<li><strong>Custo Computacional:</strong> A função de fitness
+(especialmente no Cenário A) pode ser muito cara de calcular. Discute
+como isso torna os AGs uma ferramenta poderosa, mas computacionalmente
+intensiva.</li>
+</ul>
+<h2 id="produto-final">Produto Final</h2>
+<p>Um relatório que documente:<br />
+- A implementação do AG para otimização de hiperparâmetros, incluindo o
+gráfico de convergência do fitness.<br />
+- A implementação do NSGA-II para a otimização de rotas.<br />
+- O gráfico da <strong>Frente de Pareto</strong> resultante, com uma
+análise clara do que o <em>trade-off</em> significa no contexto do
+problema.<br />
+- Uma conclusão sobre a aplicabilidade dos AGs para problemas de
+otimização complexos e multi-objetivo.</p>
+</body>
+</html>

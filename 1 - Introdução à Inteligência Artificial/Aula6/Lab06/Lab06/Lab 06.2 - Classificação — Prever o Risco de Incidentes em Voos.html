@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Lab 06.2 - Classificação — Prever o Risco de Incidentes em Voos</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="style_dark.css" />
+</head>
+<body>
+<h1
+id="lab-06.2---classificação-prever-o-risco-de-incidentes-em-voos">Lab
+06.2 - Classificação — Prever o Risco de Incidentes em Voos</h1>
+<p><strong>Tema:</strong> Classificação Binária e Avaliação de
+Modelos</p>
+<h2 id="objetivo">1. Objetivo</h2>
+<p>Neste laboratório, o desafio é desenvolver um modelo de classificação
+capaz de prever a probabilidade de um <strong>incidente de
+segurança</strong> (<code>risco = 1</code>) ocorrer durante um voo,
+utilizando dados disponíveis <em>antes</em> da descolagem. O foco será
+na avaliação e comparação de diferentes algoritmos e na interpretação
+das suas previsões.</p>
+<h2 id="dados">2. Dados</h2>
+<p>Utilizarás um dataset tabular (<code>voos_pre_voo.csv</code>) com as
+seguintes características: - <code>idade_aeronave_anos</code> -
+<code>horas_voo_desde_ultima_manutencao</code> -
+<code>previsao_turbulencia</code> (Baixa, Média, Alta) -
+<code>tipo_missao</code> (Vigilância, Carga, Transporte) -
+<code>experiencia_piloto_anos</code> - <code>incidente_reportado</code>
+(0 ou 1) — a nossa <strong>variável alvo</strong>.</p>
+<p>Este é um dataset <strong>desbalanceado</strong>: a maioria dos voos
+não tem incidentes.</p>
+<h2 id="tarefas">3. Tarefas</h2>
+<ol type="1">
+<li><strong>Análise e Pré-processamento:</strong>
+<ul>
+<li>Verifica o desbalanceamento da variável alvo. Quantos voos pertencem
+a cada classe?</li>
+<li>Analisa a relação entre as variáveis preditoras e a ocorrência de
+incidentes.</li>
+<li>Converte as variáveis categóricas
+(<code>previsao_turbulencia</code>, <code>tipo_missao</code>) para
+formato numérico.</li>
+<li>Escalona as variáveis numéricas, pois modelos como KNN e SVM são
+sensíveis à escala.</li>
+</ul></li>
+<li><strong>Modelagem:</strong>
+<ul>
+<li>Treina e avalia os seguintes modelos de classificação:
+<ul>
+<li><strong>Regressão Logística</strong> (como <em>baseline</em>)</li>
+<li><strong>K-Nearest Neighbors (KNN)</strong></li>
+<li><strong>Support Vector Machine (SVM)</strong> com kernel linear</li>
+<li><strong>Kernel SVM</strong> (com kernel RBF)</li>
+<li><strong>Naïve Bayes</strong> (Gaussiano)</li>
+</ul></li>
+</ul></li>
+<li><strong>Avaliação Detalhada:</strong>
+<ul>
+<li>Para cada modelo, calcula as métricas: <strong>Accuracy</strong>,
+<strong>Precision</strong>, <strong>Recall</strong>,
+<strong>F1-Score</strong> e <strong>ROC-AUC</strong>.</li>
+<li>Gera a <strong>Matriz de Confusão</strong> para o melhor modelo
+(baseado no F1-Score ou ROC-AUC). Discute os Falsos Positivos e Falsos
+Negativos no contexto do problema.</li>
+<li>Plota a <strong>Curva ROC</strong> para todos os modelos no mesmo
+gráfico para comparar visualmente o seu desempenho.</li>
+</ul></li>
+</ol>
+<h2 id="desafios-e-lições">4. Desafios e Lições</h2>
+<ul>
+<li><strong>Gestão de Desbalanceamento:</strong> Como o desbalanceamento
+afeta as métricas? Discute a relevância da <em>Accuracy</em> neste
+cenário e por que <em>Recall</em> e <em>F1-Score</em> são mais
+importantes. (Opcional: experimenta técnicas como
+<code>class_weight='balanced'</code> ou
+over-sampling/under-sampling).</li>
+<li><strong>Escolha do Threshold:</strong> A Regressão Logística e o SVM
+fornecem probabilidades. Como a escolha de um <em>threshold</em> de
+decisão (diferente do padrão 0.5) pode otimizar o <em>trade-off</em>
+entre Precision e Recall?</li>
+<li><strong>Sensibilidade à Escala:</strong> Compara o desempenho do KNN
+ou SVM com e sem escalonamento de dados para demonstrar a sua
+importância.</li>
+</ul>
+<h2 id="produto-final">Produto Final</h2>
+<p>Um relatório (em formato <code>Markdown</code> ou outro)
+contendo:<br />
+- A análise do desbalanceamento dos dados.<br />
+- O pipeline de pré-processamento.<br />
+- O código de treino e avaliação dos modelos.<br />
+- Uma tabela comparativa das métricas.<br />
+- A Matriz de Confusão e a Curva ROC comentadas, com uma justificação
+para a escolha do “melhor” modelo para esta tarefa específica.</p>
+</body>
+</html>

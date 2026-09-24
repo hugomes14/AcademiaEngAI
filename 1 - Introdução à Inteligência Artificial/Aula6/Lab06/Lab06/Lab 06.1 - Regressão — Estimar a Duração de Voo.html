@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Lab 06.1 - Regressão — Estimar a Duração de Voo</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="style_dark.css" />
+</head>
+<body>
+<h1 id="lab-06.1---regressão-estimar-a-duração-de-voo">Lab 06.1 -
+Regressão — Estimar a Duração de Voo</h1>
+<p><strong>Tema:</strong> Regressão Linear e Regularizada</p>
+<h2 id="objetivo">1. Objetivo</h2>
+<p>O objetivo deste exercício é construir e avaliar modelos de regressão
+capazes de estimar a <strong>duração total de um voo</strong> com base
+em variáveis da missão disponíveis antes da descolagem. Vamos comparar
+modelos lineares simples, múltiplos e regularizados para perceber os
+seus trade-offs.</p>
+<h2 id="dados">2. Dados</h2>
+<p>Irás trabalhar com um dataset tabular
+(<code>voos_telemetria.csv</code>) que contém as seguintes variáveis por
+cada voo: - <code>distancia_planeada</code> (km) -
+<code>carga_util_kg</code> (kg) - <code>altitude_media_m</code> (metros)
+- <code>condicao_meteo</code> (categórica: <code>Bom</code>,
+<code>Moderado</code>, <code>Adverso</code>) -
+<code>duracao_voo_min</code> (minutos) — a nossa <strong>variável
+alvo</strong>.</p>
+<h2 id="tarefas">3. Tarefas</h2>
+<ol type="1">
+<li><strong>Análise Exploratória:</strong>
+<ul>
+<li>Visualiza a distribuição da variável alvo
+(<code>duracao_voo_min</code>).</li>
+<li>Analisa a correlação entre as variáveis numéricas e a duração do
+voo.</li>
+<li>Converte a variável <code>condicao_meteo</code> para um formato
+numérico (e.g., <em>one-hot encoding</em>).</li>
+</ul></li>
+<li><strong>Modelagem:</strong>
+<ul>
+<li><strong>Modelo Base:</strong> Treina um modelo de <strong>Regressão
+Linear Simples</strong> usando apenas a
+<code>distancia_planeada</code>.</li>
+<li><strong>Modelo Completo:</strong> Treina um modelo de
+<strong>Regressão Linear Múltipla</strong> com todas as variáveis
+preditoras.</li>
+<li><strong>Modelos Regularizados:</strong> Treina modelos
+<strong>Lasso</strong> e <strong>Ridge</strong> para avaliar o impacto
+da regularização.</li>
+<li><strong>Não Linearidade:</strong> Explora a <strong>Regressão
+Polinomial</strong> (grau 2) para capturar relações não lineares.</li>
+</ul></li>
+<li><strong>Avaliação e Interpretação:</strong>
+<ul>
+<li>Para cada modelo, calcula as seguintes métricas no conjunto de
+teste: <strong>MAE</strong>, <strong>RMSE</strong> e
+<strong>R²</strong>.</li>
+<li>Compara o desempenho dos modelos. Qual deles generaliza melhor?</li>
+<li>Interpreta os coeficientes do modelo de Regressão Múltipla. O que
+nos dizem sobre a importância de cada variável?</li>
+<li>Analisa os coeficientes do modelo Lasso. Alguma variável foi
+considerada irrelevante?</li>
+</ul></li>
+</ol>
+<h2 id="desafios-e-lições">4. Desafios e Lições</h2>
+<ul>
+<li><strong>Escalonamento de Dados:</strong> Avalia a importância de
+escalar as variáveis (<em>features</em>) antes de treinar os modelos,
+especialmente para Lasso e Ridge.</li>
+<li><strong>Interpretação vs. Predição:</strong> Reflete sobre o
+compromisso entre a simplicidade/interpretabilidade de um modelo linear
+e a potencial maior precisão de um modelo mais complexo.</li>
+<li><strong><em>Data Leakage</em>:</strong> Garante que nenhuma
+informação do futuro (que não estaria disponível antes do voo) é usada
+para treinar o modelo.</li>
+</ul>
+<h2 id="produto-final">Produto Final</h2>
+<p>Um relatório comparativo (em formato <code>Markdown</code> ou outro)
+que apresente:<br />
+- A análise exploratória.<br />
+- O código de treino para cada modelo.<br />
+- Uma tabela a resumir as métricas de desempenho.<br />
+- Uma conclusão sobre qual o melhor modelo para a tarefa e uma
+interpretação dos seus resultados.</p>
+</body>
+</html>

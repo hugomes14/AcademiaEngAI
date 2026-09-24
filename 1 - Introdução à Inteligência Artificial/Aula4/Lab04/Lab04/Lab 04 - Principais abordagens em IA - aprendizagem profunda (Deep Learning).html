@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Lab 04 - Principais abordagens em IA - aprendizagem profunda (Deep Learning)</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        background-color: #232629;
+        color: #7a7c7d;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #7a7c7d;  padding-left: 4px; }
+    div.sourceCode
+      { color: #cfcfc2; background-color: #232629; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #cfcfc2; } /* Normal */
+    code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } /* Alert */
+    code span.an { color: #3f8058; } /* Annotation */
+    code span.at { color: #2980b9; } /* Attribute */
+    code span.bn { color: #f67400; } /* BaseN */
+    code span.bu { color: #7f8c8d; } /* BuiltIn */
+    code span.cf { color: #fdbc4b; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #3daee9; } /* Char */
+    code span.cn { color: #27aeae; font-weight: bold; } /* Constant */
+    code span.co { color: #7a7c7d; } /* Comment */
+    code span.cv { color: #7f8c8d; } /* CommentVar */
+    code span.do { color: #a43340; } /* Documentation */
+    code span.dt { color: #2980b9; } /* DataType */
+    code span.dv { color: #f67400; } /* DecVal */
+    code span.er { color: #da4453; text-decoration: underline; } /* Error */
+    code span.ex { color: #0099ff; font-weight: bold; } /* Extension */
+    code span.fl { color: #f67400; } /* Float */
+    code span.fu { color: #8e44ad; } /* Function */
+    code span.im { color: #27ae60; } /* Import */
+    code span.in { color: #c45b00; } /* Information */
+    code span.kw { color: #cfcfc2; font-weight: bold; } /* Keyword */
+    code span.op { color: #cfcfc2; } /* Operator */
+    code span.ot { color: #27ae60; } /* Other */
+    code span.pp { color: #27ae60; } /* Preprocessor */
+    code span.re { color: #2980b9; background-color: #153042; } /* RegionMarker */
+    code span.sc { color: #3daee9; } /* SpecialChar */
+    code span.ss { color: #da4453; } /* SpecialString */
+    code span.st { color: #f44f4f; } /* String */
+    code span.va { color: #27aeae; } /* Variable */
+    code span.vs { color: #da4453; } /* VerbatimString */
+    code span.wa { color: #da4453; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="style_dark.css" />
+</head>
+<body>
+<h1
+id="lab-04---principais-abordagens-em-ia---aprendizagem-profunda-deep-learning">Lab
+04 - Principais abordagens em IA - aprendizagem profunda (Deep
+Learning)</h1>
+<p><a href="#enunciados">Enunciados</a><br />
+<a href="#ex-1-ensinar-o-drone-coruja-a-ser-um-especialista-em-moda">Ex
+1: Ensinar o Drone ‘Coruja’ a ser um Especialista em Moda</a></p>
+<h2 id="enunciados">Enunciados</h2>
+<h3
+id="ex-1-ensinar-o-drone-coruja-a-ser-um-especialista-em-moda"><strong>Ex
+1: Ensinar o Drone ‘Coruja’ a ser um Especialista em Moda</strong></h3>
+<p><strong>Objetivo:</strong> O teu objetivo é configurar o “cérebro” de
+um drone de reconhecimento de imagem chamado ‘Coruja’. A Coruja precisa
+de aprender a identificar diferentes tipos de artigos de moda a partir
+de imagens. Vais usar o PyTorch para carregar um dataset de imagens de
+moda, construir uma rede neuronal, treiná-la e, finalmente, testar os
+conhecimentos de moda da Coruja.</p>
+<p><strong>Instruções:</strong> Segue cada passo, lê o enunciado para
+perceber o que o código faz e executa os blocos de código em sequência
+num ambiente com Python e PyTorch instalados. Depois, responde às
+questões no final.</p>
+<h3 id="passo-1-importar-as-ferramentas-necessárias">Passo 1: Importar
+as Ferramentas Necessárias</h3>
+<p><strong>Enunciado:</strong> Para começar, precisamos de importar
+todas as bibliotecas e módulos do PyTorch que nos vão permitir trabalhar
+com dados (<code>DataLoader</code>, <code>datasets</code>), construir a
+rede neuronal (<code>nn</code>) e transformar as nossas imagens em
+tensores, o formato de dados que o PyTorch utiliza
+(<code>ToTensor</code>).</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch <span class="im">import</span> nn</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> DataLoader</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torchvision <span class="im">import</span> datasets</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torchvision.transforms <span class="im">import</span> ToTensor</span></code></pre></div>
+<h3 id="passo-2-obter-os-catálogos-de-moda-datasets">Passo 2: Obter os
+“Catálogos de Moda” (Datasets)</h3>
+<p><strong>Enunciado:</strong> A Coruja precisa de material de estudo.
+Vamos usar o <code>datasets.FashionMNIST</code> da
+<code>torchvision</code>, que contém milhares de imagens de artigos de
+moda. Descarregamos dois conjuntos: um para treinar a Coruja
+(<code>train=True</code>) e outro para testar o que ela aprendeu no
+final (<code>train=False</code>). O <code>transform=ToTensor()</code>
+converte automaticamente as imagens para o formato que a nossa rede
+neuronal consegue entender.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Descarregar dados de treino de datasets públicos.</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>dados_treino <span class="op">=</span> datasets.FashionMNIST(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    root<span class="op">=</span><span class="st">&quot;data&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    train<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    download<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    transform<span class="op">=</span>ToTensor(),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Descarregar dados de teste de datasets públicos.</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>dados_teste <span class="op">=</span> datasets.FashionMNIST(</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    root<span class="op">=</span><span class="st">&quot;data&quot;</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    train<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    download<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    transform<span class="op">=</span>ToTensor(),</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<h3 id="passo-3-organizar-os-dados-em-lotes-batches">Passo 3: Organizar
+os Dados em Lotes (<code>Batches</code>)</h3>
+<p><strong>Enunciado:</strong> Não mostramos todas as imagens à Coruja
+de uma só vez; isso seria ineficiente. Em vez disso, usamos o
+<code>DataLoader</code> para agrupar as imagens em lotes (neste caso, de
+64). O <code>DataLoader</code> irá entregar estes lotes à Coruja um de
+cada vez durante o treino. Vamos também inspecionar o formato
+(<code>shape</code>) de um lote de imagens (<code>X</code>) e das suas
+etiquetas (<code>y</code>) para percebermos como os dados estão
+estruturados.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">64</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Criar os carregadores de dados.</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>train_dataloader <span class="op">=</span> DataLoader(dados_treino, batch_size<span class="op">=</span>batch_size)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>test_dataloader <span class="op">=</span> DataLoader(dados_teste, batch_size<span class="op">=</span>batch_size)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Vamos espreitar um lote para ver o formato dos dados.</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> X, y <span class="kw">in</span> test_dataloader:</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Formato do lote de imagens X [N, C, A, L]: </span><span class="sc">{</span>X<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Formato do lote de etiquetas y: </span><span class="sc">{</span>y<span class="sc">.</span>shape<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>y<span class="sc">.</span>dtype<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">break</span></span></code></pre></div>
+<h3 id="passo-4-desenhar-o-cérebro-da-coruja-o-modelo">Passo 4: Desenhar
+o Cérebro da Coruja (O Modelo)</h3>
+<p><strong>Enunciado:</strong> Aqui, desenhamos a arquitetura da nossa
+rede neuronal. Criamos uma classe <code>CerebroCoruja</code> que herda
+de <code>nn.Module</code>, a classe base para todos os modelos de redes
+neuronais em PyTorch. A nossa arquitetura é simples:</p>
+<ol type="1">
+<li><code>nn.Flatten()</code>: Transforma a imagem 2D (28x28 pixels) num
+vetor 1D.</li>
+<li><code>nn.Sequential</code>: Uma sequência de camadas lineares
+(<code>nn.Linear</code>) com funções de ativação <code>ReLU</code> entre
+elas. Estas camadas são responsáveis por encontrar padrões nas imagens.
+A última camada tem 10 saídas, uma para cada categoria de roupa.</li>
+</ol>
+<!-- end list -->
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CerebroCoruja(nn.Module):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.flatten <span class="op">=</span> nn.Flatten()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.linear_relu_stack <span class="op">=</span> nn.Sequential(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">28</span><span class="op">*</span><span class="dv">28</span>, <span class="dv">512</span>),</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>            nn.ReLU(),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">512</span>, <span class="dv">512</span>),</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>            nn.ReLU(),</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>            nn.Linear(<span class="dv">512</span>, <span class="dv">10</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.flatten(x)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        logits <span class="op">=</span> <span class="va">self</span>.linear_relu_stack(x)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> logits</span></code></pre></div>
+<h3 id="passo-5-construir-o-cérebro-e-escolher-o-local-de-treino">Passo
+5: Construir o Cérebro e Escolher o Local de Treino</h3>
+<p><strong>Enunciado:</strong> Primeiro, verificamos se existe uma GPU
+(<code>cuda</code>) disponível, pois é muito mais rápida para treinar
+redes neuronais. Se não houver, usamos a CPU. Depois, criamos uma
+instância do <code>CerebroCoruja</code> e movemo-la para o dispositivo
+escolhido (<code>device</code>) usando <code>.to(device)</code>.</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> <span class="st">&quot;cuda&quot;</span> <span class="cf">if</span> torch.cuda.is_available() <span class="cf">else</span> <span class="st">&quot;cpu&quot;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;A usar o dispositivo: </span><span class="sc">{</span>device<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>modelo <span class="op">=</span> CerebroCoruja().to(device)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(modelo)</span></code></pre></div>
+<h3 id="passo-6-definir-as-ferramentas-de-aprendizagem">Passo 6: Definir
+as Ferramentas de Aprendizagem</h3>
+<p><strong>Enunciado:</strong> Para a Coruja aprender, precisamos de
+duas ferramentas:</p>
+<ol type="1">
+<li><strong>Função de Perda (<code>loss_fn</code>)</strong>:
+<code>nn.CrossEntropyLoss</code> calcula o quão erradas estão as
+previsões da Coruja em comparação com as etiquetas reais.</li>
+<li><strong>Otimizador (<code>optimizer</code>)</strong>:
+<code>torch.optim.SGD</code> (Stochastic Gradient Descent) é o algoritmo
+que ajusta os parâmetros internos do modelo para tentar minimizar o erro
+calculado pela função de perda.</li>
+</ol>
+<!-- end list -->
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>loss_fn <span class="op">=</span> nn.CrossEntropyLoss()</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> torch.optim.SGD(modelo.parameters(), lr<span class="op">=</span><span class="fl">1e-3</span>)</span></code></pre></div>
+<h3 id="passo-7-criar-a-rotina-de-treino">Passo 7: Criar a Rotina de
+Treino</h3>
+<p><strong>Enunciado:</strong> Esta função <code>treinar</code> define
+uma “sessão de estudo” completa. Para cada lote de imagens no
+<code>dataloader</code>, ela faz uma previsão, calcula o erro
+(<code>loss</code>) e, mais importante, realiza a
+<strong>retropropagação</strong> (<code>loss.backward()</code>) e
+atualiza os pesos do modelo (<code>optimizer.step()</code>). É neste
+processo que a aprendizagem efetivamente acontece.
+<code>optimizer.zero_grad()</code> reinicia os gradientes para que não
+se acumulem entre lotes.</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> treinar(dataloader, model, loss_fn, optimizer):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    size <span class="op">=</span> <span class="bu">len</span>(dataloader.dataset)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    model.train() <span class="co"># Coloca o modelo em modo de treino</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> batch, (X, y) <span class="kw">in</span> <span class="bu">enumerate</span>(dataloader):</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        X, y <span class="op">=</span> X.to(device), y.to(device)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Calcular o erro da previsão</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        pred <span class="op">=</span> model(X)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> loss_fn(pred, y)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Retropropagação (Backpropagation)</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        optimizer.zero_grad()</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        loss.backward()</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        optimizer.step()</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> batch <span class="op">%</span> <span class="dv">100</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>            loss, current <span class="op">=</span> loss.item(), (batch <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> <span class="bu">len</span>(X)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f&quot;perda: </span><span class="sc">{</span>loss<span class="sc">:&gt;7f}</span><span class="ss">  [</span><span class="sc">{</span>current<span class="sc">:&gt;5d}</span><span class="ss">/</span><span class="sc">{</span>size<span class="sc">:&gt;5d}</span><span class="ss">]&quot;</span>)</span></code></pre></div>
+<h3 id="passo-8-criar-a-rotina-de-teste">Passo 8: Criar a Rotina de
+Teste</h3>
+<p><strong>Enunciado:</strong> Após cada sessão de estudo, testamos a
+Coruja. A função <code>testar</code> avalia o desempenho do modelo no
+conjunto de dados de teste. Ela calcula a exatidão
+(<code>Accuracy</code>) e a perda média. É crucial usar
+<code>with torch.no_grad()</code> para garantir que não são feitos
+ajustes ao modelo durante o teste. <code>model.eval()</code> informa ao
+PyTorch que o modelo está em modo de avaliação.</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> testar(dataloader, model, loss_fn):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    size <span class="op">=</span> <span class="bu">len</span>(dataloader.dataset)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    num_batches <span class="op">=</span> <span class="bu">len</span>(dataloader)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    model.<span class="bu">eval</span>() <span class="co"># Coloca o modelo em modo de avaliação</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    test_loss, correct <span class="op">=</span> <span class="dv">0</span>, <span class="dv">0</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.no_grad():</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> X, y <span class="kw">in</span> dataloader:</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>            X, y <span class="op">=</span> X.to(device), y.to(device)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>            pred <span class="op">=</span> model(X)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>            test_loss <span class="op">+=</span> loss_fn(pred, y).item()</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>            correct <span class="op">+=</span> (pred.argmax(<span class="dv">1</span>) <span class="op">==</span> y).<span class="bu">type</span>(torch.<span class="bu">float</span>).<span class="bu">sum</span>().item()</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    test_loss <span class="op">/=</span> num_batches</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    correct <span class="op">/=</span> size</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Erro no Teste: </span><span class="ch">\n</span><span class="ss"> Exactidão: </span><span class="sc">{</span>(<span class="dv">100</span><span class="op">*</span>correct)<span class="sc">:&gt;0.1f}</span><span class="ss">%, Perda Média: </span><span class="sc">{</span>test_loss<span class="sc">:&gt;8f}</span><span class="ss"> </span><span class="ch">\n</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<h3 id="passo-9-começar-o-treino">Passo 9: Começar o Treino!</h3>
+<p><strong>Enunciado:</strong> Agora, juntamos tudo. Definimos o número
+de <code>epochs</code> (ciclos completos de treino sobre todo o
+dataset). Dentro do ciclo <code>for</code>, chamamos a função
+<code>treinar</code> e, em seguida, a função <code>testar</code> para
+cada época, permitindo-nos observar a Coruja a ficar progressivamente
+mais inteligente.</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>epochs <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(epochs):</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Época </span><span class="sc">{</span>t<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ch">\n</span><span class="ss">-------------------------------&quot;</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    treinar(train_dataloader, modelo, loss_fn, optimizer)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    testar(test_dataloader, modelo, loss_fn)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Treino concluído!&quot;</span>)</span></code></pre></div>
+<h3 id="passo-10-guardar-as-memórias-da-coruja">Passo 10: Guardar as
+“Memórias” da Coruja</h3>
+<p><strong>Enunciado:</strong> Após um treino intensivo, não queremos
+que a Coruja perca o seu conhecimento. Guardamos o estado do modelo
+(<code>model.state_dict()</code>), que contém todos os parâmetros
+aprendidos, num ficheiro chamado <code>coruja_fashion.pth</code>.</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>torch.save(modelo.state_dict(), <span class="st">&quot;coruja_fashion.pth&quot;</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;As memórias da Coruja foram guardadas em coruja_fashion.pth&quot;</span>)</span></code></pre></div>
+<h3 id="passo-11-carregar-as-memórias-e-fazer-uma-previsão">Passo 11:
+Carregar as Memórias e Fazer uma Previsão</h3>
+<p><strong>Enunciado:</strong> Para terminar, simulamos o reinício da
+Coruja. Criamos uma nova instância do modelo, carregamos os pesos
+guardados com <code>load_state_dict</code> e pedimos-lhe para
+identificar um artigo de moda do conjunto de teste. Definimos uma lista
+de <code>classes</code> para traduzir a previsão numérica do modelo (de
+0 a 9) para um nome de artigo legível.</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>modelo <span class="op">=</span> CerebroCoruja().to(device)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>modelo.load_state_dict(torch.load(<span class="st">&quot;coruja_fashion.pth&quot;</span>))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> [</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;T-shirt/top&quot;</span>, <span class="st">&quot;Calças&quot;</span>, <span class="st">&quot;Camisola&quot;</span>, <span class="st">&quot;Vestido&quot;</span>, <span class="st">&quot;Casaco&quot;</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Sandália&quot;</span>, <span class="st">&quot;Camisa&quot;</span>, <span class="st">&quot;Sapatilha&quot;</span>, <span class="st">&quot;Mala&quot;</span>, <span class="st">&quot;Bota&quot;</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>modelo.<span class="bu">eval</span>()</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>x, y <span class="op">=</span> dados_teste[<span class="dv">0</span>][<span class="dv">0</span>], dados_teste[<span class="dv">0</span>][<span class="dv">1</span>]</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> x.to(device)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    pred <span class="op">=</span> modelo(x)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    previsto, real <span class="op">=</span> classes[pred[<span class="dv">0</span>].argmax(<span class="dv">0</span>)], classes[y]</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&#39;A Coruja previu: &quot;</span><span class="sc">{</span>previsto<span class="sc">}</span><span class="ss">&quot;, O artigo real era: &quot;</span><span class="sc">{</span>real<span class="sc">}</span><span class="ss">&quot;&#39;</span>)</span></code></pre></div>
+<hr />
+<h3 id="questões-e-desafios">Questões e Desafios</h3>
+<p>Depois de executares todos os passos, responde a estas perguntas:</p>
+<ol type="1">
+<li><strong>O Ritmo de Aprendizagem:</strong> No <strong>Passo
+3</strong>, o que controla a variável <code>batch_size</code>?
+Experimenta alterar o seu valor para <code>32</code> e depois para
+<code>128</code> e executa novamente o código. Notaste alguma diferença
+na velocidade de treino ou no resultado final?</li>
+<li><strong>Mais Estudo:</strong> No <strong>Passo 9</strong>, o treino
+é feito em 5 <code>epochs</code>. Altera o código para treinar a Coruja
+durante 10 <code>epochs</code>. A exatidão (<code>Accuracy</code>) final
+melhorou? O que achas que aconteceria se treinasses durante 100
+<code>epochs</code>?</li>
+<li><strong>Nova Moda:</strong> O nosso modelo só conhece as 10
+<code>classes</code> definidas no <strong>Passo 11</strong>. O que
+aconteceria se mostrasses à Coruja uma imagem de um chapéu? Como é que o
+modelo reagiria e porquê?</li>
+</ol>
+</body>
+</html>
