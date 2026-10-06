@@ -1,0 +1,2 @@
+video_id,relative_path,athlete_id,source_id,view,running_direction,visible_side,camera_motion,professional_status,label_status,source_url,notes
+9134e15782cf4f61,data/videos/test/A man running - side view - Animation reference - CG Reference (1080p).mp4,,9134e15782cf4f61,unknown,unknown,unknown,unknown,unknown,unlabelled,,Video de referencia para testar o pipeline; identidade e origem por preencher

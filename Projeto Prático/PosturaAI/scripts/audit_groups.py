@@ -17,7 +17,7 @@ def main() -> None:
     parser.add_argument("--approval", type=Path, default=Path("data/srkd/audit_approval.json"))
     parser.add_argument("--cache", type=Path, default=Path("data/srkd/derived/group_features.npy"))
     parser.add_argument("--sheets", type=Path, default=Path("outputs/visualizations/group_audit"))
-    parser.add_argument("--output", type=Path, default=Path("docs/split_audit.md"))
+    parser.add_argument("--output", type=Path, default=Path("docs/data/split_audit.md"))
     parser.add_argument("--approve", action="store_true", help="Approve only after all review decisions are recorded")
     parser.add_argument("--reviewer", default="", help="Name of the human reviewer")
     parser.add_argument("--apply-decisions", action="store_true", help="Merge groups marked same; then regenerate provisional split")

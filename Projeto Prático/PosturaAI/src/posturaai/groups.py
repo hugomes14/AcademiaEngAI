@@ -524,21 +524,24 @@ def apply_same_decisions(root: Path, manifest: Path, decisions_path: Path, appro
 
 
 def final_split(root: Path, manifest: Path, assignment_path: Path, decisions_path: Path,
-                approval_path: Path, output_dir: Path) -> dict:
+                approval_path: Path, output_dir: Path, *, allow_unaudited: bool = False) -> dict:
     rows, by_id = _manifest(root, manifest)
     groups = {row["group_id"] for row in rows}
     assignment = _read_assignment(assignment_path, groups)
-    if any(row["audit_status"] != "approved" for row in rows):
-        raise ValueError("Manifesto ainda tem auditoria pendente")
-    if not approval_path.exists():
-        raise ValueError("Falta aprovação de auditoria")
-    approval = json.loads(approval_path.read_text(encoding="utf-8"))
     actual = {
         "manifest_sha256": sha256_file(manifest), "assignment_sha256": sha256_file(assignment_path),
-        "decisions_sha256": sha256_file(decisions_path), "source_sha256": sha256_file(root / RAW_JSON),
+        "decisions_sha256": sha256_file(decisions_path) if decisions_path.exists() else None,
+        "source_sha256": sha256_file(root / RAW_JSON),
     }
-    if not approval.get("approved") or any(approval.get(key) != value for key, value in actual.items()):
-        raise ValueError("Manifesto, split, decisões ou JSON bruto mudou após aprovação")
+    approval = {}
+    if not allow_unaudited:
+        if any(row["audit_status"] != "approved" for row in rows):
+            raise ValueError("Manifesto ainda tem auditoria pendente")
+        if not approval_path.exists():
+            raise ValueError("Falta aprovação de auditoria")
+        approval = json.loads(approval_path.read_text(encoding="utf-8"))
+        if not approval.get("approved") or any(approval.get(key) != value for key, value in actual.items()):
+            raise ValueError("Manifesto, split, decisões ou JSON bruto mudou após aprovação")
     source = load_source(root)
     output_dir.mkdir(parents=True, exist_ok=True)
     split_images = {split: [] for split in SPLITS}
@@ -590,6 +593,13 @@ def final_split(root: Path, manifest: Path, assignment_path: Path, decisions_pat
             raise ValueError(f"Contagem de correções inesperada: {dict(field_counts)}")
     corrections_path = output_dir / "corrections.csv"
     _csv_write(corrections_path, ("image_id", "annotation_id", "field", "keypoint_index", "original", "derived", "reason"), corrections)
-    report = {"source_sha256": actual["source_sha256"], "manifest_sha256": actual["manifest_sha256"], "assignment_sha256": actual["assignment_sha256"], "splits": output, "corrections": len(corrections), "corrections_sha256": sha256_file(corrections_path), "audit_reviewer": approval["reviewer"]}
+    report = {
+        **actual, "splits": output, "corrections": len(corrections),
+        "corrections_sha256": sha256_file(corrections_path),
+        "audit_reviewer": approval.get("reviewer"),
+        "audit_status": "not_reviewed" if allow_unaudited else "approved",
+        "experimental": allow_unaudited,
+        "audit_bypass_reason": "explicit_unaudited_mode" if allow_unaudited else None,
+    }
     _atomic_json(output_dir / "preparation_report.json", report)
     return report

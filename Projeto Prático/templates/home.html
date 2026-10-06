@@ -25,7 +25,7 @@
 <section class="services-section" id="servicos">
   <div class="section-heading">
     <div><p class="eyebrow">SERVIÇOS RUNNINGAI</p><h2>Escolhe onde queres melhorar.</h2></div>
-    <p>Começamos pela previsão de ritmo. Novos serviços irão acompanhar o planeamento, recuperação e preparação de provas.</p>
+    <p>Prevê o ritmo de um percurso ou explora a tua técnica de corrida em vídeo. O planeamento de treino é o próximo passo.</p>
   </div>
 
   <div class="services-grid">
@@ -35,11 +35,11 @@
       <div class="service-footer"><span>Percurso · Altimetria · FC</span><b>Experimentar <i>→</i></b></div>
     </a>
 
-    <article class="service-card">
-      <div class="service-top"><span class="service-icon icon-posture" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="17" cy="6" r="3"/><path d="M16 10l-2 7 5 4 2 7m-7-11-6 4m8-9 7 4m-4 5-7 7"/><path d="M6 7v20" stroke-dasharray="2 3"/></svg></span><span class="service-status">Em breve</span></div>
-      <div><p class="service-number">02</p><h3>PosturaAI</h3><p>Analisa a técnica de corrida em vídeo e identifica oportunidades para melhorar postura, passada e eficiência.</p></div>
-      <div class="service-footer"><span>Vídeo · Técnica · Movimento</span></div>
-    </article>
+    <a class="service-card service-live" href="{{ url_for('postura_ai') }}">
+      <div class="service-top"><span class="service-icon icon-posture" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="17" cy="6" r="3"/><path d="M16 10l-2 7 5 4 2 7m-7-11-6 4m8-9 7 4m-4 5-7 7"/><path d="M6 7v20" stroke-dasharray="2 3"/></svg></span><span class="service-status live"><i></i>Experimental</span></div>
+      <div><p class="service-number">02</p><h3>PosturaAI</h3><p>Importa um vídeo e acompanha os pontos do corpo e as previsões experimentais de postura.</p></div>
+      <div class="service-footer"><span>Vídeo · Técnica · Movimento</span><b>Experimentar <i>→</i></b></div>
+    </a>
 
     <article class="service-card">
       <div class="service-top"><span class="service-icon icon-coach" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 25V10a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v15"/><path d="M11 4v6m10-6v6M7 13h18M11 18h4m3 0h3m-10 4h3"/><circle cx="24" cy="24" r="4"/><path d="m22.5 24 1 1 2-2"/></svg></span><span class="service-status">Em breve</span></div>

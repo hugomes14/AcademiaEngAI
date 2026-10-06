@@ -114,6 +114,26 @@ class GroupSplitTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             final_split(self.root, self.manifest, self.assignment, self.decisions, self.approval, self.root / "derived")
 
+    def test_unaudited_export_corrects_data_without_fabricating_approval(self) -> None:
+        self._build()
+        provisional_split(self.root, self.manifest, self.assignment, 42)
+        source_hash = sha256_file(self.root / RAW_JSON)
+        manifest_hash = sha256_file(self.manifest)
+        report = final_split(
+            self.root, self.manifest, self.assignment, self.decisions,
+            self.approval, self.root / "derived", allow_unaudited=True,
+        )
+        self.assertEqual(report["audit_status"], "not_reviewed")
+        self.assertTrue(report["experimental"])
+        self.assertIsNone(report["audit_reviewer"])
+        self.assertEqual(report["corrections"], 2)
+        self.assertFalse(self.approval.exists())
+        self.assertEqual(sha256_file(self.root / RAW_JSON), source_hash)
+        self.assertEqual(sha256_file(self.manifest), manifest_hash)
+        with self.assertRaisesRegex(ValueError, "pendente"):
+            final_split(self.root, self.manifest, self.assignment, self.decisions,
+                        self.approval, self.root / "audited")
+
     def test_final_split_repairs_derived_only_after_approval(self) -> None:
         self._build()
         provisional_split(self.root, self.manifest, self.assignment, 42)

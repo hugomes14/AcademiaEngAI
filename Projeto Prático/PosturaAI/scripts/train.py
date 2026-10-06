@@ -1,4 +1,4 @@
-"""Run one RTMPose-S training stage after the M0 audit and GPU checks."""
+"""Run RTMPose-S on audited splits or explicitly marked experimental splits."""
 
 from __future__ import annotations
 
@@ -38,6 +38,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--resume-run", type=Path, help="Previous run directory or its exact latest checkpoint")
     parser.add_argument("--backbone-checkpoint", type=Path, help="Local official CSPNeXt checkpoint for smoke/stage 1")
     parser.add_argument("--show-config", action="store_true", help="Show resolved stage settings without training or GPU imports")
+    parser.add_argument("--allow-unaudited", action="store_true", help="Allow experimental training on splits exported with --unaudited")
     args = parser.parse_args(argv)
     root = args.root.resolve()
     try:
@@ -47,6 +48,7 @@ def main(argv: list[str] | None = None) -> int:
                 raise ValueError(f"Checkpoint does not exist: {path}")
         if args.show_config:
             raw = runpy.run_path(str(root / CONFIG_FILE))
+            raw = {key: value for key, value in raw.items() if not key.startswith("__")}
             config = build_stage_config(
                 raw,
                 stage=args.stage,
@@ -83,6 +85,7 @@ def main(argv: list[str] | None = None) -> int:
             init_checkpoint=args.init_checkpoint,
             resume_checkpoint=resume,
             backbone_checkpoint=args.backbone_checkpoint,
+            allow_unaudited=args.allow_unaudited,
         )
     except (OSError, RuntimeError, ValueError, ImportError) as exc:
         print(f"Training could not start: {exc}", file=sys.stderr)

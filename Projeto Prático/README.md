@@ -7,7 +7,7 @@ RunningAI é uma aplicação Flask que reúne serviços de inteligência artific
 | Serviço | Estado | Objetivo |
 |---|---|---|
 | [RitmoAI](RitmoAI/README.md) | Disponível | Prever o ritmo num percurso para uma zona cardíaca escolhida. |
-| [PosturaAI](PosturaAI/README.md) | Planeado | Analisar a postura e a técnica de corrida. |
+| [PosturaAI](PosturaAI/README.md) | Disponível na app · experimental | Importar um vídeo, acompanhar a pose e consultar a classificação. |
 | [TreinadorAI](TreinadorAI/README.md) | Planeado | Apoiar a criação e adaptação de planos de treino. |
 
 ## Estrutura do repositório
@@ -20,7 +20,7 @@ Projeto Prático/
 ├── requirements.txt        # dependências da aplicação completa
 ├── INSTRUCOES_APP.md       # utilização rápida da aplicação web
 ├── RitmoAI/                # projeto de previsão de ritmo
-├── PosturaAI/              # futuro projeto de análise de postura
+├── PosturaAI/              # estimação de pose; treino e inferência experimental
 └── TreinadorAI/            # futuro projeto de apoio ao treino
 ```
 
@@ -38,6 +38,8 @@ python -m pip install -r requirements.txt
 python app.py
 ```
 
-Abra <http://127.0.0.1:5000>. O catálogo apresenta todos os serviços; o RitmoAI está acessível em <http://127.0.0.1:5000/ritmo-ai>.
+Abra <http://127.0.0.1:5000>. O catálogo permite abrir o RitmoAI e o [PosturaAI](http://127.0.0.1:5000/postura-ai).
+
+O PosturaAI usa o seu próprio ambiente `PosturaAI/.venv`, os checkpoints já treinados e a GPU. Consulte [as instruções da app](INSTRUCOES_APP.md) para os requisitos e o funcionamento dos vídeos.
 
 Os dados pessoais e os modelos treinados não são versionados. Consulte o [README do RitmoAI](RitmoAI/README.md) para preparar os dados e treinar o primeiro serviço.

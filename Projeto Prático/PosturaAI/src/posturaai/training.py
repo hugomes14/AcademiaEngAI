@@ -7,13 +7,16 @@ checks and CLI help work before the dedicated GPU environment is installed.
 from __future__ import annotations
 
 from copy import deepcopy
+from contextlib import nullcontext
 from dataclasses import dataclass
 import hashlib
 import importlib
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
+import traceback
 from typing import Any
 
 from src.posturaai.dataset import SOURCE_SHA256
@@ -53,27 +56,50 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def assert_training_gate(root: Path, stage: str) -> dict[str, Any]:
-    """Reject full training until the signed final split exists."""
+def assert_training_gate(root: Path, stage: str, *, allow_unaudited: bool = False) -> dict[str, Any]:
+    """Require audited splits or explicitly opt into a marked experiment."""
     root = Path(root).resolve()
     derived = root / "data/srkd/derived"
     train_file, val_file = derived / "train.json", derived / "val.json"
     if not train_file.is_file():
         raise RuntimeError(f"Missing training annotations: {train_file}. Complete M0 preparation first.")
-    if stage == "smoke":
+    report_path = derived / "preparation_report.json"
+    if stage == "smoke" and not report_path.is_file():
         return {"train_sha256": sha256_file(train_file), "smoke_only": True}
     if not val_file.is_file():
         raise RuntimeError(f"Missing validation annotations: {val_file}. Complete M0 preparation first.")
     approval_path = root / "data/srkd/audit_approval.json"
-    report_path = derived / "preparation_report.json"
-    for path in (approval_path, report_path):
-        if not path.is_file():
-            raise RuntimeError(f"M0 gate is incomplete: missing {path}")
+    if not report_path.is_file():
+        raise RuntimeError(f"M0 gate is incomplete: missing {report_path}")
     try:
-        approval = json.loads(approval_path.read_text(encoding="utf-8"))
         report = json.loads(report_path.read_text(encoding="utf-8"))
     except (OSError, ValueError) as exc:
         raise RuntimeError(f"M0 gate metadata cannot be read: {exc}") from exc
+    if report.get("audit_status") == "not_reviewed":
+        if stage != "smoke" and not allow_unaudited:
+            raise RuntimeError("Splits are unaudited. Use --allow-unaudited to run an experimental training stage.")
+        if report.get("experimental") is not True or report.get("source_sha256") != SOURCE_SHA256:
+            raise RuntimeError("Unaudited preparation provenance is invalid")
+        hashes = {"train_sha256": sha256_file(train_file), "val_sha256": sha256_file(val_file)}
+        for split in ("train", "val"):
+            if hashes[f"{split}_sha256"] != report.get("splits", {}).get(split, {}).get("sha256"):
+                raise RuntimeError(f"Experimental {split} annotations changed after preparation")
+        for key, path in (
+            ("manifest_sha256", root / "data/srkd/group_manifest.csv"),
+            ("assignment_sha256", root / "data/srkd/provisional_assignment.csv"),
+        ):
+            if not path.is_file() or sha256_file(path) != report.get(key):
+                raise RuntimeError(f"Experimental split inputs changed after preparation: {path}")
+        return {
+            **hashes, "preparation_report_sha256": sha256_file(report_path),
+            "audit_status": "not_reviewed", "experimental": True,
+            "audit_bypass_reason": report.get("audit_bypass_reason"),
+            "smoke_only": stage == "smoke",
+        }
+    try:
+        approval = json.loads(approval_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise RuntimeError(f"M0 approval cannot be read: {exc}") from exc
     if approval.get("approved") is not True or not approval.get("reviewer"):
         raise RuntimeError("M0 group audit is not approved by a named reviewer")
     if approval.get("source_sha256") != SOURCE_SHA256:
@@ -88,6 +114,7 @@ def assert_training_gate(root: Path, stage: str) -> dict[str, Any]:
         "approval_sha256": sha256_file(approval_path),
         "preparation_report_sha256": sha256_file(report_path),
         "audit_reviewer": approval["reviewer"],
+        "audit_status": "approved", "experimental": False,
     }
 
 
@@ -183,6 +210,7 @@ def build_stage_config(
 
 def preflight_runtime(stage: str) -> dict[str, Any]:
     """Import dependencies and verify a usable CUDA device before epochs."""
+    os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
     missing: list[str] = []
     versions: dict[str, str] = {}
     for package in ("torch", "mmcv", "mmengine", "mmdet", "mmpose"):
@@ -209,7 +237,13 @@ def preflight_runtime(stage: str) -> dict[str, Any]:
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA is unavailable. M1 training requires a verified local GPU runtime.")
     versions["cuda_runtime"] = str(torch.version.cuda)
+    versions["cublas_workspace_config"] = os.environ["CUBLAS_WORKSPACE_CONFIG"]
     versions["gpu"] = torch.cuda.get_device_name(0)
+    versions["compute_capability"] = ".".join(map(str, torch.cuda.get_device_capability(0)))
+    # Driver visibility alone does not prove that the wheel supports this GPU.
+    probe = torch.ones((16, 16), device="cuda")
+    if not torch.isfinite(probe @ probe).all().item():
+        raise RuntimeError("CUDA arithmetic preflight failed")
     try:
         query = subprocess.run(["nvidia-smi"], capture_output=True, text=True, timeout=10, check=False)
         versions["nvidia_smi"] = query.stdout.strip() if query.returncode == 0 else query.stderr.strip()
@@ -225,6 +259,24 @@ def _git_commit(root: Path) -> str | None:
     return result.stdout.strip() if result.returncode == 0 else None
 
 
+def checkpoint_load_context():
+    """Keep restricted Torch loading compatible with NumPy/MMEngine metadata."""
+    import numpy as np
+    import torch
+    from mmengine.logging import HistoryBuffer
+
+    if not hasattr(torch.serialization, "safe_globals"):
+        return nullcontext()
+    allowed = [np.core.multiarray._reconstruct, np.core.multiarray.scalar,
+               np.ndarray, np.dtype, HistoryBuffer, getattr,
+               HistoryBuffer.min, HistoryBuffer.max, HistoryBuffer.current, HistoryBuffer.mean]
+    allowed.extend(type(np.dtype(name)) for name in (
+        "bool", "int8", "int16", "int32", "int64", "uint8", "uint16",
+        "uint32", "uint64", "float16", "float32", "float64",
+    ))
+    return torch.serialization.safe_globals(allowed)
+
+
 def train_stage(
     *,
     root: Path,
@@ -235,10 +287,11 @@ def train_stage(
     init_checkpoint: Path | None = None,
     resume_checkpoint: Path | None = None,
     backbone_checkpoint: Path | None = None,
+    allow_unaudited: bool = False,
 ) -> dict[str, Any]:
     """Run one stage after all gates and dependency checks pass."""
     root = Path(root).resolve()
-    gate = assert_training_gate(root, stage)
+    gate = assert_training_gate(root, stage, allow_unaudited=allow_unaudited)
     versions = preflight_runtime(stage)
     from mmengine.config import Config
     from mmengine.runner import Runner
@@ -279,9 +332,11 @@ def train_stage(
         "backbone_lr": STAGES[stage].backbone_lr,
         "versions": versions,
         "git_commit": _git_commit(root),
-        "plan_sha256": sha256_file(root / "rtmpose_srk_implementation_plan.md"),
+        "plan_sha256": sha256_file(root / "docs/plans/rtmpose_srk_implementation_plan.md"),
         "effective_config_sha256": sha256_file(effective_path),
         "gate": gate,
+        "experimental": gate.get("experimental", False),
+        "audit_status": gate.get("audit_status", "smoke_only"),
         "initial_checkpoint": (
             str(init_checkpoint or resume_checkpoint or backbone_checkpoint or OFFICIAL_BACKBONE_URL)
         ),
@@ -295,16 +350,25 @@ def train_stage(
     }
     metadata_path.write_text(json.dumps(metadata, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     try:
-        runner = Runner.from_cfg(cfg)
-        # Catch operator/CUDA incompatibility before the first training epoch.
-        import torch
-        dummy = torch.zeros((1, 3, 256, 192), device="cuda")
-        runner.model.cuda().eval()
-        with torch.no_grad():
-            output = runner.model(inputs=dummy, data_samples=None, mode="tensor")
-        if output is None:
-            raise RuntimeError("RTMPose forward preflight returned no output")
-        runner.train()
+        with checkpoint_load_context():
+            runner = Runner.from_cfg(cfg)
+            # Catch operator/CUDA incompatibility before the first training epoch.
+            import torch
+            dummy = torch.zeros((1, 3, 256, 192), device="cuda")
+            runner.model.cuda().eval()
+            with torch.no_grad():
+                output = runner.model(inputs=dummy, data_samples=None, mode="tensor")
+            expected_shapes = ((1, 30, 384), (1, 30, 512))
+            if not isinstance(output, tuple) or tuple(tuple(value.shape) for value in output) != expected_shapes:
+                raise RuntimeError("RTMPose forward preflight must return 30 SimCC channels per axis")
+            if not all(torch.isfinite(value).all().item() for value in output):
+                raise RuntimeError("RTMPose forward preflight returned non-finite outputs")
+            metadata["forward_preflight"] = {
+                "device": "cuda", "output_shapes": expected_shapes, "finite": True,
+            }
+            metadata["status"] = "running"
+            metadata_path.write_text(json.dumps(metadata, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+            runner.train()
         metadata["status"] = "completed"
         best = runner.message_hub.get_info("best_ckpt")
         if best and Path(best).is_file():
@@ -319,6 +383,7 @@ def train_stage(
     except Exception as exc:
         metadata["status"] = "failed"
         metadata["error"] = f"{type(exc).__name__}: {exc}"
+        metadata["traceback"] = traceback.format_exc()
         raise
     finally:
         metadata_path.write_text(json.dumps(metadata, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

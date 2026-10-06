@@ -4,5 +4,5 @@ numpy>=1.26,<3
 scipy>=1.13,<2
 pytest>=8,<9
 
-# As dependências de treino (PyTorch, MMCV, MMEngine, MMDetection e MMPose)
-# serão fixadas após verificar a GPU/CUDA local, conforme o plano.
+# Dependências de treino: requirements-training.txt e docs/training_environment.md.
+# PyTorch CUDA e MMCV são instalados separadamente conforme o hardware.

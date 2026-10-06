@@ -1,4 +1,4 @@
-"""Plataforma RunningAI e serviço RitmoAI de previsão de ritmo."""
+"""Plataforma RunningAI: RitmoAI e inferência de vídeo PosturaAI."""
 
 from __future__ import annotations
 
@@ -18,8 +18,10 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, abort, jsonify, render_template, request, send_file, url_for
 from werkzeug.utils import secure_filename
+from werkzeug.exceptions import RequestEntityTooLarge
+from PosturaAI.web_service import VideoJobs, QueueFull, UPLOAD_MB
 
 from RitmoAI.preparar_dados import perfil_percurso
 from RitmoAI.prever_percurso import (
@@ -42,6 +44,88 @@ LOCK_GRAFICO = Lock()
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = LIMITE_UPLOAD_MB * 1024 * 1024
+_postura_jobs = None
+LOCK_POSTURA = Lock()
+
+
+def postura_jobs():
+    global _postura_jobs
+    with LOCK_POSTURA:
+        if _postura_jobs is None:
+            _postura_jobs = VideoJobs()
+    return _postura_jobs
+
+
+@app.before_request
+def limite_upload():
+    if request.endpoint == 'postura_upload':
+        request.max_content_length = UPLOAD_MB * 1024 * 1024
+    if request.content_length and request.content_length > request.max_content_length:
+        raise RequestEntityTooLarge()
+
+
+@app.get('/postura-ai')
+def postura_ai():
+    return render_template('postura_ai.html', pagina='postura_ai',
+                           disponivel=postura_jobs().available(), limite_mb=UPLOAD_MB)
+
+
+def postura_status_payload(job_id):
+    state = postura_jobs().status(job_id)
+    state['status_url'] = url_for('postura_status', job_id=job_id)
+    state['preview_url'] = url_for('postura_preview', job_id=job_id) if state['has_preview'] else None
+    state['video_url'] = url_for('postura_video', job_id=job_id) if state['status'] == 'completed' else None
+    return state
+
+
+@app.post('/api/postura/jobs')
+def postura_upload():
+    try:
+        video = request.files.get('video')
+        if not video or not video.filename:
+            raise ValueError('Escolhe um vídeo para analisar.')
+        state = postura_jobs().create(video)
+        return jsonify(postura_status_payload(state['id'])), 202
+    except QueueFull as exc:
+        return jsonify(erro=str(exc)), 429
+    except ValueError as exc:
+        return jsonify(erro=str(exc)), 400
+    except RuntimeError as exc:
+        return jsonify(erro=str(exc)), 503
+
+
+@app.get('/api/postura/jobs/<job_id>')
+def postura_status(job_id):
+    try:
+        response = jsonify(postura_status_payload(job_id))
+        response.headers['Cache-Control'] = 'no-store'
+        return response
+    except FileNotFoundError:
+        return jsonify(erro='Análise inexistente.'), 404
+
+
+@app.get('/api/postura/jobs/<job_id>/preview')
+def postura_preview(job_id):
+    try:
+        path = postura_jobs().directory(job_id) / 'preview.jpg'
+        if not path.is_file():
+            abort(404)
+        response = send_file(path, mimetype='image/jpeg', conditional=False, max_age=0)
+        response.headers['Cache-Control'] = 'no-store'
+        return response
+    except FileNotFoundError:
+        abort(404)
+
+
+@app.get('/api/postura/jobs/<job_id>/video')
+def postura_video(job_id):
+    try:
+        if postura_jobs().status(job_id)['status'] != 'completed':
+            abort(404)
+        return send_file(postura_jobs().directory(job_id) / 'result.mp4',
+                         mimetype='video/mp4', conditional=True)
+    except FileNotFoundError:
+        abort(404)
 
 _cache_modelo: dict[str, Any] = {"mtime": None, "pacote": None}
 _cache_treino: dict[str, Any] = {"mtime": None, "dados": None}
@@ -272,6 +356,8 @@ def api_prever():
 
 @app.errorhandler(413)
 def upload_demasiado_grande(_erro):
+    if request.path.startswith('/api/postura/'):
+        return jsonify(erro=f'O vídeo excede o limite de {UPLOAD_MB} MB.'), 413
     if request.path == "/api/prever":
         return jsonify(
             ok=False, erro=f"O ficheiro excede o limite de {LIMITE_UPLOAD_MB} MB."

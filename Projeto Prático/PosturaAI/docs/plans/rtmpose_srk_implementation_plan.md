@@ -1,6 +1,8 @@
 # PosturaAI — plano de implementação RTMPose + SRKD
 
-**Estado:** arquitetura definida; implementação e treino pendentes.
+**Estado em 2026-10-06:** etapa 1 e teste sintético concluídos; inferência em vídeo, tracking e medidas 2D implementados. Primeiro classificador geométrico treinado em quatro vídeos com rótulos corrigidos por trecho; validação por gravação fraca (balanced accuracy 39,12%). O vídeo de ritmos recebeu previsões experimentais, sem ground truth de teste. Por decisão do utilizador, o desenvolvimento prossegue com splits experimentais sem auditoria manual. O README e os relatórios em `docs/` registam o progresso.
+
+**Exceção autorizada pelo utilizador em 2026-10-06:** o modo `prepare_splits --unaudited` permite exportar splits corrigidos e validados sem revisão humana. `train --allow-unaudited` permite treino completo desses splits como experiência, com hashes verificados e `experimental=true`/`audit_status=not_reviewed` nos metadados. Não produz uma aprovação M0 nem altera o estado das revisões. Os gates de auditoria abaixo continuam a aplicar-se ao percurso auditado; deixam de bloquear esta experiência explicitamente autorizada.
 
 **Raiz do projeto:** `Projeto Prático/PosturaAI/`. Todos os caminhos abaixo são relativos a esta pasta.
 
@@ -21,14 +23,14 @@
 
 ## 2. Estado conhecido do repositório e princípios
 
-Inspeção local em 2026-09-17:
+Inspeção local em 2026-09-17, atualizada e revalidada em 2026-10-06:
 
 - O JSON bruto está em `Dataset-Synthetic-Runner-Keypoint-Dataset-2026-06-07/keypoints_srkd.json`. Contém 92 824 imagens e 92 824 anotações, uma pessoa por imagem, resolução 640 × 360, 30 keypoints por pessoa e visibilidade 2 em todos os pontos brutos.
 - As imagens `000001.jpeg`–`001219.jpeg` estão em `Dataset-Synthetic-Runner-Keypoint-Dataset-2026-06-07/Images/`; as restantes `001220.jpeg`–`092824.jpeg` estão em `Synthetic-Runner-Keypoint-Dataset-2026-06-07/Dataset-Synthetic-Runner-Keypoint-Dataset-2026-06-07/Images/`. Os conjuntos não se sobrepõem e cobrem todas as referências do JSON.
 - Existem 18 bounding boxes que passam até 6 píxeis abaixo da imagem. Há também 84 keypoints dos pés, em 50 anotações, marcados como visíveis embora estejam até 7 píxeis abaixo da imagem. São problemas conhecidos a tratar nas anotações derivadas, sem alterar o original.
 - Não há `runner_id`, `sequence_id`, `scene_id`, `camera_id` ou equivalente no JSON. O nome numérico não comprova uma sequência; imagens próximas podem partilhar corredor/cenário. Não é possível afirmar ausência absoluta de leakage com os dados disponíveis.
 - O JSON declara licença `CC BY-NC 4.0`. Registar a licença dos dados e dos pesos usados em cada treino antes de qualquer distribuição do modelo.
-- Ainda não existem código, configurações, ambiente MMPose ou checkpoints do PosturaAI. A aplicação Flask da raiz apresenta PosturaAI como serviço planeado. A `.venv` da raiz usa Python 3.13 e não tem PyTorch/MMPose; o acesso à GPU não está disponível neste ambiente WSL2.
+- Já existem validação, visualizações, agrupamento, preparação/auditoria de splits, métricas, treino e inferência top-down em imagem e vídeo. Há 153 grupos pendentes, uma atribuição 80/10/10 e 205 pares preparados para revisão; os splits foram exportados no modo experimental sem auditoria. O smoke concluiu três épocas e a etapa 1 terminou 10 épocas, com melhor NME de validação 0,01476. O teste sintético foi executado (NME 0,01242); etapas 2/3 não foram executadas. A `.venv` PosturaAI usa Python 3.11.17, PyTorch 2.7.1/CUDA 12.8 e OpenMMLab; a RTX 5080 Laptop GPU foi verificada fora do sandbox. A aplicação Flask disponibiliza o PosturaAI experimental, com upload, progresso, pré-visualização e vídeo anotado.
 
 **Invariantes:** dados brutos imutáveis; splits e pré-processamento reproduzíveis; `val` serve para escolher modelos e `test` fica reservado; métricas de pés são sempre mostradas; checkpoints preservam configuração e proveniência; inferência de pose e análise biomecânica têm módulos separados. Não copiar os cerca de 7 GB de imagens para uma nova árvore.
 
@@ -36,21 +38,21 @@ Inspeção local em 2026-09-17:
 
 ```text
 PosturaAI/
-├── rtmpose_srk_implementation_plan.md
 ├── README.md
 ├── requirements.txt                 # dependências declaradas do serviço
 ├── requirements-lock.txt            # versões resolvidas no ambiente de treino
 ├── configs/
 │   ├── datasets/srkd.py             # metainfo: 30 pontos, flip, skeleton, pesos
 │   └── rtmpose/                     # base RTMPose-S e overrides por etapa
-├── data/srkd/
-│   ├── group_manifest.csv           # image_id, group_id, método e estado da auditoria
-│   └── derived/                     # train/val/test COCO e relatório de correções
+├── data/
+│   ├── srkd/                       # manifesto e train/val/test COCO
+│   ├── videos/test/                # vídeos de referência
+│   └── running_posture/            # boa_postura, ma_postura e catálogo
 ├── src/posturaai/                   # validação, preparação, métricas, treino, inferência
 ├── scripts/                         # CLIs finas, sem lógica de negócio duplicada
 ├── tests/
-├── docs/                            # especificação, auditoria, treino e avaliação
-├── outputs/                         # checkpoints, logs e visualizações gerados
+├── docs/                            # índice e pastas plans, data, training e video
+├── outputs/                         # checkpoints, teste, videos, visualizations e archive
 ├── Dataset-Synthetic-Runner-Keypoint-Dataset-2026-06-07/
 └── Synthetic-Runner-Keypoint-Dataset-2026-06-07/
 ```
@@ -66,7 +68,7 @@ python -m scripts.validate_dataset
 python -m scripts.visualize_annotations --samples 100 --output outputs/visualizations/ground_truth
 python -m scripts.build_groups --output data/srkd/group_manifest.csv
 python -m scripts.prepare_splits --manifest data/srkd/group_manifest.csv --seed 42 --provisional
-python -m scripts.audit_groups --manifest data/srkd/group_manifest.csv --output docs/split_audit.md
+python -m scripts.audit_groups --manifest data/srkd/group_manifest.csv --output docs/data/split_audit.md
 python -m scripts.prepare_splits --manifest data/srkd/group_manifest.csv --seed 42 --final
 python -m scripts.train --stage smoke
 python -m scripts.train --stage 1
@@ -109,7 +111,7 @@ Arestas únicas do skeleton bruto após conversão para 0-based (33; o JSON cont
 (16,18) (18,20) (18,22) (20,24) (22,24)
 ```
 
-Usar estas arestas apenas como ponto de partida para visualização. Rever pelo menos 100 imagens escolhidas de forma reprodutível e distribuídas por intervalos do dataset, incluindo exemplos com pés junto ao limite inferior. A revisão deve verificar lado anatómico, localização, ligações dos pés e transformações de resize/flip. Se o skeleton bruto estiver anatomicamente errado, propor uma versão corrigida em `docs/dataset_spec.md`, com justificação e exemplos, antes de o usar em visualizações finais. Não alterar silenciosamente a ordem dos pontos.
+Usar estas arestas apenas como ponto de partida para visualização. Rever pelo menos 100 imagens escolhidas de forma reprodutível e distribuídas por intervalos do dataset, incluindo exemplos com pés junto ao limite inferior. A revisão deve verificar lado anatómico, localização, ligações dos pés e transformações de resize/flip. Se o skeleton bruto estiver anatomicamente errado, propor uma versão corrigida em `docs/data/dataset_spec.md`, com justificação e exemplos, antes de o usar em visualizações finais. Não alterar silenciosamente a ordem dos pontos.
 
 ### 4.2 Validação e reparação derivada
 
@@ -121,7 +123,7 @@ Usar estas arestas apenas como ponto de partida para visualização. Rever pelo 
 
 O manifesto contém `image_id,file_name,group_id,group_method,audit_status` para todas as imagens. A construção inicial segmenta intervalos contíguos de nomes por mudanças visuais de cenário/câmara e encontra candidatos a duplicação ou mesma sequência por semelhança visual entre intervalos. Proximidade numérica, sozinha, nunca basta para declarar independência. Fixar no código os parâmetros e a seed usados; guardar os candidatos e evidência visual para revisão. A atribuição provisória do split é um artefacto separado, descartado sempre que os grupos mudarem.
 
-Auditar manualmente pelo menos 100 pares em limites de grupos e os 100 pares mais semelhantes que cairiam em splits diferentes, além de todos os casos sinalizados como ambíguos pela rotina de agrupamento. Se um par representar a mesma sequência ou cenário indistinguível, reunir os grupos e repetir atribuição e auditoria. Candidatos sem decisão ficam `pending` e bloqueiam o split oficial. O relatório `docs/split_audit.md` identifica método, amostra revista, decisões, limitações e a conclusão **«sem sobreposição conhecida após auditoria»**, nunca uma garantia absoluta de ausência de leakage.
+Auditar manualmente pelo menos 100 pares em limites de grupos e os 100 pares mais semelhantes que cairiam em splits diferentes, além de todos os casos sinalizados como ambíguos pela rotina de agrupamento. Se um par representar a mesma sequência ou cenário indistinguível, reunir os grupos e repetir atribuição e auditoria. Candidatos sem decisão ficam `pending` e bloqueiam o split oficial. O relatório `docs/data/split_audit.md` identifica método, amostra revista, decisões, limitações e a conclusão **«sem sobreposição conhecida após auditoria»**, nunca uma garantia absoluta de ausência de leakage.
 
 Aplicar 80/10/10 por `group_id`, com seed 42, sem dividir um grupo. Balancear aproximadamente número de imagens e a cobertura de cenários/poses observáveis, sem mover imagens individuais entre splits. O teste é selado antes do treino: não o usar para escolher hiperparâmetros, augmentations, checkpoint ou thresholds. Gerar `train.json`, `val.json`, `test.json` e relatório com contagens de imagens, grupos, visibilidade e condições observáveis. Se um conjunto perder uma condição relevante identificada na auditoria, refazer a atribuição de grupos e registar a nova versão.
 
@@ -160,9 +162,23 @@ AP/AP50/AP75/AR/OKS ficam **não reportados** até existir um vetor de 30 sigmas
 
 Após escolher o checkpoint final na validação, avaliar `test` uma única vez e produzir `docs/evaluation_report.md`, tabelas por ponto e pés, métricas globais, configuração/hash do modelo, descrição do split inferido e risco residual. Guardar exemplos visuais bons e maus, incluindo pelo menos 20 casos de maior erro nos pés. Se houver defeito de dados descoberto no teste, versionar nova preparação e tratar qualquer nova medição como nova experiência, nunca como ajuste da experiência já testada.
 
-**Artefactos obrigatórios de M1:** `data/srkd/group_manifest.csv`, três JSONs COCO derivados, `corrections.csv`, `docs/dataset_spec.md`, `docs/split_audit.md`, configs efetivas, logs, `outputs/final/best.pth`, `run_metadata.json`, relatório de teste e visualizações. `outputs/final/best.pth` é uma cópia identificada do melhor checkpoint de validação; o relatório indica a etapa de origem.
+**Artefactos obrigatórios de M1:** `data/srkd/group_manifest.csv`, três JSONs COCO derivados, `corrections.csv`, `docs/data/dataset_spec.md`, `docs/data/split_audit.md`, configs efetivas, logs, `outputs/final/best.pth`, `run_metadata.json`, relatório de teste e visualizações. `outputs/final/best.pth` é uma cópia identificada do melhor checkpoint de validação; o relatório indica a etapa de origem.
 
 ## 7. Marcos posteriores
+
+**Decisão de implementação em 2026-10-06:** avançar com tracking, suavização,
+exportação de keypoints e medidas 2D usando o checkpoint experimental da etapa
+1. O plano da câmara não restringe a coleta nem exige controlo nesta fase:
+aceitar planos variados, desconhecidos e mistos. Conservar a vista como metadado
+opcional, geometria projetada e máscaras; só aplicar interpretação específica
+de um plano quando o contexto for conhecido. Implementados `infer_video`,
+`extract_features` e `build_sequences`; detalhes em [pipeline de vídeo](../video/video_pipeline.md).
+As sequências genéricas de `build_sequences` continuam sem rótulos.
+Posteriormente, por pedido do utilizador, foram corrigidos os trechos dos
+tutoriais mistos, treinado um classificador experimental com 102 janelas e
+gerado o teste visual reservado. Rótulos, validação e limites estão em
+[primeiro classificador](../video/classifier.md). Ser atleta profissional não
+atribui automaticamente uma classe de postura.
 
 **M2 — imagem e vídeo real.** Recolher 50–200 imagens e vídeos curtos com ângulos, luz e roupa variados, com origem e consentimento documentados. Primeiro medir qualitativamente o sim-to-real gap; métricas quantitativas exigem anotações reais. Para vídeo: descodificar frames → detetar pessoas → RTMPose top-down → associar `track_id` por IoU → suavizar por track com EMA como baseline → renderizar e exportar. Medir frames sem deteção, keypoints em falta, jitter, variância de confiança e latência. Não suavizar através de descontinuidades de track. O contrato de exportação por pessoa é `T × 30 × 3` (`x`, `y`, confiança), com `video_id`, `fps`, `frame`, `track_id`, bbox e indicação de pontos em falta; vídeo anotado e JSON devem ser gerados pelo mesmo comando sem reexecutar o modelo.
 
@@ -170,7 +186,9 @@ Após escolher o checkpoint final na validação, avaliar `test` uma única vez 
 
 **M4 — classificação temporal.** Só criar treino supervisionado quando houver sequências de 1–3 segundos com rótulos multi-label revistos e split por corredor/sequência. Começar por MLP de features agregadas; usar TCN ou ST-GCN apenas se melhorar a validação. Medir precision, recall, F1 e PR-AUC por classe. Um conjunto sem rótulos validados não autoriza métricas de classificação.
 
-**M5 — Flask.** Integrar upload/processamento na aplicação RunningAI depois de estabilizar M2/M3, com execução desacoplada do pedido HTTP para vídeos longos. Mostrar artefactos e indicadores já produzidos pelo pipeline; não treinar modelos dentro da aplicação web.
+**M5 — Flask.** A integração experimental está implementada em `/postura-ai`, com upload, processamento em segundo plano, progresso, pré-visualização da pose e reprodução/descarga do vídeo anotado. Mantém as dependências de GPU no ambiente dedicado. Não treinar modelos dentro da aplicação web.
+
+**Extensão proposta — LLM local.** Guardada a [proposta de análise comentada](local_llm_feedback.md), ainda sem implementação: usar LM Studio para explicar as previsões a partir das medidas e contribuições calculadas, distinguir interpretação do modelo de recomendações de técnica e considerar Unsloth apenas numa fase posterior com exemplos revistos. A fraca validação do classificador e as limitações dos diferentes planos devem permanecer explícitas.
 
 ## 8. Testes e definição de pronto da primeira entrega
 

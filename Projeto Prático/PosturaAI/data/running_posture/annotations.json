@@ -1,0 +1,146 @@
+{
+  "schema": "posturaai.annotations.v1",
+  "classes": {
+    "0": "ma_postura",
+    "1": "boa_postura"
+  },
+  "review_basis": "User requested correcting mixed videos before training; explicit red/green author annotations reviewed at 0.5-second intervals with conservative boundaries. Labels describe source examples, not clinical certification.",
+  "videos": [
+    {
+      "video_id": "7e935bf3e128e3cd",
+      "video_sha256": "7e935bf3e128e3cd4a443139600ef3e0659ba2340501280120318944a40d946a",
+      "relative_path": "data/running_posture/boa_postura/Jim Walmsley running a 100k (Slow Motion) - JP Gloria (1080p).mp4",
+      "athlete_id": "jim_walmsley",
+      "source_id": "7e935bf3e128e3cd",
+      "view": "side",
+      "label_source": "user_folder",
+      "reviewer": "user_folder_labels / assistant_review_of_explicit_author_overlays",
+      "intervals": [
+        {
+          "start_s": 0,
+          "end_s": 13.95,
+          "label": 1,
+          "label_name": "boa_postura",
+          "evidence": "Classificação boa_postura fornecida pelo utilizador"
+        }
+      ],
+      "excluded": "All timestamps outside these intervals: transitions or unlabelled demonstrations"
+    },
+    {
+      "video_id": "4cfc3b7664d795eb",
+      "video_sha256": "4cfc3b7664d795eb4db75ed7eb16c84ef08bd5d3c9b13dfc989a9985831894be",
+      "relative_path": "data/running_posture/boa_postura/Paul Chelimo With Exquisite Running Mechanics 🔥 - RunnnSphere (720p).mp4",
+      "athlete_id": "paul_chelimo",
+      "source_id": "4cfc3b7664d795eb",
+      "view": "mixed",
+      "label_source": "user_folder",
+      "reviewer": "user_folder_labels / assistant_review_of_explicit_author_overlays",
+      "intervals": [
+        {
+          "start_s": 0,
+          "end_s": 15.03,
+          "label": 1,
+          "label_name": "boa_postura",
+          "evidence": "Classificação boa_postura fornecida pelo utilizador; plano varia"
+        }
+      ],
+      "excluded": "All timestamps outside these intervals: transitions or unlabelled demonstrations"
+    },
+    {
+      "video_id": "9cba92d2db22f792",
+      "video_sha256": "9cba92d2db22f792796eec17eb9845536c6ae11eb7ff43cd0500501f729149f3",
+      "relative_path": "data/running_posture/ma_postura/How to Run Better Best Running Technique Tips - Matthew Alty (1080p).mp4",
+      "athlete_id": "matthew_alty_demonstration",
+      "source_id": "9cba92d2db22f792",
+      "view": "side",
+      "label_source": "author_overlay_review",
+      "reviewer": "user_folder_labels / assistant_review_of_explicit_author_overlays",
+      "intervals": [
+        {
+          "start_s": 1.4,
+          "end_s": 4.1,
+          "label": 0,
+          "label_name": "ma_postura",
+          "evidence": "Cruz vermelha e texto THIS IS NOT CORRECT RUNNING POSTURE"
+        },
+        {
+          "start_s": 8,
+          "end_s": 11.55,
+          "label": 1,
+          "label_name": "boa_postura",
+          "evidence": "Visto verde e texto THIS IS OPTIMAL"
+        }
+      ],
+      "excluded": "All timestamps outside these intervals: transitions or unlabelled demonstrations"
+    },
+    {
+      "video_id": "51aa69e6a8f22ce0",
+      "video_sha256": "51aa69e6a8f22ce0db37632d704df1e76f9d2cb9351475a94876f0f33c2efb0e",
+      "relative_path": "data/running_posture/ma_postura/videoplayback.mp4",
+      "athlete_id": "videoplayback_runner",
+      "source_id": "51aa69e6a8f22ce0",
+      "view": "side",
+      "label_source": "author_overlay_review",
+      "reviewer": "user_folder_labels / assistant_review_of_explicit_author_overlays",
+      "intervals": [
+        {
+          "start_s": 0,
+          "end_s": 1.25,
+          "label": 0,
+          "label_name": "ma_postura",
+          "evidence": "Demonstração Head Position com cruz vermelha"
+        },
+        {
+          "start_s": 1.65,
+          "end_s": 2.65,
+          "label": 1,
+          "label_name": "boa_postura",
+          "evidence": "Head Position com visto verde"
+        },
+        {
+          "start_s": 3,
+          "end_s": 4.2,
+          "label": 0,
+          "label_name": "ma_postura",
+          "evidence": "Shoulder Position com cruz vermelha"
+        },
+        {
+          "start_s": 4.7,
+          "end_s": 5.75,
+          "label": 1,
+          "label_name": "boa_postura",
+          "evidence": "Shoulder Position com visto verde"
+        },
+        {
+          "start_s": 6,
+          "end_s": 7.3,
+          "label": 0,
+          "label_name": "ma_postura",
+          "evidence": "Knee Position com cruz vermelha"
+        },
+        {
+          "start_s": 7.75,
+          "end_s": 8.75,
+          "label": 1,
+          "label_name": "boa_postura",
+          "evidence": "Knee Position com visto verde"
+        },
+        {
+          "start_s": 9,
+          "end_s": 10.3,
+          "label": 0,
+          "label_name": "ma_postura",
+          "evidence": "Toe Position com cruz vermelha"
+        },
+        {
+          "start_s": 10.65,
+          "end_s": 11.8,
+          "label": 1,
+          "label_name": "boa_postura",
+          "evidence": "Toe Position com visto verde"
+        }
+      ],
+      "excluded": "All timestamps outside these intervals: transitions or unlabelled demonstrations"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-"""Create a provisional group assignment or approved derived COCO splits."""
+"""Create provisional assignments, audited splits or experimental unaudited splits."""
 
 import argparse
 import json
@@ -19,6 +19,7 @@ def main() -> None:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--provisional", action="store_true")
     mode.add_argument("--final", action="store_true")
+    mode.add_argument("--unaudited", action="store_true", help="Export experimental splits without manual audit; keep provenance marked not_reviewed")
     args = parser.parse_args()
     root = args.root.resolve()
     path = lambda value: value if value.is_absolute() else root / value
@@ -26,7 +27,7 @@ def main() -> None:
         if args.provisional:
             summary = provisional_split(root, path(args.manifest), path(args.assignment), args.seed)
         else:
-            summary = final_split(root, path(args.manifest), path(args.assignment), path(args.decisions), path(args.approval), path(args.output_dir))
+            summary = final_split(root, path(args.manifest), path(args.assignment), path(args.decisions), path(args.approval), path(args.output_dir), allow_unaudited=args.unaudited)
     except (ValueError, OSError, json.JSONDecodeError) as exc:
         parser.exit(1, f"prepare_splits: {exc}\n")
     print(json.dumps(summary, ensure_ascii=False, indent=2))

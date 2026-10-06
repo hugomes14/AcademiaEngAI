@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}PosturaAI · A tua corrida em movimento{% endblock %}
+{% block content %}
+<section class="postura-heading">
+  <p class="eyebrow">POSTURAAI · ANÁLISE DE VÍDEO</p>
+  <h1>Acompanha a tua corrida, ponto a ponto.</h1>
+  <p>Importa um vídeo e acompanha a deteção do corpo enquanto a análise avança.</p>
+</section>
+<div class="postura-layout">
+  <aside class="postura-card">
+    <h2>O teu vídeo</h2>
+    <form id="postura-form" action="{{ url_for('postura_upload') }}" method="post" enctype="multipart/form-data">
+      <label class="postura-upload" for="postura-file"><strong>Escolhe um vídeo de corrida</strong><span>MP4, MOV, AVI, MKV ou WebM · até {{ limite_mb }} MB</span>
+        <input id="postura-file" name="video" type="file" accept=".mp4,.mov,.avi,.mkv,.webm" required {% if not disponivel %}disabled{% endif %}>
+      </label>
+      <p class="postura-hint">Para acompanhar melhor os pontos, escolhe um vídeo em que o corpo esteja visível. Podes usar diferentes planos de filmagem.</p>
+      <button id="postura-submit" class="primary-button" type="submit" {% if not disponivel %}disabled{% endif %}>Analisar vídeo <span aria-hidden="true">→</span></button>
+    </form>
+    <p id="postura-error" class="postura-error" role="alert" {% if disponivel %}hidden{% endif %}>{% if not disponivel %}O serviço de vídeo ainda não está configurado neste servidor.{% endif %}</p>
+    <div class="postura-note"><strong>Classificação experimental</strong><p>As previsões de boa ou má postura ainda podem falhar. Usa os pontos e o vídeo para explorar o movimento.</p></div>
+  </aside>
+  <section class="postura-card postura-analysis" aria-label="Inferência do vídeo">
+    <div class="postura-analysis-top"><h2 id="postura-title">Pronto para começar</h2><span id="postura-stage" class="postura-badge">À espera de vídeo</span></div>
+    <p id="postura-message" role="status" aria-live="polite">O vídeo anotado e as previsões vão aparecer aqui.</p>
+    <div id="postura-progress-panel" hidden>
+      <progress id="postura-progress" max="100" value="0" aria-label="Progresso da análise"></progress>
+      <div class="postura-progress-meta"><span id="postura-frame-count">A preparar análise…</span><strong id="postura-percent">0%</strong></div>
+    </div>
+    <div id="postura-empty" class="postura-empty"><span aria-hidden="true">▷</span><strong>A tua corrida em detalhe</strong><p>Importa um vídeo para ver os pontos do corpo durante o processamento.</p></div>
+    <figure id="postura-preview-panel" class="postura-viewer" hidden><img id="postura-preview" alt="Último frame processado com os pontos do corpo"><figcaption>Pré-visualização da pose · último frame processado</figcaption></figure>
+    <div id="postura-result-panel" hidden>
+      <video id="postura-result" class="postura-video" controls playsinline preload="metadata" aria-label="Vídeo com pontos e classificação de postura"></video>
+      <p class="postura-hint">Reproduz o vídeo para acompanhar os pontos e as previsões ao longo da corrida. O resultado não contém áudio.</p>
+      <div id="postura-metrics" class="postura-metrics"></div>
+      <a id="postura-download" class="postura-download" download="posturaai.mp4">Descarregar vídeo anotado ↓</a>
+    </div>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='postura.js') }}"></script>{% endblock %}

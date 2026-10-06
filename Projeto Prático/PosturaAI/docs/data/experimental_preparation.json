@@ -1,0 +1,26 @@
+{
+  "audit_status": "not_reviewed",
+  "experimental": true,
+  "corrections": 102,
+  "splits": {
+    "train": {
+      "images": 74278,
+      "groups": 108,
+      "annotations": 74278,
+      "sha256": "fa8f69646c91afbdfe365dc3fcde2448e7ee28543bca65497c95d85628e6d734"
+    },
+    "val": {
+      "images": 9248,
+      "groups": 22,
+      "annotations": 9248,
+      "sha256": "6c216e472e695aac76704e87c76ddeabeca004bbec4e5fe81f3fa3b65e74e09e"
+    },
+    "test": {
+      "images": 9298,
+      "groups": 23,
+      "annotations": 9298,
+      "sha256": "8f1c3e533cb8d31ad0fbabfe5cd35d330d41ebcad6db8c13dee7899756c8f84a"
+    }
+  },
+  "preparation_report_sha256": "1f755c8f80d5bb8dc41fb79bdb548e1d9d15a4231871a399039f2b3c3286391a"
+}

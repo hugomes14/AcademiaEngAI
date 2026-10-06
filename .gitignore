@@ -108,3 +108,29 @@ Thumbs.db
 *.svg
 *.ico
 *.icns
+
+# PosturaAI: configuração e manifesto; imagens, caches e splits continuam ignorados.
+!/Projeto Prático/PosturaAI/configs/datasets/
+!/Projeto Prático/PosturaAI/configs/datasets/*.py
+!/Projeto Prático/PosturaAI/data/
+/Projeto Prático/PosturaAI/data/*
+!/Projeto Prático/PosturaAI/data/srkd/
+/Projeto Prático/PosturaAI/data/srkd/*
+!/Projeto Prático/PosturaAI/data/srkd/group_manifest.csv
+/Projeto Prático/PosturaAI/.runtime/
+!/Projeto Prático/PosturaAI/data/running_posture/
+/Projeto Prático/PosturaAI/data/running_posture/*
+!/Projeto Prático/PosturaAI/data/running_posture/README.md
+!/Projeto Prático/PosturaAI/data/running_posture/video_manifest.csv
+!/Projeto Prático/PosturaAI/data/running_posture/annotations.json
+!/Projeto Prático/PosturaAI/data/running_posture/boa_postura/
+!/Projeto Prático/PosturaAI/data/running_posture/ma_postura/
+/Projeto Prático/PosturaAI/data/running_posture/boa_postura/*
+/Projeto Prático/PosturaAI/data/running_posture/ma_postura/*
+!/Projeto Prático/PosturaAI/data/running_posture/boa_postura/.gitkeep
+!/Projeto Prático/PosturaAI/data/running_posture/ma_postura/.gitkeep
+!/Projeto Prático/PosturaAI/docs/structure_migration.json
+!/Projeto Prático/PosturaAI/docs/data/
+!/Projeto Prático/PosturaAI/docs/data/*.md
+!/Projeto Prático/PosturaAI/docs/data/*.json
+!/Projeto Prático/PosturaAI/data/README.md

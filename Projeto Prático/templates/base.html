@@ -18,13 +18,14 @@
     <nav class="tabs" aria-label="Navegação principal">
       <a class="{{ 'active' if pagina == 'inicio' else '' }}" href="{{ url_for('inicio') }}">Serviços</a>
       <a class="{{ 'active' if pagina == 'ritmo_ai' else '' }}" href="{{ url_for('ritmo_ai') }}">RitmoAI</a>
+      <a class="{{ 'active' if pagina == 'postura_ai' else '' }}" href="{{ url_for('postura_ai') }}">PosturaAI</a>
     </nav>
     {% if pagina == 'ritmo_ai' and modelo %}
     <div class="model-pill" title="Modelo do RitmoAI carregado">
       <span class="status-dot"></span>{{ modelo.nome }} · {{ modelo.atividades }} atividades
     </div>
     {% else %}
-    <div class="platform-pill"><span></span>1 serviço disponível</div>
+    <div class="platform-pill"><span></span>2 serviços disponíveis</div>
     {% endif %}
   </header>
 
@@ -37,5 +38,6 @@
     {% if pagina == 'ritmo_ai' and modelo %} · RitmoAI com {{ "{:,}".format(modelo.amostras).replace(',', ' ') }} amostras{% endif %}
   </footer>
   <script src="{{ url_for('static', filename='app.js') }}"></script>
+  {% block scripts %}{% endblock %}
 </body>
 </html>

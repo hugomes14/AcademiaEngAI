@@ -1,0 +1,16 @@
+# Dependências Python de treino. Instalar primeiro PyTorch CUDA e depois MMCV
+# conforme docs/training/training_environment.md; este ficheiro não escolhe o build CUDA.
+-r requirements.txt
+numpy==1.26.4
+scipy==1.15.3
+opencv-python==4.11.0.86
+opencv-python-headless==4.11.0.86
+setuptools==80.9.0
+wheel
+ninja
+psutil
+mmengine==0.10.7
+mmdet==3.3.0
+mmpose==1.3.2
+albumentations==2.0.8
+imageio-ffmpeg==0.6.0
