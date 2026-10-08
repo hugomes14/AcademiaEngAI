@@ -10,7 +10,7 @@ Acrescentar à app uma análise em português que explique as previsões de boa/
 
 - A app principal já disponibiliza `/postura-ai`, com upload, fila em segundo plano, progresso, pré-visualização da pose e reprodução/descarga do vídeo anotado.
 - RTMPose estima 30 pontos; o pipeline acompanha pessoas e extrai medidas projetadas em 2D.
-- O classificador atual é uma regressão logística com 35 descritores agregados de joelho, anca, tornozelo, cotovelo, ombro, inclinação do tronco e relação cabeça/tronco.
+- O classificador usa 35 descritores agregados de joelho, anca, tornozelo, cotovelo, ombro, inclinação do tronco e relação cabeça/tronco. Após esta proposta, a app passou de regressão logística para Extra Trees; ver [comparação de modelos](../training/nonlinear_classifier_report.md).
 - A validação por grupo do primeiro classificador foi fraca: cerca de 52% de acurácia e **39,12% de acurácia equilibrada**. Os scores não são probabilidades calibradas; o vídeo de teste não tem ground truth de postura.
 - Os vídeos devem abranger vários planos. Não exigir ao utilizador que controle ou indique o plano; conservar as limitações da perspetiva na interpretação das medidas.
 
@@ -29,6 +29,12 @@ Gerar o relatório depois da inferência de pose para reduzir concorrência pela
 ## Explicação da decisão e sugestões
 
 **Explicação da previsão:** calcular no código as contribuições dos descritores para o logit da regressão logística, após a mesma imputação e normalização usadas na inferência. Entregar ao LLM os fatores que mais favoreceram cada classe. Estes fatores explicam o cálculo do modelo; não estabelecem causalidade biomecânica. Identificar descritores imputados, pois não são observações do vídeo.
+
+**Atualização após a troca para Extra Trees:** a abordagem com coeficientes/logit
+refere-se ao modelo anterior. Para o modelo ativo, definir e validar atribuições
+específicas de árvores antes de apresentar explicações individuais. A importância
+global das features não deve ser apresentada como justificação de uma decisão
+concreta. Conservar as observações e a incerteza mesmo sem atribuições disponíveis.
 
 **Sugestões de melhoria:** apoiar os comentários numa base de conhecimento de técnica de corrida, com fontes e critérios revistos por alguém da área. Uma medida que contribuiu para “má postura” não demonstra que exista um erro técnico. Não inventar ângulos ideais nem correções com base apenas no rótulo.
 

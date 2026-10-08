@@ -7,6 +7,9 @@
 | Treino | [Ambiente](training/training_environment.md), [relatório inicial](training/first_training_report.md) |
 | Vídeo | [Pipeline e comandos](video/video_pipeline.md), [resultados da execução](video/video_pipeline_report.md), [primeiro classificador](video/classifier.md) |
 | Vídeos rotulados | [Instruções das pastas](../data/running_posture/README.md), [catálogo](../data/running_posture/video_manifest.csv) |
+| Separação de clips | [Registo de 2026-10-06](data/clip_separation_2026-10-06.json) |
+| Classificador · treino 2 | [Resultados, comparação e decisão de manter o modelo ativo](training/posture_baseline_02_report.md) |
+| Classificador ativo · Extra Trees | [Comparação de modelos e validação aninhada](training/nonlinear_classifier_report.md) |
 
 O estado atual e os comandos principais estão no [README do projeto](../README.md).
 Os relatórios históricos identificam a fase em que foram produzidos.

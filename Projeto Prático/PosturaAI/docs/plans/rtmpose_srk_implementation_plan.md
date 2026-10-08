@@ -2,11 +2,15 @@
 
 **Estado em 2026-10-06:** etapa 1 e teste sintético concluídos; inferência em vídeo, tracking e medidas 2D implementados. Primeiro classificador geométrico treinado em quatro vídeos com rótulos corrigidos por trecho; validação por gravação fraca (balanced accuracy 39,12%). O vídeo de ritmos recebeu previsões experimentais, sem ground truth de teste. Por decisão do utilizador, o desenvolvimento prossegue com splits experimentais sem auditoria manual. O README e os relatórios em `docs/` registam o progresso.
 
+**Segundo treino do classificador:** oito gravações anotadas, seis grupos e 200 janelas; acurácia equilibrada global 51,47%, mas 29,14% nas fontes originais. A versão `posture_baseline_02` foi guardada e testada visualmente; a app conserva `posture_baseline_01`. Ver [relatório e decisão](../training/posture_baseline_02_report.md).
+
 **Exceção autorizada pelo utilizador em 2026-10-06:** o modo `prepare_splits --unaudited` permite exportar splits corrigidos e validados sem revisão humana. `train --allow-unaudited` permite treino completo desses splits como experiência, com hashes verificados e `experimental=true`/`audit_status=not_reviewed` nos metadados. Não produz uma aprovação M0 nem altera o estado das revisões. Os gates de auditoria abaixo continuam a aplicar-se ao percurso auditado; deixam de bloquear esta experiência explicitamente autorizada.
 
 **Raiz do projeto:** `Projeto Prático/PosturaAI/`. Todos os caminhos abaixo são relativos a esta pasta.
 
 **Fonte de verdade:** este documento define a ordem de trabalho e os critérios de avanço. Configurações, resultados e relatórios produzidos durante a implementação devem referenciar a revisão deste ficheiro.
+
+**Classificador ativo atualizado:** a pedido do utilizador, a app passou para Extra Trees após comparação de quatro famílias nos mesmos dados. Acurácia equilibrada de seleção 52,16%; validação aninhada da escolha 48,16%. O modelo continua experimental. Ver [relatório não linear](../training/nonlinear_classifier_report.md).
 
 ## 1. Entregas e limites
 

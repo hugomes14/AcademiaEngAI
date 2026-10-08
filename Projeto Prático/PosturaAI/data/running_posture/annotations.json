@@ -141,6 +141,134 @@
         }
       ],
       "excluded": "All timestamps outside these intervals: transitions or unlabelled demonstrations"
+    },
+    {
+      "video_id": "e885ae17108687ab",
+      "video_sha256": "e885ae17108687ab7057714008dddd600f30574599fa2c5642c087472e2c2a75",
+      "relative_path": "data/running_posture/boa_postura/Knee drive while running! #runningtips ❌✅.mp4",
+      "athlete_id": null,
+      "source_id": "track_tutorial_collection_01",
+      "view": "side",
+      "label_source": "author_overlay_review",
+      "reviewer": "assistant_review_of_explicit_author_overlays",
+      "label_scope": "source_example_knee_drive",
+      "intervals": [
+        {
+          "start_s": 1.0,
+          "end_s": 4.7,
+          "label": 0,
+          "label_name": "ma_postura",
+          "evidence": "Cruz vermelha e texto No knee drive; exemplo negativo do autor para elevação do joelho"
+        },
+        {
+          "start_s": 5.5,
+          "end_s": 10.5,
+          "label": 1,
+          "label_name": "boa_postura",
+          "evidence": "Visto verde e texto Knee drive; exemplo positivo do autor para elevação do joelho"
+        }
+      ],
+      "excluded": "All timestamps outside these intervals: introduction, transitions or absent overlays. Labels describe the author knee-drive demonstration, not certification of overall running posture.",
+      "grouping_basis": "Conservative grouping by shared track setting and tutorial format; common origin unconfirmed; no athlete identity inferred"
+    },
+    {
+      "video_id": "0805a1f7fc28d401",
+      "video_sha256": "0805a1f7fc28d401741ec006d96dee55f7fe7b21ad8b7bf5565ffddac324f34f",
+      "relative_path": "data/running_posture/boa_postura/Common running mistake! Over-Striding!❌✅ #runningtips.mp4",
+      "athlete_id": null,
+      "source_id": "track_tutorial_collection_01",
+      "view": "side",
+      "label_source": "author_overlay_review",
+      "reviewer": "assistant_review_of_explicit_author_overlays",
+      "label_scope": "source_example_overstriding",
+      "grouping_basis": "Conservative grouping by shared track setting and tutorial format; common origin unconfirmed; no athlete identity inferred",
+      "intervals": [
+        {
+          "start_s": 1.0,
+          "end_s": 6.0,
+          "label": 0,
+          "label_name": "ma_postura",
+          "evidence": "Cruz vermelha e texto overstriding",
+          "clip_relative_path": "data/running_posture/clips/ma_postura/0805a1f7fc28d401_1.00-6.00.mp4",
+          "clip_sha256": "b921d720f2dc2ad0e4a8a8bd241622bf6a7ee744272d0e7eacd78d7130b3f385"
+        },
+        {
+          "start_s": 7.5,
+          "end_s": 11.5,
+          "label": 1,
+          "label_name": "boa_postura",
+          "evidence": "Visto verde e texto striking under your hips",
+          "clip_relative_path": "data/running_posture/clips/boa_postura/0805a1f7fc28d401_7.50-11.50.mp4",
+          "clip_sha256": "0817ee22c895cf427f3021e47ac3239bc26471f8f682b5994e6d460f6ff030a6"
+        }
+      ],
+      "excluded": "All timestamps outside these intervals: introduction, transitions or absent/partial overlays. Labels describe source demonstrations, not certification of overall running posture."
+    },
+    {
+      "video_id": "e71b387552667d0e",
+      "video_sha256": "e71b387552667d0edf2c9beb762b987c4cc93d3f2eb7a047c3ccadf4f69368b8",
+      "relative_path": "data/running_posture/boa_postura/Proper foot strike #shorts #running #shortsvideo #runner #footstrike #properrunningform.mp4",
+      "athlete_id": null,
+      "source_id": "e71b387552667d0e",
+      "view": "side",
+      "label_source": "author_overlay_review",
+      "reviewer": "assistant_review_of_explicit_author_overlays",
+      "label_scope": "source_example_foot_strike",
+      "grouping_basis": "Single source recording; athlete identity unknown",
+      "intervals": [
+        {
+          "start_s": 0.0,
+          "end_s": 5.0,
+          "label": 0,
+          "label_name": "ma_postura",
+          "evidence": "Cruz vermelha e marcações do apoio do calcanhar",
+          "clip_relative_path": "data/running_posture/clips/ma_postura/e71b387552667d0e_0.00-5.00.mp4",
+          "clip_sha256": "2910de0ba28a11aaa881e5b438600f8d9c7f25c78d82625ead7c664ef2ae50fa"
+        },
+        {
+          "start_s": 5.5,
+          "end_s": 10.6,
+          "label": 1,
+          "label_name": "boa_postura",
+          "evidence": "Visto verde e marcações do apoio do pé",
+          "clip_relative_path": "data/running_posture/clips/boa_postura/e71b387552667d0e_5.50-10.60.mp4",
+          "clip_sha256": "bfebaa43a0a90bbc1adb90aefff84211aa15e3ad35b9004d5fc2dc6cc4fb7d03"
+        }
+      ],
+      "excluded": "All timestamps outside these intervals: introduction, transitions or absent/partial overlays. Labels describe source demonstrations, not certification of overall running posture."
+    },
+    {
+      "video_id": "8f6566a720f4e919",
+      "video_sha256": "8f6566a720f4e9195807bc64945f46f953e66ba6ef354ae46b44cea9022c01be",
+      "relative_path": "data/running_posture/boa_postura/Running Form Pro Tip 🏃🏼_♀️💨 #running #shorts.mp4",
+      "athlete_id": null,
+      "source_id": "track_tutorial_collection_01",
+      "view": "side",
+      "label_source": "author_overlay_review",
+      "reviewer": "assistant_review_of_explicit_author_overlays",
+      "label_scope": "source_example_overstriding",
+      "grouping_basis": "Conservative grouping by shared track setting and tutorial format; common origin unconfirmed; no athlete identity inferred",
+      "intervals": [
+        {
+          "start_s": 2.0,
+          "end_s": 4.5,
+          "label": 0,
+          "label_name": "ma_postura",
+          "evidence": "Cruz vermelha e texto Overstriding when you run",
+          "clip_relative_path": "data/running_posture/clips/ma_postura/8f6566a720f4e919_2.00-4.50.mp4",
+          "clip_sha256": "3dd9eb7ee2243c91b6f9f67d900c1b8f5898500c70156ca4c39e7d88f8d22d31"
+        },
+        {
+          "start_s": 8.5,
+          "end_s": 10.5,
+          "label": 1,
+          "label_name": "boa_postura",
+          "evidence": "Visto verde e texto Striking under your hips",
+          "clip_relative_path": "data/running_posture/clips/boa_postura/8f6566a720f4e919_8.50-10.50.mp4",
+          "clip_sha256": "a971de19fccd155bf3efabf9ab16e7d7a981fe77762a50f0bf34b4a817515c25"
+        }
+      ],
+      "excluded": "All timestamps outside these intervals: introduction, transitions or absent/partial overlays. Labels describe source demonstrations, not certification of overall running posture."
     }
   ]
 }

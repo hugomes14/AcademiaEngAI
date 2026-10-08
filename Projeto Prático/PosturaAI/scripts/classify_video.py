@@ -95,6 +95,7 @@ def main():
                                     video_id=header['video_id'],causal=True,score_note=model['score_note'],labelled_ground_truth=False))+'\n')
         for record in predictions:target.write(json.dumps(dict(type='prediction',**record),allow_nan=False)+'\n')
     summary=dict(status='completed',model=str(args.model.resolve()),input=pose_header['input'],output=str(args.output.resolve()),
+                 classifier_algorithm=model.get('algorithm','logistic'),
                  training_source_match=training_source_match,
                  video_sha256=pose_header['input_sha256'],frames=processed,windows=len(predictions),frames_with_prediction=classified,
                  frames_without_prediction=processed-classified,inconclusive_frames=uncertain,predicted_frames=labels_count,

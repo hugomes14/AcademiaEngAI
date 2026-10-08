@@ -43,3 +43,7 @@ Abra <http://127.0.0.1:5000>. O catálogo permite abrir o RitmoAI e o [PosturaAI
 O PosturaAI usa o seu próprio ambiente `PosturaAI/.venv`, os checkpoints já treinados e a GPU. Consulte [as instruções da app](INSTRUCOES_APP.md) para os requisitos e o funcionamento dos vídeos.
 
 Os dados pessoais e os modelos treinados não são versionados. Consulte o [README do RitmoAI](RitmoAI/README.md) para preparar os dados e treinar o primeiro serviço.
+
+## Deploy local com GPU
+
+Para executar a app em segundo plano com Gunicorn, usar `.venv/bin/python serve.py --daemon`. A configuração usa um processo e oito threads; o PosturaAI conserva o seu ambiente e a GPU local. Consulte [arranque, logs e configuração](INSTRUCOES_APP.md#deploy-local).

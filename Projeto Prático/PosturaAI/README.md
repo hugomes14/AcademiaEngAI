@@ -99,6 +99,17 @@ Produz vídeo sem áudio, pontos originais/suavizados por frame, IDs e segmentos
 
 ## Classificador experimental
 
+O modelo ativo passou a ser **Extra Trees**, em
+`outputs/classification/posture_nonlinear_03/`, após comparação com regressão
+logística, Random Forest e SVM RBF nos mesmos 200 exemplos de oito vídeos.
+Na comparação por grupo: acurácia 58,00% e acurácia equilibrada 52,16%.
+A validação aninhada da escolha teve acurácia equilibrada 48,16%; a classificação
+continua experimental e sem fiabilidade demonstrada. Consultar o
+[relatório da troca de modelo](docs/training/nonlinear_classifier_report.md).
+
+O [segundo treino de regressão logística](docs/training/posture_baseline_02_report.md)
+fica preservado como experiência anterior, em `outputs/classification/posture_baseline_02/`.
+
 Foi treinado um primeiro classificador geométrico com 102 janelas de quatro
 vídeos, após corrigir os rótulos por trecho nos tutoriais mistos. A validação
 por gravação apresentou balanced accuracy 39,12% e macro F1 0,390, resultados

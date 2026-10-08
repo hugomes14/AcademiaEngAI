@@ -4,6 +4,7 @@ from __future__ import annotations
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 import json
+import hashlib
 import logging
 import os
 from pathlib import Path
@@ -35,7 +36,6 @@ class VideoJobs:
         self.jobs_dir = Path(jobs_dir) if jobs_dir else self.root / 'outputs/web/jobs'
         self.python = self.root / '.venv/bin/python'
         self.checkpoint = self.root / 'outputs/stage1_experimental/best.pth'
-        self.classifier = self.root / 'outputs/classification/posture_baseline_01/classifier.json'
         self.executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix='postura')
         self.lock = Lock()
         self.pending = 0
@@ -44,6 +44,16 @@ class VideoJobs:
             status = json.loads(status_file.read_text())
             if status['status'] not in TERMINAL:
                 self._update(status_file.parent, status='failed', stage='failed', message='A análise foi interrompida pelo reinício da app. Importa o vídeo novamente.')
+
+    @property
+    def classifier(self):
+        manifest = self.root / 'outputs/classification/active_classifier.json'
+        if not manifest.is_file():
+            return self.root / 'outputs/classification/posture_baseline_01/classifier.json'
+        selected = (self.root / json.loads(manifest.read_text())['relative_path']).resolve()
+        if not selected.is_relative_to((self.root / 'outputs/classification').resolve()):
+            raise ValueError('Active classifier must belong to the local classification directory')
+        return selected
 
     def available(self):
         return all(path.is_file() for path in (self.python, self.checkpoint,
@@ -113,7 +123,12 @@ class VideoJobs:
 
     def _run(self, directory, suffix):
         try:
+            classifier = self.classifier
+            classifier_bytes = classifier.read_bytes()
             self._update(directory, status='running', stage='pose', percent=5,
+                         classifier_run=classifier.parent.name,
+                         classifier_algorithm=json.loads(classifier_bytes).get('algorithm', 'logistic'),
+                         classifier_sha256=hashlib.sha256(classifier_bytes).hexdigest(),
                          message='A detetar pessoas e acompanhar os pontos do corpo…')
             self._command(directory, [str(self.python), '-m', 'scripts.infer_video',
                 '--input', str(directory / ('input' + suffix)), '--checkpoint', str(self.checkpoint),
@@ -124,7 +139,7 @@ class VideoJobs:
             self._update(directory, stage='classification', percent=85,
                          message='A classificar as sequências de movimento…')
             self._command(directory, [str(self.python), '-m', 'scripts.classify_video',
-                '--model', str(self.classifier), '--poses', str(directory / 'pose.poses.jsonl'),
+                '--model', str(classifier), '--poses', str(directory / 'pose.poses.jsonl'),
                 '--pose-video', str(directory / 'pose.mp4'), '--output', str(directory / 'classified.mp4'),
                 '--allow-training-source'])
             self._update(directory, stage='encoding', percent=95,

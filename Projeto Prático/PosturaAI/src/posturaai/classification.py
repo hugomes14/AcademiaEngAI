@@ -92,7 +92,10 @@ def load_windows(features_path, poses_path, *, intervals=None, window_seconds=1.
     return header, windows
 
 
-def fit_classifier(x, y, groups, *, regularization=0.1):
+def fit_classifier(x, y, groups, *, regularization=0.1, algorithm='logistic'):
+    if algorithm != 'logistic':
+        from .nonlinear import fit_nonlinear
+        return fit_nonlinear(x, y, groups, algorithm)
     x,y,groups = np.asarray(x,dtype=float),np.asarray(y,dtype=int),np.asarray(groups)
     if x.ndim != 2 or x.shape[1] != len(DESCRIPTOR_NAMES) or len(x) != len(y) or len(y) != len(groups):
         raise ValueError('Invalid training arrays')
@@ -132,7 +135,11 @@ def predict_scores(model,x):
     if x.ndim != 2 or x.shape[1] != len(DESCRIPTOR_NAMES):
         raise ValueError('Invalid descriptor shape')
     imputed=np.where(np.isfinite(x),x,np.array(model['impute']))
-    return expit(((imputed-np.array(model['mean']))/np.array(model['scale']))@np.array(model['weights'])+model['bias'])
+    z = (imputed-np.array(model['mean']))/np.array(model['scale'])
+    if model.get('schema') == 'posturaai.classifier.v2':
+        from .nonlinear import predict_nonlinear
+        return predict_nonlinear(model, z)
+    return expit(z@np.array(model['weights'])+model['bias'])
 
 
 def classification_metrics(y,scores):
@@ -164,7 +171,7 @@ def classification_metrics(y,scores):
                 confusion_matrix=confusion.tolist(),matrix_order=list(CLASSES),per_class=per_class)
 
 
-def grouped_validation(x,y,groups):
+def grouped_validation(x,y,groups, *, algorithm='logistic'):
     x,y,groups=np.asarray(x,float),np.asarray(y,int),np.asarray(groups)
     unique=sorted(set(groups.tolist()))
     for label in (0,1):
@@ -174,7 +181,7 @@ def grouped_validation(x,y,groups):
     folds=[]
     for group in unique:
         test=groups==group;train=~test
-        model=fit_classifier(x[train],y[train],groups[train])
+        model=fit_classifier(x[train],y[train],groups[train],algorithm=algorithm)
         scores=predict_scores(model,x[test]);out_of_fold[test]=scores
         folds.append(dict(held_out_group=group,training_groups=sorted(set(groups[train].tolist())),
                           train_samples=int(train.sum()),validation_samples=int(test.sum()),

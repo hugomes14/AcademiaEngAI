@@ -1,4 +1,4 @@
-"""Train a first posture classifier from reviewed video intervals and pose features."""
+"""Train a posture classifier from reviewed video intervals and pose features."""
 from __future__ import annotations
 import argparse
 import hashlib
@@ -57,10 +57,10 @@ def main():
     (run/'classifier.json').write_text(json.dumps(model,indent=2,ensure_ascii=False,allow_nan=False)+'\n')
     report=dict(schema='posturaai.classifier_training_report.v1',status='completed',model=str(run/'classifier.json'),
                 algorithm='L2 regularized logistic regression on 35 geometry summaries, class/group balanced',
-                samples=len(samples),groups=len(set(groups)),classes={name:int(np.sum(y==i)) for i,name in enumerate(CLASSES)},
+                samples=len(samples),groups=len(set(groups)),source_recordings=len(video_reports),classes={name:int(np.sum(y==i)) for i,name in enumerate(CLASSES)},
                 videos=video_reports,validation={k:v for k,v in validation.items() if k!='scores'},
                 final_fit_uses_all_labelled_sources=True,test_video_used_for_training=False,
-                limitations=['Only four source recordings; overlapping windows are correlated.',
+                limitations=[f'Only {len(video_reports)} source recordings in {len(set(groups))} groups; overlapping windows are correlated.',
                              'Labels are tutorial/user examples, not independent clinical assessment.',
                              'Views and slow motion vary; geometry-only inputs omit velocities but remain 2D projections.',
                              'Dominant person selected by box area; crowd tracking may still change identity.',
@@ -68,7 +68,7 @@ def main():
                              'No labelled final-test ground truth; inference is a visual test.'])
     (run/'training_report.json').write_text(json.dumps(report,indent=2,ensure_ascii=False,allow_nan=False)+'\n')
     metrics=report['validation']['metrics']
-    (run/'training_report.md').write_text(f'''# Primeiro classificador de postura
+    (run/'training_report.md').write_text(f'''# Classificador de postura
 
 Treino concluído: {len(samples)} janelas de 1 segundo, {len(set(groups))} grupos de origem.
 Classes: {report['classes']}.
@@ -80,7 +80,7 @@ usando o vídeo de teste. O modelo final usa todas as fontes rotuladas.
 
 Resultados fora de grupo: accuracy {metrics['accuracy']:.3f}, balanced accuracy
 {metrics['balanced_accuracy']:.3f}, macro F1 {metrics['macro_f1']:.3f}.
-As janelas sobrepostas não são observações independentes; quatro gravações
+As janelas sobrepostas não são observações independentes; {len(video_reports)} gravações
 não permitem estimar generalização com confiança.
 
 Rótulos corrigidos conforme annotations.json. Vídeos mistos têm trechos bons,

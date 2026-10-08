@@ -113,6 +113,8 @@ class WebTests(unittest.TestCase):
         jobs = VideoJobs(Path(self.temp.name) / 'failure')
         directory = jobs.jobs_dir / ('1'*32)
         directory.mkdir()
+        jobs.classifier.parent.mkdir(parents=True)
+        jobs.classifier.write_text('{}')
         jobs.pending = 1
         jobs._update(directory, id=directory.name, status='queued', stage='queued')
         with patch.object(jobs, '_command', side_effect=RuntimeError('internal path')), self.assertLogs('PosturaAI.web_service', level='ERROR'):
@@ -121,6 +123,16 @@ class WebTests(unittest.TestCase):
         self.assertEqual(jobs.status(directory.name)['status'], 'failed')
         self.assertNotIn('internal path', jobs.status(directory.name)['message'])
         jobs.executor.shutdown()
+
+    def test_active_classifier_can_change_without_overwriting_previous_models(self):
+        self.assertEqual(self.jobs.classifier.parent.name, 'posture_baseline_01')
+        manifest = self.jobs.root / 'outputs/classification/active_classifier.json'
+        manifest.parent.mkdir(parents=True, exist_ok=True)
+        manifest.write_text(json.dumps({'relative_path': 'outputs/classification/posture_nonlinear_03/classifier.json'}))
+        self.assertEqual(self.jobs.classifier.parent.name, 'posture_nonlinear_03')
+        manifest.write_text(json.dumps({'relative_path': '../outside/classifier.json'}))
+        with self.assertRaises(ValueError):
+            _ = self.jobs.classifier
 
 
 if __name__ == '__main__':
