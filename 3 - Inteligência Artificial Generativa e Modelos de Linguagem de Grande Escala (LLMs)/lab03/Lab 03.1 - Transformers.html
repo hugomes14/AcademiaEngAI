@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Lab 03.1 - Transformers</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="style_dark.css" />
+</head>
+<body>
+<h1 id="lab-03.1---transformers">Lab 03.1 - Transformers</h1>
+<p><a href="#ex-1-trabalhar-com-o-modelo-bert-base">Ex 1: Trabalhar com
+o modelo BERT Base</a><br />
+<a href="#ex-2-implementar-classificação-de-imagens">Ex 2: Implementar
+Classificação de Imagens</a><br />
+<a href="#ex-3-construir-um-pipeline-de-análise-de-sentimentos">Ex 3:
+Construir um Pipeline de Análise de Sentimentos</a><br />
+<a href="#ex-4-explorar-a-transcrição-de-áudio">Ex 4: Explorar a
+Transcrição de Áudio</a><br />
+<a href="#ex-5-gerar-música-com-o-modelo-musicgen">Ex 5: Gerar Música
+com o Modelo MusicGen</a></p>
+<hr />
+<h2 id="ex-1-trabalhar-com-o-modelo-bert-base"><strong>Ex 1: Trabalhar
+com o modelo BERT Base</strong></h2>
+<h3 id="tarefa"><strong>Tarefa</strong></h3>
+<p>Explorar o modelo BERT Base para analisar uma frase. ###
+<strong>Instruções</strong> 1. Carrega o modelo e o tokenizador
+utilizando a biblioteca <code>transformers</code>. 2. Define uma mova
+frase de entrada (podes usar uma frase filosófica ou inventar). 3. Gera
+a saída do modelo e interpreta as dimensões resultantes.</p>
+<p><strong>Código base:</strong> Usa o ficheiro
+<code>ex_01_modelo_BERT_BASE.py</code>.</p>
+<hr />
+<h2 id="ex-2-implementar-classificação-de-imagens"><strong>Ex 2:
+Implementar Classificação de Imagens</strong></h2>
+<h3 id="tarefa-1"><strong>Tarefa</strong></h3>
+<p>Classificar imagens utilizando um pipeline de classificação de
+imagens. ### <strong>Instruções</strong> 1. Utiliza o pipeline
+<code>image-classification</code> da biblioteca
+<code>transformers</code>. 2. Classifica uma imagem local
+(<code>prado.jpg</code>).</p>
+<p><strong>Código base:</strong> Usa o ficheiro
+<code>ex_02_pipeline1_visao.py</code>.</p>
+<h3 id="adiciona-ao-exercício"><strong>Adiciona ao
+exercício</strong></h3>
+<ol type="1">
+<li>Substitui a imagem utilizada por uma diferente (por exemplo, uma
+foto de um animal) e observa os resultados.</li>
+</ol>
+<hr />
+<h2 id="ex-3-construir-um-pipeline-de-análise-de-sentimentos"><strong>Ex
+3: Construir um Pipeline de Análise de Sentimentos</strong></h2>
+<h3 id="tarefa-2"><strong>Tarefa</strong></h3>
+<p>Criar um pipeline para analisar sentimentos em textos. ###
+<strong>Instruções</strong> 1. Configura o pipeline
+<code>text-classification</code>. 2. Testa com frases em inglês para
+identificar sentimentos.</p>
+<p><strong>Código base:</strong> Usa o ficheiro
+<code>ex_03_pipeline2_analise_sentimentos.py</code>.</p>
+<h3 id="adiciona-ao-exercício-1"><strong>Adiciona ao
+exercício</strong></h3>
+<ol type="1">
+<li>Adapta o pipeline para analisar sentimentos utilizando frases
+positivas e negativas.</li>
+</ol>
+<hr />
+<h2 id="ex-4-explorar-a-transcrição-de-áudio"><strong>Ex 4: Explorar a
+Transcrição de Áudio</strong></h2>
+<h3 id="tarefa-3"><strong>Tarefa</strong></h3>
+<p>Utilizar o modelo Whisper para transcrever áudio. ###
+<strong>Instruções</strong> 1. Configura o pipeline de transcrição com o
+modelo <code>openai/whisper-base</code>. 2. Transcreve o ficheiro áudio
+<code>1.flac</code>.</p>
+<p><strong>Código base:</strong> Usa o ficheiro
+<code>ex_04_pipeline3_audio.py</code>.</p>
+<h3 id="adiciona-ao-exercício-2"><strong>Adiciona ao
+exercício</strong></h3>
+<ol type="1">
+<li>Substitui o ficheiro de áudio por outro e analisa a
+transcrição.</li>
+</ol>
+<hr />
+<h2 id="ex-5-gerar-música-com-o-modelo-musicgen"><strong>Ex 5: Gerar
+Música com o Modelo MusicGen</strong></h2>
+<h3 id="tarefa-4"><strong>Tarefa</strong></h3>
+<p>Explorar geração de música baseada em texto. ###
+<strong>Instruções</strong> 1. Analisa o pipeline
+<code>text-to-audio</code> com o modelo
+<code>facebook/musicgen-small</code>. 2. Define um prompt criativo para
+a geração musical.</p>
+<p><strong>Código base:</strong> Usa o ficheiro
+<code>ex_05_pipeline4_generate_music.py</code>.</p>
+<h3 id="adiciona-ao-exercício-3"><strong>Adiciona ao
+exercício</strong></h3>
+<ol type="1">
+<li>Altera o prompt para outro estilo musical e analisa os
+resultados.</li>
+<li>Partilha o ficheiro gerado com os colegas para feedback.</li>
+</ol>
+</body>
+</html>

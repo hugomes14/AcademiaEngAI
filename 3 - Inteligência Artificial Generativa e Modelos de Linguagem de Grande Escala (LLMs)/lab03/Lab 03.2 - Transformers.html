@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Lab 03.2 - Transformers</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="style_dark.css" />
+</head>
+<body>
+<h1 id="lab-03.2---transformers">Lab 03.2 - Transformers</h1>
+<p><strong><a href="#ex-01-preparar-ambiente-e-dados">Ex 01: Preparar
+Ambiente e Dados</a></strong> <strong><a
+href="#ex-02-tokenização-e-codificação-de-sequências">Ex 02: Tokenização
+e Codificação de Sequências</a></strong> <strong><a
+href="#ex-03-criar-dataset-e-dataloaders">Ex 03: Criar Dataset e
+Dataloaders</a></strong> <strong><a
+href="#ex-04-implementar-mecanismos-de-atenção">Ex 04: Implementar
+Mecanismos de Atenção</a></strong> <strong><a
+href="#ex-05-implementar-camadas-e-modelo-completo">Ex 05: Implementar
+Camadas e Modelo Completo</a></strong> <strong><a
+href="#ex-06-instanciar-modelo-e-otimizador">Ex 06: Instanciar Modelo e
+Otimizador</a></strong> <strong><a
+href="#ex-07-definir-funções-de-passo-e-avaliação">Ex 07: Definir
+Funções de Passo e Avaliação</a></strong> <strong><a
+href="#ex-08-implementar-loop-de-treino">Ex 08: Implementar Loop de
+Treino</a></strong> <strong><a
+href="#ex-09-inferência-com-greedy-decoding">Ex 09: Inferência com
+Greedy Decoding</a></strong> <strong><a
+href="#ex-10-visualizar-curva-de-aprendizagem">Ex 10: Visualizar Curva
+de Aprendizagem</a></strong> <strong><a
+href="#ex-11-script-de-inferência-standalone-chatbot">Ex 11: Script de
+Inferência Standalone (Chatbot)</a></strong></p>
+<h2 id="ex-01-preparar-ambiente-e-dados">Ex 01: Preparar Ambiente e
+Dados</h2>
+<ol type="1">
+<li><strong>Importar Bibliotecas:</strong> <code>torch</code>,
+<code>transformers</code>, <code>json</code>, <code>matplotlib</code>,
+etc.</li>
+<li><strong>Configurar Dispositivo e Sementes:</strong> Definir o
+<code>device</code> (GPU/CPU) e fixar as sementes aleatórias para
+reprodutibilidade.</li>
+<li><strong>Carregar SQuAD:</strong> Ler o ficheiro
+<code>train-v1.1.json</code>, percorrer a estrutura aninhada e extrair
+três listas: Perguntas, Respostas e Contextos.</li>
+</ol>
+<h2 id="ex-02-tokenização-e-codificação-de-sequências">Ex 02:
+Tokenização e Codificação de Sequências</h2>
+<ol type="1">
+<li><strong>Inicializar Tokenizer:</strong> Carregar o
+<code>AutoTokenizer</code> do T5-Small.</li>
+<li><strong>Definir Constantes:</strong> Definir IDs especiais
+(<code>PAD</code>, <code>EOS</code>, <code>BOS</code>) e tamanhos
+máximos (<code>MAX_SRC_LEN</code>, <code>MAX_TGT_LEN</code>).</li>
+<li><strong>Função <code>encode_src</code>:</strong> Criar uma função
+que recebe Pergunta e Contexto, tokeniza ambos e concatena-os com
+separadores (<code>[SEP]</code>). Deve incluir lógica de “orçamento”
+para truncar o contexto se a soma exceder o limite, preservando a
+pergunta.</li>
+<li><strong>Função <code>encode_tgt</code>:</strong> Criar uma função
+para a resposta alvo, adicionando o token <code>[BOS]</code> no início e
+<code>[EOS]</code> no fim.</li>
+</ol>
+<h2 id="ex-03-criar-dataset-e-dataloaders">Ex 03: Criar Dataset e
+Dataloaders</h2>
+<ol type="1">
+<li><strong>Classe <code>QADataset</code>:</strong> Implementar um
+<code>Dataset</code> PyTorch que aplica as funções de codificação
+criadas no Ex 02.</li>
+<li><strong>Função <code>pad_collate</code>:</strong> Criar uma função
+para fazer <em>batching</em> dinâmico, aplicando <em>padding</em> nas
+sequências de entrada e saída até ao comprimento máximo do lote
+atual.</li>
+<li><strong>DataLoaders:</strong> Dividir os dados em treino (90%) e
+validação (10%) e criar os respetivos <code>DataLoader</code>.</li>
+</ol>
+<h2 id="ex-04-implementar-mecanismos-de-atenção">Ex 04: Implementar
+Mecanismos de Atenção</h2>
+<ol type="1">
+<li><strong><code>MultiHeadAttention</code>:</strong> Implementar a
+atenção padrão (para o Encoder e Cross-Attention). Deve projetar Q, K,
+V, calcular scores (<code>scaled dot-product</code>), aplicar máscaras
+de padding e retornar o contexto.</li>
+<li><strong><code>MaskedMultiHeadAttention</code>:</strong> Implementar
+a atenção com <strong>máscara causal</strong> (triângulo inferior) para
+o Decoder, garantindo que o modelo não consegue “ver o futuro” (tokens
+seguintes) durante o treino.</li>
+</ol>
+<h2 id="ex-05-implementar-camadas-e-modelo-completo">Ex 05: Implementar
+Camadas e Modelo Completo</h2>
+<ol type="1">
+<li><strong><code>TransformerEncoderLayer</code>:</strong> Criar a
+camada do Encoder contendo: Self-Attention, FeedForward, Normalização
+(LayerNorm) e conexões residuais.</li>
+<li><strong><code>TransformerDecoderLayer</code>:</strong> Criar a
+camada do Decoder contendo: Masked Self-Attention, Cross-Attention
+(ligando ao output do Encoder), FeedForward, Normalização e
+resíduos.</li>
+<li><strong>Classe <code>QATransformer</code>:</strong> Juntar tudo numa
+classe <code>nn.Module</code> que inclua:</li>
+</ol>
+<ul>
+<li>Embeddings de palavras e posicionais.</li>
+<li>Stack de N camadas de Encoder e N camadas de Decoder.</li>
+<li>Camada linear final (<code>lm_head</code>) para projetar para o
+vocabulário.</li>
+<li>(Opcional) <em>Weight Tying</em> entre embeddings e a camada de
+saída.</li>
+</ul>
+<h2 id="ex-06-instanciar-modelo-e-otimizador">Ex 06: Instanciar Modelo e
+Otimizador</h2>
+<ol type="1">
+<li><strong>Inicializar Modelo:</strong> Instanciar o
+<code>QATransformer</code> com dimensões adequadas (ex:
+<code>d_model=256</code>, <code>nhead=4</code>) e mover para o
+dispositivo.</li>
+<li><strong>Otimizador:</strong> Configurar o <code>AdamW</code> com uma
+learning rate inicial (ex: <code>3e-4</code>).</li>
+<li><strong>Scheduler:</strong> Implementar um LR Scheduler com
+aquecimento (<em>warmup</em>) e decaimento cosseno.</li>
+</ol>
+<h2 id="ex-07-definir-funções-de-passo-e-avaliação">Ex 07: Definir
+Funções de Passo e Avaliação</h2>
+<ol type="1">
+<li><strong><code>_step_batch</code>:</strong> Criar uma função auxiliar
+que executa um passo <em>forward</em>:</li>
+</ol>
+<ul>
+<li>Gera as máscaras de padding.</li>
+<li>Prepara o input do decoder (<code>tgt_in</code>) e o alvo
+(<code>tgt_out</code>) deslocando os tokens (Teacher Forcing).</li>
+<li>Calcula a <code>CrossEntropyLoss</code> ignorando o índice de
+padding.</li>
+</ul>
+<ol start="2" type="1">
+<li><strong><code>evaluate</code>:</strong> Função para calcular a perda
+média no conjunto de validação sem atualizar gradientes.</li>
+</ol>
+<h2 id="ex-08-implementar-loop-de-treino">Ex 08: Implementar Loop de
+Treino</h2>
+<ol type="1">
+<li><strong>Ciclo de Épocas:</strong> Implementar o loop principal de
+treino.</li>
+<li><strong>Passo de Treino:</strong> Zerar gradientes, calcular loss,
+fazer <em>backpropagation</em>, aplicar <em>gradient clipping</em>
+(norma 1.0) e atualizar pesos.</li>
+<li><strong>Logging e Checkpoint:</strong> Registar a perda e guardar os
+pesos do modelo (<code>state_dict</code>) no final de cada época.</li>
+</ol>
+<h2 id="ex-09-inferência-com-greedy-decoding">Ex 09: Inferência com
+Greedy Decoding</h2>
+<ol type="1">
+<li><strong>Algoritmo Guloso:</strong> Implementar a função
+<code>greedy_answer</code> que:</li>
+</ol>
+<ul>
+<li>Codifica a pergunta e contexto.</li>
+<li>Alimenta o Decoder passo a passo, começando com
+<code>[BOS]</code>.</li>
+<li>Em cada passo, escolhe o token com maior probabilidade
+(<code>argmax</code>) e adiciona-o à sequência até encontrar
+<code>[EOS]</code>.</li>
+</ul>
+<ol start="2" type="1">
+<li><strong>Teste:</strong> Executar a função em alguns exemplos do
+conjunto de validação.</li>
+</ol>
+<h2 id="ex-10-visualizar-curva-de-aprendizagem">Ex 10: Visualizar Curva
+de Aprendizagem</h2>
+<ol type="1">
+<li><strong>Plot:</strong> Utilizar o <code>matplotlib</code> para
+desenhar o gráfico da perda de treino ao longo dos passos.</li>
+<li><strong>Média Móvel:</strong> Aplicar uma função de suavização para
+facilitar a leitura da tendência do erro.</li>
+</ol>
+<hr />
+<h2 id="ex-11-script-de-inferência-standalone-chatbot">Ex 11: Script de
+Inferência Standalone (Chatbot)</h2>
+<p>Neste exercício, vamos criar um script <strong>separado</strong> do
+treino. O objetivo é simular um ambiente de produção onde o modelo já
+está treinado e queremos apenas utilizá-lo para responder a novas
+perguntas.</p>
+<p><strong>Nota Importante:</strong> Como o PyTorch guarda apenas os
+pesos (números) e não o código do modelo, é obrigatório
+<strong>redefinir as classes da arquitetura</strong> neste novo script
+para que os pesos possam ser carregados na estrutura correta.</p>
+<ol type="1">
+<li><strong>Redefinir a Arquitetura:</strong></li>
+</ol>
+<ul>
+<li>Copiar as classes <code>MultiHeadAttention</code>,
+<code>TransformerEncoderLayer</code>,
+<code>TransformerDecoderLayer</code> e <code>QATransformer</code> tal
+como foram definidas no treino.</li>
+<li>Garantir que os hiperparâmetros (ex: <code>d_model=256</code>,
+<code>nhead=4</code>) coincidem exatamente com os usados no treino.</li>
+</ul>
+<ol start="2" type="1">
+<li><strong>Carregar os Pesos
+(<code>load_state_dict</code>):</strong></li>
+</ol>
+<ul>
+<li><p>Instanciar o modelo “vazio” e movê-lo para o
+dispositivo.</p></li>
+<li><p>Utilizar <code>torch.load</code> para ler o ficheiro
+<code>.pt</code> (ex: <code>modelo_squad_epoch_4.pt</code>).</p></li>
+<li><p><em>Dica:</em> Usar o argumento <code>map_location=device</code>
+para garantir compatibilidade caso o modelo tenha sido treinado em GPU e
+esteja a ser carregado em CPU (ou vice-versa).</p></li>
+<li><p>Carregar os pesos no modelo com
+<code>model.load_state_dict</code>.</p></li>
+<li><p><strong>Crucial:</strong> Executar <code>model.eval()</code> para
+desativar camadas de <em>Dropout</em> e fixar a
+<em>LayerNorm</em>.</p></li>
+</ul>
+<ol start="3" type="1">
+<li><strong>Funções de Pré-processamento de Inferência:</strong></li>
+</ol>
+<ul>
+<li>Implementar <code>encode_src_inference</code>: Ao contrário do
+treino (que processa <em>batches</em>), esta função deve receber uma
+única <em>string</em> de pergunta e contexto, tokenizá-las e retornar um
+tensor com dimensão de batch 1 (<code>[1, seq_len]</code>).</li>
+</ul>
+<ol start="4" type="1">
+<li><strong>Geração de Texto (Loop de Predição):</strong></li>
+</ol>
+<ul>
+<li>Implementar a função <code>get_answer</code> que realiza a geração
+passo-a-passo:</li>
+</ul>
+<ol type="1">
+<li>Alimenta o Encoder com a pergunta/contexto.</li>
+<li>Inicializa o Decoder apenas com o token <code>[BOS]</code>.</li>
+<li>Num ciclo <code>for</code> (até <code>max_new_tokens</code>):</li>
+</ol>
+<ul>
+<li>Obtém a previsão do próximo token (<code>argmax</code> dos
+logits).</li>
+<li>Se for <code>[EOS]</code>, termina a geração.</li>
+<li>Caso contrário, concatena o novo token à entrada do Decoder e
+repete.</li>
+</ul>
+<ol start="5" type="1">
+<li><strong>Interface de Chat Interativa:</strong></li>
+</ol>
+<ul>
+<li>Criar um ciclo <code>while</code> infinito que:</li>
+<li>Pede ao utilizador um <strong>Contexto</strong> (parágrafo de
+texto).</li>
+<li>Entra num sub-ciclo para pedir várias <strong>Perguntas</strong>
+sobre esse contexto.</li>
+<li>Chama a função de geração e imprime a resposta do modelo.</li>
+<li>Permite comandos de saída (ex: “sair”, “mudar”) para encerrar o
+programa ou trocar de contexto.</li>
+</ul>
+</body>
+</html>

@@ -8,6 +8,9 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 .ipynb_checkpoints/
+.venv*/
+venv*/
+.cache/
 
 # Configuração local, segredos e estado de ferramentas
 .env
@@ -17,6 +20,11 @@ __pycache__/
 Thumbs.db
 *.Zone.Identifier
 .vscode/
+
+# Skills e registos locais dos agentes
+/.agents/
+/skills-lock.json
+/docs/superpowers/
 
 # Vídeos, áudio e imagens/datasets visuais
 *.mp4
@@ -75,6 +83,12 @@ Thumbs.db
 *.onnx
 *.h5
 *.keras
+*.safetensors
+*.ckpt
+pytorch_model*.bin
+
+# Dataset descarregável do laboratório de Transformers
+**/conteudo/squad/
 
 # Arquivos comprimidos e pacotes de dados
 *.zip
