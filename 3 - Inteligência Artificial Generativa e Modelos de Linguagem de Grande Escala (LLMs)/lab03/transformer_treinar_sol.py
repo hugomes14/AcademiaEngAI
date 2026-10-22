@@ -32,14 +32,16 @@ torch.manual_seed(42); random.seed(42)
 # 2. CARREGAMENTO DOS DADOS (SQuAD)
 # ==============================================================================
 # Caminho para o ficheiro JSON do dataset SQuAD (Stanford Question Answering Dataset)
-json_path = "./conteudo/squad/train-v1.1.json" 
+# Caminho relativo à pasta do script (funciona independentemente da pasta de onde é executado)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+json_path = os.path.join(BASE_DIR, "conteudo", "squad", "train-v1.1.json")
 
 # Verifica se o ficheiro existe para evitar erros
 if not os.path.exists(json_path):
     print(f"AVISO: Ficheiro {json_path} não encontrado. Verifica o caminho.")
 else:
     # Abre e carrega o JSON para a memória
-    with open(json_path, "r") as f:
+    with open(json_path, "r", encoding="utf-8") as f:
         squad_train = json.load(f)
 
     # Inicializa listas vazias para guardar os dados processados
@@ -470,7 +472,7 @@ for epoch in range(1, EPOCHS + 1):
     print(f"Epoch {epoch:02d} | Train Loss {running/i:.4f} | Val Loss {val_loss:.4f} | LR {scheduler.get_last_lr()[0]:.2e}")
     
     # Guarda o estado do modelo
-    torch.save(model.state_dict(), f"modelo_squad_epoch_{epoch}.pt")
+    torch.save(model.state_dict(), os.path.join(BASE_DIR, f"modelo_squad_epoch_{epoch}.pt"))
     print(f"-> Modelo guardado: modelo_squad_epoch_{epoch}.pt")
 
 # ==============================================================================

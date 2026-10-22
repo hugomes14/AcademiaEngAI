@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Lab 04.1 - Chatbots</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        background-color: #232629;
+        color: #7a7c7d;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #7a7c7d;  padding-left: 4px; }
+    div.sourceCode
+      { color: #cfcfc2; background-color: #232629; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #cfcfc2; } /* Normal */
+    code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } /* Alert */
+    code span.an { color: #3f8058; } /* Annotation */
+    code span.at { color: #2980b9; } /* Attribute */
+    code span.bn { color: #f67400; } /* BaseN */
+    code span.bu { color: #7f8c8d; } /* BuiltIn */
+    code span.cf { color: #fdbc4b; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #3daee9; } /* Char */
+    code span.cn { color: #27aeae; font-weight: bold; } /* Constant */
+    code span.co { color: #7a7c7d; } /* Comment */
+    code span.cv { color: #7f8c8d; } /* CommentVar */
+    code span.do { color: #a43340; } /* Documentation */
+    code span.dt { color: #2980b9; } /* DataType */
+    code span.dv { color: #f67400; } /* DecVal */
+    code span.er { color: #da4453; text-decoration: underline; } /* Error */
+    code span.ex { color: #0099ff; font-weight: bold; } /* Extension */
+    code span.fl { color: #f67400; } /* Float */
+    code span.fu { color: #8e44ad; } /* Function */
+    code span.im { color: #27ae60; } /* Import */
+    code span.in { color: #c45b00; } /* Information */
+    code span.kw { color: #cfcfc2; font-weight: bold; } /* Keyword */
+    code span.op { color: #cfcfc2; } /* Operator */
+    code span.ot { color: #27ae60; } /* Other */
+    code span.pp { color: #27ae60; } /* Preprocessor */
+    code span.re { color: #2980b9; background-color: #153042; } /* RegionMarker */
+    code span.sc { color: #3daee9; } /* SpecialChar */
+    code span.ss { color: #da4453; } /* SpecialString */
+    code span.st { color: #f44f4f; } /* String */
+    code span.va { color: #27aeae; } /* Variable */
+    code span.vs { color: #da4453; } /* VerbatimString */
+    code span.wa { color: #da4453; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="style_dark.css" />
+</head>
+<body>
+<h1 id="lab-04.1---chatbots-avançados-com-memória-e-estado">Lab 04.1 -
+Chatbots Avançados com Memória e Estado</h1>
+<p><a href="#ex-0-analisa-os-prompts-dos-perfis-dos-chatbots">Ex 0:
+Analisa os prompts dos perfis dos chatbots</a><br />
+<a href="#ex-1-configuração-de-hardware-e-ambiente">Ex 1: Configuração
+de Hardware e Ambiente</a><br />
+<a href="#ex-2-gestão-de-memória-de-longo-prazo-sqlite">Ex 2: Gestão de
+Memória de Longo Prazo (SQLite)</a><br />
+<a href="#ex-3-camada-meta-cognitiva-e-estados">Ex 3: Camada
+Meta-Cognitiva e Estados</a><br />
+<a href="#ex-4-motor-de-geração-e-chat-templates">Ex 4: Motor de Geração
+e Chat Templates</a><br />
+<a href="#ex-5-execução-e-testes-de-comportamento">Ex 5: Execução e
+Testes de Comportamento</a></p>
+<hr />
+<h2 id="ex-0-analisa-os-prompts-dos-perfis-dos-chatbots">Ex 0: Analisa
+os prompts dos perfis dos chatbots</h2>
+<p>Experimenta os 3 documentos para perceberes como os prompts
+influenciam o comportamento dos chatbots: - Perfil do Chatbot
+Dra.Minerva - Perfil do Chatbot de linguas - Perfil do Chatbot
+Viriato</p>
+<hr />
+<h2 id="ex-1-configuração-de-hardware-e-ambiente">Ex 1: Configuração de
+Hardware e Ambiente</h2>
+<p>Nesta etapa, preparamos o ambiente, identificamos se existe uma GPU
+disponível e configuramos a precisão do modelo (<code>dtype</code>) para
+otimizar a performance.</p>
+<p>Crie o ficheiro <code>chatbot_viriato.py</code> e insira o código de
+inicialização:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">###########################################################</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. SETUP, HARDWARE E IMPORTAÇÕES</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">###########################################################</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> deque</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> AutoTokenizer, AutoModelForCausalLM, pipeline</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>model_id <span class="op">=</span> <span class="st">&quot;Qwen/Qwen2.5-1.5B-Instruct&quot;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;SISTEMA: A carregar o motor </span><span class="sc">{</span>model_id<span class="sc">}</span><span class="ss"> (Aguarde)...&quot;</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Configuração de Hardware</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>usar_cuda <span class="op">=</span> torch.cuda.is_available()</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>device_map <span class="op">=</span> <span class="st">&quot;auto&quot;</span> <span class="cf">if</span> usar_cuda <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> usar_cuda <span class="kw">and</span> torch.cuda.is_bf16_supported():</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    dtype <span class="op">=</span> torch.bfloat16</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    dtype <span class="op">=</span> torch.float16 <span class="cf">if</span> usar_cuda <span class="cf">else</span> torch.float32</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;SISTEMA: Dispositivo = </span><span class="sc">{</span><span class="st">&#39;GPU&#39;</span> <span class="cf">if</span> usar_cuda <span class="cf">else</span> <span class="st">&#39;CPU&#39;</span><span class="sc">}</span><span class="ss"> | dtype = </span><span class="sc">{</span>dtype<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Carregamento do Modelo e Tokenizer</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(model_id, use_fast<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> tokenizer.pad_token_id <span class="kw">is</span> <span class="va">None</span> <span class="kw">and</span> tokenizer.eos_token_id <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    tokenizer.pad_token <span class="op">=</span> tokenizer.eos_token</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> AutoModelForCausalLM.from_pretrained(</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    model_id,</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    device_map<span class="op">=</span>device_map,</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    torch_dtype<span class="op">=</span>dtype,</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>gerador <span class="op">=</span> pipeline(<span class="st">&quot;text-generation&quot;</span>, model<span class="op">=</span>model, tokenizer<span class="op">=</span>tokenizer)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Memória de curto prazo (últimas 8 mensagens)</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>contexto_recente <span class="op">=</span> deque(maxlen<span class="op">=</span><span class="dv">8</span>)</span></code></pre></div>
+<hr />
+<h2 id="ex-2-gestão-de-memória-de-longo-prazo-sqlite">Ex 2: Gestão de
+Memória de Longo Prazo (SQLite)</h2>
+<p>Diferente do contexto volátil, utilizaremos uma base de dados SQLite
+para que o Viriato se lembre de factos mesmo após o programa ser
+reiniciado.</p>
+<p>Adicione as funções de persistência ao ficheiro:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">###########################################################</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. GESTÃO DE MEMÓRIA DE LONGO PRAZO (SQLITE)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">###########################################################</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>DB_PATH <span class="op">=</span> <span class="st">&quot;viriato_memoria.db&quot;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> inicializar_base_dados():</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Cria a tabela de memórias se não existir.&quot;&quot;&quot;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> sqlite3.<span class="ex">connect</span>(DB_PATH) <span class="im">as</span> conn:</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        conn.execute(<span class="st">&quot;CREATE TABLE IF NOT EXISTS memorias (id INTEGER PRIMARY KEY, facto TEXT NOT NULL)&quot;</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> salvar_na_memoria(texto: <span class="bu">str</span>):</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Guarda uma informação na base de dados.&quot;&quot;&quot;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    texto <span class="op">=</span> (texto <span class="kw">or</span> <span class="st">&quot;&quot;</span>).strip()</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> texto: <span class="cf">return</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> sqlite3.<span class="ex">connect</span>(DB_PATH) <span class="im">as</span> conn:</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        conn.execute(<span class="st">&quot;INSERT INTO memorias (facto) VALUES (?)&quot;</span>, (texto,))</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> recuperar_factos_antigos(limite: <span class="bu">int</span> <span class="op">=</span> <span class="dv">4</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Recupera as últimas lembranças para injetar no prompt.&quot;&quot;&quot;</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> sqlite3.<span class="ex">connect</span>(DB_PATH) <span class="im">as</span> conn:</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        cur <span class="op">=</span> conn.cursor()</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        cur.execute(<span class="st">&quot;SELECT facto FROM memorias ORDER BY id DESC LIMIT ?&quot;</span>, (limite,))</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        rows <span class="op">=</span> cur.fetchall()</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>.join([<span class="ss">f&quot;- </span><span class="sc">{</span>r[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">&quot;</span> <span class="cf">for</span> r <span class="kw">in</span> rows]) <span class="cf">if</span> rows <span class="cf">else</span> <span class="st">&quot;Nenhuma lembrança.&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="ex-3-camada-meta-cognitiva-e-estados">Ex 3: Camada
+Meta-Cognitiva e Estados</h2>
+<p>O Viriato altera a sua personalidade com base em palavras-chave. Ele
+pode estar “Vigilante” se sentir perigo (Romanos) ou “Hospitaleiro” se o
+tema for comida ou bebida.</p>
+<p>Adicione a lógica de análise de estado:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">###########################################################</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. CAMADA META-COGNITIVA (PENSAMENTO DO CHATBOT)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">###########################################################</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> analisar_meta_estado(user_input: <span class="bu">str</span>):</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    msg <span class="op">=</span> (user_input <span class="kw">or</span> <span class="st">&quot;&quot;</span>).lower()</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">any</span>(p <span class="kw">in</span> msg <span class="cf">for</span> p <span class="kw">in</span> [<span class="st">&quot;romano&quot;</span>, <span class="st">&quot;guerra&quot;</span>, <span class="st">&quot;ataque&quot;</span>, <span class="st">&quot;exército&quot;</span>]):</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        estado <span class="op">=</span> <span class="st">&quot;VIGILANTE&quot;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        prompt_sistema <span class="op">=</span> <span class="st">&quot;És o Viriato, guerreiro lusitano. Estás desconfiado. Responde de forma ríspida.&quot;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> <span class="bu">any</span>(p <span class="kw">in</span> msg <span class="cf">for</span> p <span class="kw">in</span> [<span class="st">&quot;vinho&quot;</span>, <span class="st">&quot;pão&quot;</span>, <span class="st">&quot;amigo&quot;</span>, <span class="st">&quot;festa&quot;</span>]):</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        estado <span class="op">=</span> <span class="st">&quot;HOSPITALEIRO&quot;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        prompt_sistema <span class="op">=</span> <span class="st">&quot;És o Viriato, taberneiro alegre e generoso. Responde de forma calorosa.&quot;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        estado <span class="op">=</span> <span class="st">&quot;NEUTRO&quot;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        prompt_sistema <span class="op">=</span> <span class="st">&quot;És o Viriato, um taberneiro rústico e equilibrado de Viseu.&quot;</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> estado, prompt_sistema</span></code></pre></div>
+<hr />
+<h2 id="ex-4-motor-de-geração-e-chat-templates">Ex 4: Motor de Geração e
+Chat Templates</h2>
+<p>Nesta fase, combinamos as instruções do sistema, as memórias
+recuperadas da base de dados e o histórico recente num formato que o
+modelo Qwen consiga interpretar.</p>
+<p>Adicione as funções de geração:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">###########################################################</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. MOTOR DE GERAÇÃO</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">###########################################################</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> aplicar_chat_template(messages):</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    prompt_final <span class="op">=</span> tokenizer.apply_chat_template(messages, tokenize<span class="op">=</span><span class="va">False</span>, add_generation_prompt<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> prompt_final</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gerar_resposta_viriato(pergunta_utilizador: <span class="bu">str</span>):</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    estado_nome, system_instruction <span class="op">=</span> analisar_meta_estado(pergunta_utilizador)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    memorias_sql <span class="op">=</span> recuperar_factos_antigos()</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    system_msg <span class="op">=</span> {</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;role&quot;</span>: <span class="st">&quot;system&quot;</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;content&quot;</span>: <span class="ss">f&quot;</span><span class="sc">{</span>system_instruction<span class="sc">}</span><span class="ch">\n\n</span><span class="ss">Memórias: </span><span class="sc">{</span>memorias_sql<span class="sc">}</span><span class="ch">\n\n</span><span class="ss">Regras: Fala em pt-pt.&quot;</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    messages <span class="op">=</span> [system_msg] <span class="op">+</span> <span class="bu">list</span>(contexto_recente) <span class="op">+</span> [{<span class="st">&quot;role&quot;</span>: <span class="st">&quot;user&quot;</span>, <span class="st">&quot;content&quot;</span>: pergunta_utilizador}]</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    prompt <span class="op">=</span> aplicar_chat_template(messages)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> gerador(prompt, max_new_tokens<span class="op">=</span><span class="dv">256</span>, temperature<span class="op">=</span><span class="fl">0.7</span>, do_sample<span class="op">=</span><span class="va">True</span>, return_full_text<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    resposta_ai <span class="op">=</span> out[<span class="dv">0</span>].get(<span class="st">&quot;generated_text&quot;</span>).strip()</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    contexto_recente.append({<span class="st">&quot;role&quot;</span>: <span class="st">&quot;user&quot;</span>, <span class="st">&quot;content&quot;</span>: pergunta_utilizador})</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    contexto_recente.append({<span class="st">&quot;role&quot;</span>: <span class="st">&quot;assistant&quot;</span>, <span class="st">&quot;content&quot;</span>: resposta_ai})</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> resposta_ai, estado_nome</span></code></pre></div>
+<hr />
+<h2 id="ex-5-execução-e-testes-de-comportamento">Ex 5: Execução e Testes
+de Comportamento</h2>
+<p>Finalmente, criamos o loop de interação. Aqui poderá testar a
+funcionalidade de memória persistente através do comando
+<code>/memorizar</code>.</p>
+<p>Adicione o bloco final e execute o script:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">###########################################################</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. LOOP DE INTERAÇÃO</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">###########################################################</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> iniciar_viriato():</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    inicializar_base_dados()</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">VIRIATO ATIVADO - Comandos: &#39;Sair&#39; ou &#39;/memorizar &lt;texto&gt;&#39;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        entrada <span class="op">=</span> <span class="bu">input</span>(<span class="st">&quot;Tu: &quot;</span>).strip()</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> entrada.lower() <span class="kw">in</span> [<span class="st">&quot;sair&quot;</span>, <span class="st">&quot;exit&quot;</span>]: <span class="cf">break</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> entrada.lower().startswith(<span class="st">&quot;/memorizar &quot;</span>):</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>            salvar_na_memoria(entrada[<span class="dv">11</span>:])</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">&quot;SISTEMA: Lembrança guardada.&quot;</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        resposta, estado <span class="op">=</span> gerar_resposta_viriato(entrada)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="ch">\n</span><span class="ss">[ESTADO: </span><span class="sc">{</span>estado<span class="sc">}</span><span class="ss">]&quot;</span>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Viriato: </span><span class="sc">{</span>resposta<span class="sc">}</span><span class="ch">\n</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">&quot;__main__&quot;</span>:</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    iniciar_viriato()</span></code></pre></div>
+<h3 id="tarefas-sugeridas">Tarefas Sugeridas:</h3>
+<ol type="1">
+<li><strong>Teste de Estado:</strong> Pergunte “Viste algum exército
+Romano?” e observe o estado mudar para <strong>VIGILANTE</strong>.</li>
+<li><strong>Teste de Memória:</strong> Use
+<code>/memorizar O meu nome é John</code>. Feche o programa, abra-o
+novamente e pergunte “Sabes quem eu sou?”.</li>
+</ol>
+</body>
+</html>
